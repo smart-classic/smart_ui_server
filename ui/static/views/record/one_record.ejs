@@ -1,0 +1,59 @@
+<% if (record.demographics) { %>
+  <div id="record_demographics">
+    <strong><%= record.demographics.lastname %>, <%= record.demographics.firstnames %></strong> (<%= record.demographics.gender %>)<br />
+    <%= record.demographics.address %>
+  </div>
+<% } %>
+<br />
+</div>
+
+<!-- THIS WAS FOR DEBUGGING -->
+<!--
+<p>
+<a onclick="$('#documents').show(); return false;" href="#">show documents</a>
+</p>
+-->
+
+<div id="documents" style="display:none;">
+  <h3>Documents</h3>
+  <ul>
+    <% for (var i=0; i< documents.length; i++) { %>
+      <li> <a target="_blank" href="/records/<%= record.record_id %>/documents/<%= documents[i]['@id'] %>"><%= documents[i]['@id'] %></a></li>
+    <% } %>
+  </ul>
+</div>
+
+<div>
+  <% if (record_phas.length > 0) { %>
+    <h3>Applications</h3>
+    <ul>
+    <% for (var i=0; i< record_phas.length; i++) { %>
+      <% if (!record_phas[i].data.ui) {continue;} %>
+        <li> <a target="_blank" 
+        <% if (record_phas[i].data.frameable) { %>
+          class="pha"
+        <% } %>
+        id="<%= record_phas[i].id %>" href="<%= record_phas[i].data.startURL %>"><%= record_phas[i].data.name %></a>
+        &mdash; <%= record_phas[i].data.description %>
+        </li>
+      <% } %>
+    </ul>
+  <% } else { %>
+    <strong> No Applications Available </strong>
+  <% } %>
+</div>
+
+<!-- for now no other applications -->
+<!--
+<h3>Other Applications</h3>
+
+<ul>
+<% for (var i=0; i< phas.length; i++) { %>
+<li> <a target="_blank"
+<% if (phas[i].data.frameable) { %>
+class="pha"
+<% } %>
+id="<%= phas[i].id %>" href="<%= phas[i].data.startURL %>"><%= phas[i].data.name %></a></li>
+<% } %>
+</ul>
+-->

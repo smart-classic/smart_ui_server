@@ -1,0 +1,12 @@
+<h3>Preferences for "<%= pha.data.name %>"</h3>
+
+<p>
+In most cases, an application should be shared with all of your carenets. You can limit your carenets' access by choosing which data to share with them. Sometimes, you may want to restrict an application to only some of your carenets when the application itself, i.e. "My Pregnancy Manager," reveals information you want to keep private.
+</p>
+
+<form id="pha_carenets_form">
+<% $(carenets).each(function(i, carenet) { %>
+<input name="carenet" value="<%= carenet.carenet_id %>" type="checkbox" <% if (active_carenets.indexOf(carenet.carenet_id) > -1) { %>checked<% } %> /> <%= carenet.name %><br />
+<% }); %>
+<input type="submit" value="update" />
+</form>

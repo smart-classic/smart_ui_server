@@ -1,0 +1,17 @@
+/*
+ * Indivo UI Widget CSS Library
+ *
+ * Ben Adida (ben.adida@childrens.harvard.edu)
+ * Arjun Sanyal (arjun.sanyal@childrens.harvard.edu)
+ *
+ * 2010-03-25
+ */
+
+body {}
+
+iframe.indivo {
+    float: right;
+    width: 200px;
+    height: 120px;
+    border: 1px solid black;
+}

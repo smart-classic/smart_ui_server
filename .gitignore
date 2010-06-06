@@ -1,0 +1,6 @@
+*~
+*.pyc
+session/*
+log/
+settings.py
+*.log

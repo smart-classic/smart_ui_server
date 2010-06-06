@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+  <head>
+    {% if branding %}
+      {% include branding.header_template %}
+    {% else %}
+      {% include 'ui/header.html' %}
+    {% endif %}
+    <!-- development or production -->
+    <script type="text/javascript" src="/static/jmvc/include.js?default,development"></script>
+    <script type="text/javascript">
+      var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
+      var FULLNAME = "{{ FULLNAME }}";
+    </script>
+    <title>{% block title %}Indivohealth for {{FULLNAME}}{% endblock %}</title>
+  </head>
+  <body>
+
+    <!-- where do we get content? is this a flash? -->
+    <!-- <div id='content'>
+     {% block content %}{% endblock %}
+    </div> -->
+    <!-- accountcontent div?? -->
+
+    <!-- begin grid container -->
+    <div class="container_16">
+      <div class="grid_11" id="header">
+        {% if branding %}
+          <img style="height: 100px; margin-bottom: -35px; margin-right: 10px;"
+               src='{{ branding.logo_image_src }}'/>
+        {% endif %}
+        <span id="logo">
+        {% if branding %}
+          {{ branding.pretty_name }}</span>
+        {% else %}
+          Indivohealth</span><span id="trademark">&trade;</span>
+        {% endif %}
+        &nbsp;<span id="header_name">for {{FULLNAME}}</span>
+      </div>
+      <div class="grid_5" id="header_controls">
+          <!-- <a href="#help">
+            <img class="header_icons" height="16px" width="16px" src="/static/resources/images/icons_16/help.png" />
+            Help
+          </a>
+          <a href="#settings">
+            <img class="header_icons" height="16px" width="16px" src="/static/resources/images/icons_16/package_settings.png" />
+            Settings
+          </a> -->
+          <a href="{% url ui.views.logout %}">
+            <img class="header_icons" height="16px" width="16px" style="opacity: 0.7; margin-left: 9px" src="/static/resources/images/icons_16/goto.png" />
+            Logout
+          </a>
+      </div>
+      <div class="clear"></div>
+
+      <div id="record_tabs" class="prefix_8 grid_8">
+        <ul id="record_tabs_inner">
+          <!-- record tab divs are inserted here -->
+        </ul>
+      </div>
+      <div class="clear"></div>
+
+      <div class="grid_16" id="app_container">
+        <div id="app_selector" class="grid_4">
+          <ul id="app_selector_inner">
+            <li>
+              <a href="#_healthfeed_tab_panel_hidden">
+                <img class="app_tab_img" height="32px" width="32px" src="/static/resources/images/app_icons_32/healthfeed.png" />
+                Healthfeed
+              </a>
+            </li>
+	  <li id="inbox_li">
+              <a href="#_inbox_tab_panel_hidden">
+                <img class="app_tab_img" height="32px" width="32px" src="/static/resources/images/app_icons_32/mail_get.png" />
+                Inbox
+              </a>
+            </li>
+          </ul>
+	  <div id="record_owned_options">
+	    <ul id="sharing_list">
+	      <li>
+		<a id="sharing" rel="#overlay">
+		  <img class="app_tab_img_small" height="24px" width="24px" src="/static/resources/images/icons_24/groupevent.png" />Sharing
+		</a>
+	      </li>
+	    </ul>
+          {% if not HIDE_GET_MORE_APPS %}
+            <ul id="get_more_apps_list">
+              <li>
+                <a id="get_more_apps" rel="#overlay">
+                   <img class="app_tab_img_small" height="24px" width="24px" src="/static/resources/images/icons_24/edit_add.png" />Get more apps
+                </a>
+              </li>
+            </ul>
+          {% endif %}
+	  </div>
+          <!-- used for jquery ui tabs for healthfeed -->
+          <div id="_healthfeed_tab_panel_hidden" style="display: none"></div>
+          <div id="_inbox_tab_panel_hidden" style="display: none"></div>
+        </div>
+
+        <!-- used for jquery tools overlay -->
+        <div class="overlay" id="overlay"><div class="wrap"></div></div>
+
+        <!-- App content goes here. I'm about 666px x 444px (set) at XGA. Should be resized based
+        on size of viewport?? -->
+        <div class="grid_12" id="app_content"></div>
+        <iframe class="grid_12" id="app_content_iframe" src="" style="display: none"></iframe>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <!-- end grid container -->
+
+    {% if branding %}
+      {% include branding.footer_template %}
+    {% else %}
+      {% include 'ui/footer.html' %}
+    {% endif %}
+
+  </body>
+</html>

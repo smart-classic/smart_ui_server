@@ -1,0 +1,8 @@
+{
+	"modal" : "http://javascriptmvc.googlecode.com/svn/engines/1_5/modal/",
+	"slider" : "http://javascriptmvc.googlecode.com/svn/engines/1_5/slider/",
+	"splitter" : "http://javascriptmvc.googlecode.com/svn/engines/1_5/splitter/",
+	fixedbox : "http://javascriptmvc.googlecode.com/svn/engines/1_5/fixedbox/",
+	tabs : "http://javascriptmvc.googlecode.com/svn/engines/1_5/tabs/",
+	jabbify_simple_client : "http://jabbify.googlecode.com/svn/branches/1_0/jabbify_simple_client"
+}

@@ -1,0 +1,453 @@
+/*
+
+Indivo UI CSS
+--------------
+
+In this file we override the CSS in jquery UI and fluid960gs and 
+define our own CSS.
+
+
+Some Color Schemes
+-------------------
+
+(as body background color, box, shadow)
+
+Default Color Scheme
+  - Off white background: background: #FEFCF7
+  - Light gray box background: background: #fafafa
+  - Rounded corners: moz-border-radius: 10px; -webkit-border-radius: 10px;
+  - Light y-axis only box shadow: -moz-box-shadow: 0 1px 3px #aaa
+
+Tint Colors
+  - #efe - green
+  - #eef - bluish
+  - #eff - teal
+  - #fef - pinkish/purple
+  - #ffe - yellow
+  - #fee - peach
+
+
+Useful Icons from Crystal Project
+----------------------------------
+
+in /apps:
+alert.png
+blockdevice.png (for kids)
+chat.png (speech bubble)
+clock.png
+database.png
+date.png
+gpg.png (lock)
+irc_protocol.png (conversation)
+kdmconfig.png (3 people -- carenet?)
+khelpcenter.png
+knode.png (news)
+knote.png (note)
+kteatime.png (take a break!)
+package_favorite.png
+package_setting.png
+printer.png
+reminders.png
+tutorials.png
+starthere.png
+
+cool looking:
+kllckety.png
+
+patient notifier?: actions/agt_update_recommended.png
+
+
+in /devices
+pipe.png (for connection for gpp?)
+mountoverlays.png
+
+in /filesystems
+connect_to_network.png
+favorites.png
+folder*
+link and lock overlays
+
+in /mimetypes
+spreadsheet.png
+
+in /actions
+
+advanced.png
+connect*
+decrypted.png
+gohome.png
+goto.png
+mail*
+agt_family.png
+
+
+Other Stuff
+-----------
+- red: #79332D
+
+$('.box, .box h2').animate({ backgroundColor: '#fef' }, 2000, 'swing', function(){});
+
+text-shadow: http://www.zachstronaut.com/posts/2009/06/22/css-text-shadow-lighting-demo.html 
+.burning { text-shadow: 0 0 4px white, 0 -5px 4px #FFFF33, 2px -10px 6px #FFDD33, -2px -15px 11px #FF8800, 2px -25px 18px #FF2200; }
+.glowing { text-shadow: 1px 1px 5px #fff; } 
+.milky { color: #fff;  background: #fff; text-shadow: 1px 1px 4px#000; }
+
+*** Warning: .section and .menu are highly styled by fluid960gs! don't use those class names !! ***
+FIXME: Remove styling from those class names
+
+*/
+
+
+/********** HACKS *********/
+/* FIXME: Hack for jqui icons positioning issues */
+.ui-icon { display: none;}
+/*#tabs { margin-bottom: 20px; }*/
+
+
+
+/***** Indivo CSS *****/
+
+/*** General ***/
+body {
+  font-size: 12px;
+  line-height: 1.75;
+  font-family: "Lucida Grande", "Lucida Sans", "Helvetica Neue", Helvetica, Verdana, sans-serif;
+  border-top: 0px;
+  background: #FEFCF7;
+  color: #464337;
+  letter-spacing:-0.2px;
+}
+.indivo_error { color: #cc6644; }
+.indivo_full { opacity: 1; filter:Alpha(Opacity=100); }
+.indivo_muted { opacity: .8; filter:Alpha(Opacity=80); }
+.small {font-size: .9em;}
+
+i { font-family: "Lucida Sans", "Lucida Grande", "Helvetica Neue", Helvetica, Verdana, sans-serif;
+font-style: oblique;
+}
+
+/*** Header ***/
+#logo{
+  font-size:3em;
+  text-align:left;
+  font-family: "Gill Sans", "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.7px;
+  cursor: default;
+}
+
+#trademark {vertical-align: super; font-size: 1.2em; color: #999;cursor: pointer;}
+
+#header { margin-top: 20px; margin-bottom: 10px; }
+
+#header_controls {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-top: 2.5em;
+  text-align: right;
+}
+
+#header_controls a:hover { border-bottom: none; }
+
+#header_name {
+  font-size:1.33em;
+  cursor: default;
+  letter-spacing:-0.4px;
+}
+
+.header_icons {margin-bottom: -3px; margin-left: 15px;}
+
+#footer { margin-top: 100px; color: #666251; font-size: 1.1em; letter-spacing:-0.4px; }
+#footer a { font-weight: normal; }
+#footer a img {
+  height: 24px;
+  width: 24px;
+  margin-bottom: -7px;
+  margin-right: 2px;
+}
+#copyright { text-align: center; color: #999; font-size: .8em;}
+
+
+/*** Apps ***/
+
+#app_selector {
+  margin-right: 0;
+ -moz-box-shadow: 0px 1px 0px #ccc;
+ -webkit-box-shadow: 0px 1px 0px #ccc;
+ -moz-border-radius-topright: 0px;
+ -moz-border-radius-bottomright: 0px;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid white;
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+/* this hides the jquery ui tabs generated panels */
+#app_selector .ui-tabs-panel { display: none; }
+
+#app_selector_inner {
+  border: none !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  font-size: 1.2em !important;
+  border-right: 1px solid white;
+}
+
+#app_selector_inner li { 
+  margin: 20px 0px 20px 20px;
+}
+
+#app_selector_inner li a { padding: 0px 0px 0px 0px; }
+#app_selector_inner li a:hover { border-bottom: none; }
+
+#get_more_apps_list, #sharing_list {
+  border: none !important;
+  font-weight: normal !important;
+  text-transform: uppercase;
+  border-right: 1px solid white;
+  list-style-type: none;
+}
+
+#get_more_apps_list li, #sharing_list li {margin-left: 20px; cursor: pointer;}
+
+.app_tab_img { margin: 0 10px -7px 0px; }
+.app_tab_img_small { margin: 0 14px -7px 5px; }
+
+#app_content {
+  min-height: 444px;
+  padding: 10px;
+  -moz-border-radius-bottomleft:5px;
+  -moz-border-radius-bottomright:5px;
+  -moz-border-radius-topleft:0px;
+  -moz-border-radius-topright:5px;
+  -webkit-border-radius-bottomleft:5px;
+  -webkit-border-radius-bottomright:5px;
+  -webkit-border-radius-topleft:0px;
+  -webkit-border-radius-topright:5px;
+  margin: 0 0;
+  background: #fafafa;
+  -moz-box-shadow: 1px 1px 3px #aaa;
+  -webkit-box-shadow: 1px 1px 3px #aaa;
+  border: 1px solid #ccc;
+}
+
+/* TODO: DRY up. Not to DRY to make sure props are overridden there */
+#app_content_iframe {
+  height: 444px;
+  padding: 10px;
+  -moz-border-radius-bottomleft:5px;
+  -moz-border-radius-bottomright:5px;
+  -moz-border-radius-topleft:0px;
+  -moz-border-radius-topright:5px;
+  -webkit-border-radius-bottomleft:5px;
+  -webkit-border-radius-bottomright:5px;
+  -webkit-border-radius-topleft:0px;
+  -webkit-border-radius-topright:5px;
+  margin: 0 0;
+  background: #fafafa;
+  -moz-box-shadow: 1px 1px 3px #aaa;
+  -webkit-box-shadow: 1px 1px 3px #aaa;
+  border: 1px solid #ccc;
+}
+
+#app_container {
+  background: #FEFCF7;
+ -moz-box-shadow: none;
+ -webkit-box-shadow: none;
+ margin-bottom: 20px;
+ min-width: 850px;
+}
+
+/*** record tabs ***/
+
+#record_tabs {
+  background: inherit;
+  margin-left: -5px;
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+#record_tabs_inner {
+  border: none !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  font-size: 1.2em !important;
+}
+
+.record_tab {
+/*1px 0px 1px #aaa !important*/
+  -moz-box-shadow: 2px 0px 0px #ccc !important;
+  -webkit-box-shadow: 2px 0px 0px #ccc !important;
+  border-left: 1px solid #ddd !important;
+  border-top: 1px solid #ddd !important;
+  text-align: center;
+  float: right !important;
+  padding: 5px;
+  margin-left: 8px !important;
+  display: block;
+}
+
+.record_tab li {
+  -moz-box-shadow: 1px 0px 0px #ccc
+  -webkit-box-shadow: 1px 0px 0px #ccc;
+  text-align: center;
+  float: right !important;
+  padding: 5px;
+  margin-left: 10px;
+  display: block;
+}
+
+#record_tabs_inner li a:hover { border-bottom: none; }
+/* this hides the jquery ui tabs generated panels */
+#record_tabs div { display: none; }
+
+.overlay {
+  display:none;
+  z-index:10000;
+  background-color:#f0f0f0;
+  width:675px;
+  min-height:200px;
+  padding: 35px;
+  -moz-box-shadow:0 0 30px #555;
+  -webkit-box-shadow: 0 0 30px #555;
+}
+
+.overlay .close {
+  position:absolute;
+  right:-15px;
+  top:-15px;
+  cursor:pointer;
+  height:35px;
+  width:35px;
+  background-image:url(/static/resources/images/jquery_tools/close.png);
+}
+
+.wrap {
+  padding: 0px 10px 10px 10px;
+}
+
+/*** PHAs ***/
+.pha {
+  margin-bottom: 10px;
+}
+
+.pha a:hover {
+  cursor: pointer;
+  border-bottom: 1px solid #666251;
+}
+
+/*** notifications ***/
+/*.notification {
+    background-color: white;
+    border-bottom: 2px solid #b4b4b4;
+    padding: 0.4em;
+    font-size: 12pt;
+}
+
+.notification .created_at {
+    display: block;
+    float: left;
+    color: #555555;
+    padding-right: 5px;
+}
+
+.notification .details {
+    color: #555555;
+    font-size: 10pt;
+}
+*/
+/*** messaging ***/
+/*
+table.message_listing {
+  border: 1px black solid;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  width: 90%;
+}
+
+table.message_listing th {
+  border-bottom: 1px black solid;
+  border-right: 1px #888 dotted;
+  padding: 5px 35px 5px 5px;
+  background: #edf3fe;
+  text-align: left;
+  font-size: 12pt;
+}
+
+table.message_listing td {
+  padding: 2px 35px 2px 5px;
+  border-bottom: 1px black solid;
+  border-right: 1px #888 dotted;
+  font-size: 11pt;
+}*/
+
+/***********  Overrides of jquery UI ***********/
+.ui-helper-reset { line-height: 1.75; }
+.ui-widget { font-family: inherit; font-size: inherit; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: inherit; font-size: 1em; }
+.ui-widget-content { border: none; background: #fafafa; color: inherit; -moz-box-shadow: 1px 1px 3px #ccc;  -webkit-box-shadow: 1px 1px 3px #ccc }
+.ui-widget-content a { color: inherit; }
+.ui-widget-header { 
+  border: 1px solid #ddd;
+/*  background: #cccccc url(../jquery-ui-1.7.2/css/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; */
+  background: none;
+  color: inherit;
+  font-weight: bold;
+  text-transform: uppercase; }
+.ui-widget-header a { color: inherit }
+.ui-corner-bottom {-moz-border-radius-bottomleft:10px; -moz-border-radius-bottomright:10px; }
+.ui-state-active, .ui-widget-content .ui-state-active { background: #fafafa; border: 1px solid #ccc; };
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus { 
+  border: 1px solid #999999;
+/*  background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;*/
+  font-weight: normal;
+  color: #212121;
+  outline: none;
+}
+.ui-state-hover a, .ui-state-hover a:hover {
+/*  background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;*/
+  color: #212121;
+  text-decoration: none;
+  outline: none;
+}
+
+.ui-tabs { padding: 0; zoom: 1; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: .2em .2em 0; }
+.ui-tabs .ui-tabs-nav li { background: inherit; border: none; position: relative; float: none; border-bottom-width: 0 !important; margin: 0 .2em -1px 0; padding: 0; }
+.ui-tabs .ui-tabs-nav li a { float: none; text-decoration: none; padding: .5em 1em; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 0; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: default; }
+/*.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */*/
+.ui-tabs .ui-tabs-panel { padding: 1em 1.4em; display: block; border-width: 0; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+
+
+/********* Overrides of fluid960gs CSS *********/
+.container_16 { background: none; }
+a { color: #666251; font-weight:bold; text-decoration: none; }
+a:hover { color: black; }
+table { border: none; }
+tbody th, tbody td { border: none; }
+thead th.table-head { background: none; font-size: 1.1em; border: none; color: inherit; }
+thead th { background: none; border-bottom: 1px solid #ccc;}
+tfoot th, tfoot td { background: none; border-top:1px solid #ccc }
+tfoot tr.total th, tfoot tr.total td { border-top:3px double #ccc; }
+ul.section li a { background: none; }
+ul.section li a.current { background: #dadada; font-weight: bold; color: inherit;};
+h1 { color: #555 }
+h2 h3 { color: #444;}
+.box {padding: 10px; background: #fafafa; -moz-border-radius: 10px; -webkit-border-radius: 10px;  -moz-box-shadow: 0px 1px 3px #aaa;  -webkit-box-shadow: 0px 1px 3px #aaa;}
+.box h2 { background: none; color: inherit;}
+.box h2 a { background: none;  color: inherit;}
+.box h2 a:hover { background-color:none; }
+.box h2 a.hidden, .box h2 a.hidden:hover {  background: none; }
+.box h2 a:hover { text-decoration: underline; background: none;}
+.box h2 a, .box h2 a.visible { color:inherit; background:none; display:block; padding:6px 12px; margin:-6px -12px; border:none; }
+legend { background: none; border: none; }
+fieldset { background: none; border: 1px solid #ccc; }
+ul.menu { border: none;}
+ul.menu li a { border: none;}
+/* fixme: this one is a little odd in ff */
+/*input.search.text { background: none; }*/
+

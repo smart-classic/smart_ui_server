@@ -1,0 +1,22 @@
+
+<h2>Inbox</h2>
+
+<% if (messages.length == 0) { %>
+
+<em>no messages</em>
+<% } else { %>
+
+<table class="message_listing">
+<tr>
+<th width="15%">Date</th><th width="20%">From</th><th>Subject</th>
+</tr>
+<% for (var i=0; i<messages.length; i++) { %>
+<tr>
+<td><%= messages[i].received_at.substring(0,16) %></td>
+<td><%= messages[i].sender %></td>
+<td><a href="#" id ="<%= messages[i].id %>" class="message_subject"><%= messages[i].subject %></a></td>
+</tr>
+<% } %>
+</table>
+
+<% } %>
