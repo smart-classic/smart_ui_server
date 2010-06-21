@@ -34,13 +34,20 @@ SMART_CONTAINER = Class.extend({
     // process an incoming message
     receive_message: function(event) {
 	alert('received message from ' + event.origin + ', which is app ' + this.apps_by_origin[event.origin]);
+	this.send_setup_message(event.origin, event.window);
     },
 
     // message sent to the IFRAME when the "ready" message has been received
-    send_setup_message: function() {
+    send_setup_message: function(origin, frame) {
+	// FIXME: send the setup message
+	alert('sending setup message now');
     }
 });
 
 SMART = new SMART_CONTAINER();
-			     
-window.addEventListener("message", SMART.receive_message, false);
+
+function __SMART_receive_message(message) {
+    SMART.receive_message(message);
+}
+
+window.addEventListener("message", __SMART_receive_message, false);
