@@ -1,12 +1,10 @@
-include.resources(
-"js/underscore-min.js",
-"js/jquery-1.3.2.min.js",
-"jquery-ui-1.7.2/js/jquery-ui-1.7.2.custom.min.js",
-"js/jquery.tools.sans.tabs.min.js",
-"js/xml2json.js",
-"js/utils.js",
-"js/ui.js"
-);
+include.resources("js/underscore-min.js",
+		   "js/jquery-1.3.2.min.js",
+		   "jquery-ui-1.7.2/js/jquery-ui-1.7.2.custom.min.js",
+		   "js/jquery.tools.sans.tabs.min.js",
+		   "js/xml2json.js",
+		   "js/utils.js",
+		   "js/ui.js");
 
 // Make sure you're actually using what's in here! 
 include.plugins(
@@ -23,3 +21,5 @@ include(function(){
     include('controllers');
  });
 
+// SMArt
+include.resources("js/smart-api-container.js");

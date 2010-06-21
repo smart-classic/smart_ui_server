@@ -104,6 +104,8 @@ MainController = MVC.Controller.extend('main', {
       // all of this stuff only makes sense if we're not in a carenet
       if (!params.carenet_id) {
 	  $('#app_selector_inner li:last').append(remove_app_chunk);
+	  
+	  // disabled for SMArt
 	  $('#app_selector_inner li:last').append(prefs_app_chunk);
 	  
 	  var second_span = $('#app_selector_inner li:last span')[1];
@@ -131,11 +133,17 @@ MainController = MVC.Controller.extend('main', {
       
       // add the click handler
       $('#app_selector_inner li:last a').click(function(){
-	  // load and show the iframe
-	  $('#app_content_iframe').attr('src', startURL);
-          $('#app_content').hide();
-          $('#app_content_iframe').show();
-      })
+	  // set up the app as being added
+	  RecordController.CURRENT_RECORD.add_app(params.pha.id, function() {
+	      // set up the SMArt API for this
+	      SMART.register_app(params.pha.id, $('#app_content_iframe'), startURL);
+
+	      // load and show the iframe
+	      $('#app_content_iframe').attr('src', startURL);
+              $('#app_content').hide();
+              $('#app_content_iframe').show();
+	  });
+      });
       
       // fire click event!!
       if (fire_p) $('#app_selector_inner li:last a').click();

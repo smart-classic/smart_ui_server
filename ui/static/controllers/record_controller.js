@@ -77,7 +77,7 @@ RecordController = MVC.Controller.extend('record', {
       }
       
       var record_info = RecordController.RECORDS[record_id];
-      
+
       if (record_info.carenet_id) {
       $('#record_owned_options').hide();
       } else {
@@ -86,10 +86,10 @@ RecordController = MVC.Controller.extend('record', {
 
       var record_load_callback = function(record) {
       PHA.get_all(function(phas) {
-              _this.phas = phas;
+          _this.phas = phas;
           
-              // get the ones associated with this record
-              after_pha_callback = function(phas) {
+          // get the ones associated with this record
+          after_pha_callback = function(phas) {
           _this.record_phas = phas;
           
           MainController.dispatch('_clear_apps');
@@ -116,6 +116,7 @@ RecordController = MVC.Controller.extend('record', {
       
       Record.get(record_id, record_info.carenet_id, function(record) {
       _this.record = record;
+	  RecordController.CURRENT_RECORD = record;
       record_load_callback(record);
       });
   },

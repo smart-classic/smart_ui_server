@@ -30,6 +30,13 @@ Record = Class.extend({
 	    }));
 	});
     },
+
+    // for SMArt
+    add_app: function(app_email, callback) {
+	indivo_api_call("PUT", this.base_url + "/apps/" + encodeURIComponent(app_email), null, function(result) {
+	    callback();
+	});
+    },
 });
 
 // aks: why the syntax differnce in method adding? 

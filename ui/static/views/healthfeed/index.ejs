@@ -1,5 +1,5 @@
 
-<h2>Healthfeed</h2>
+<h2>Updates</h2>
 
 <% if (notifications.length === 0) { %>
   <em>no notifications</em>
@@ -17,8 +17,7 @@
 
     <!-- Warning: don't use record_id in the id attr!! Issue with JQuery UI record tab panels!! -->
     <div class="details" style="font-family: 'lucida sans', 'lucida grande', sans-serif; font-style: oblique; margin: 10px 0 0 5px">
-      &nbsp;&ndash; sent by <%= notifications[i].sender %> about
-      <a class="goto_record" href="#"><%= notifications[i].record.label %>&rsquo;s record</a>
+      &nbsp;&ndash; sent by <%= notifications[i].sender %> 
       on
       <span class="created_at">
         <%= notifications[i].received_at.substring(0,10) %>

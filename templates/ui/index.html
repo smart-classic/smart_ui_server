@@ -12,15 +12,9 @@
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
       var FULLNAME = "{{ FULLNAME }}";
     </script>
-    <title>{% block title %}Indivohealth for {{FULLNAME}}{% endblock %}</title>
+    <title>{% block title %}SMArt for {{FULLNAME}}{% endblock %}</title>
   </head>
   <body>
-
-    <!-- where do we get content? is this a flash? -->
-    <!-- <div id='content'>
-     {% block content %}{% endblock %}
-    </div> -->
-    <!-- accountcontent div?? -->
 
     <!-- begin grid container -->
     <div class="container_16">
@@ -66,24 +60,11 @@
             <li>
               <a href="#_healthfeed_tab_panel_hidden">
                 <img class="app_tab_img" height="32px" width="32px" src="/static/resources/images/app_icons_32/healthfeed.png" />
-                Healthfeed
-              </a>
-            </li>
-	  <li id="inbox_li">
-              <a href="#_inbox_tab_panel_hidden">
-                <img class="app_tab_img" height="32px" width="32px" src="/static/resources/images/app_icons_32/mail_get.png" />
-                Inbox
+                Updates
               </a>
             </li>
           </ul>
 	  <div id="record_owned_options">
-	    <ul id="sharing_list">
-	      <li>
-		<a id="sharing" rel="#overlay">
-		  <img class="app_tab_img_small" height="24px" width="24px" src="/static/resources/images/icons_24/groupevent.png" />Sharing
-		</a>
-	      </li>
-	    </ul>
           {% if not HIDE_GET_MORE_APPS %}
             <ul id="get_more_apps_list">
               <li>

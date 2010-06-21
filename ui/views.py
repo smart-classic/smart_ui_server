@@ -61,7 +61,7 @@ def tokens_get_from_server(request, username, password):
 def index(request):
   if tokens_p(request):
     # get the realname here. we already have it in the js account model
-    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.INDIVO_SERVER_LOCATION)
+    api = get_api(request)
     account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
     ret = api.account_info(account_id = account_id)
     e = ET.fromstring(ret.response['response_data'])
