@@ -1,21 +1,21 @@
 # Django settings for indivo_ui_server project.
 
-INDIVO_UI_BASE = '/web/indivo_ui_server'
+INDIVO_UI_BASE = '/web/smart_ui_server'
 HIDE_GET_MORE_APPS = False
 DEBUG = True
 
 # Configuration for IndivoClient (note: UI server is a 'chrome' app. see docs for more)
 CONSUMER_KEY='chrome'
-CONSUMER_SECRET='chrome-secret'
-INDIVO_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '8000'}
+CONSUMER_SECRET='chrome'
+INDIVO_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
 
 #  quick and dirty private labeling
 BRANDING = {
-  'short_name': 'gpp',
-  'pretty_name': 'Gene Partnership Project',
-  'pretty_name_prepend': 'the',
+  'short_name': 'smart',
+  'pretty_name': 'SMArt Bootstrap',
+  'pretty_name_prepend': '',
   'header_template': 'ui/header_gpp.html',
-  'footer_template': 'ui/footer_gpp.html'
+  'footer_template': 'ui/footer_smart.html'
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -36,7 +36,7 @@ SITE_ID = 1
 USE_I18N = True
 
 # Make this unique, and don't share it with anybody. (Used by django for CSRF protection?)
-SECRET_KEY = 'REPLACEMENOW'
+SECRET_KEY = '2342342345'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -50,7 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = 'indivo_ui_server.ui.urls'
+ROOT_URLCONF = 'smart_ui_server.ui.urls'
 
 TEMPLATE_DIRS = (
     INDIVO_UI_BASE + "/templates"
