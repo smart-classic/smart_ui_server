@@ -20,34 +20,83 @@ function __SMART_extract_origin(url) {
 
 // very basic SMART API
 SMART_CONTAINER = Class.extend({
-    init: function() {
+    // the creds_and_info_generator is a func that will be called
+    // prior to every "setup" message sent to the smart app.
+    // it should generate a credential for that app and the current record, 
+    // and should include basic information about the current record
+    init: function(creds_and_info_generator) {
+	this.creds_and_info_generator = creds_and_info_generator;
 	this.apps_by_origin = {};
+	this.frames_by_app = {};
+	this.origins_by_app = {};
+	
+	// register the message receiver
+	// wrap in a function because of "this" binding
+	var _this = this;
+	window.addEventListener("message", function(message) {
+	    _this.receive_message(message);
+	}, false);
     },
 
     // set up the IFRAME and the app that it corresponds to
     // the URL is used to determine the proper origin
     register_app: function(app_email, iframe, url) {
 	var origin = __SMART_extract_origin(url);
+
 	this.apps_by_origin[origin] = app_email;
+	this.frames_by_app[app_email] = iframe.contentWindow;
+	this.origins_by_app[app_email] = origin;
     },
 
     // process an incoming message
     receive_message: function(event) {
-	alert('received message from ' + event.origin + ', which is app ' + this.apps_by_origin[event.origin]);
-	this.send_setup_message(event.origin, event.window);
+	// alert('received message from ' + event.origin + ', which is app ' + this.apps_by_origin[event.origin]);
+	
+	// determine origin, stop if unknown
+	var app = this.apps_by_origin[event.origin];
+	if (app == null)
+	    return;
+	
+	// parse message
+	var parsed_message = JSON.parse(event.data);
+
+	// setup message with credentials and initial data
+	if (parsed_message.type == 'ready') {
+	    this.send_setup_message(app);
+	}
+	
+	if (parsed_message.type == 'apicall') {
+	    this.receive_apicall_message(app, parsed_message);
+	}
+    },
+
+    receive_apicall_message: function(app, message) {
+	// alert('received API call from ' + app);
+
+	// FIXME: do stuff here
+	// for now just return simple ok message
+	this.send_app_message(app, {
+	    'uuid' : message.uuid,
+	    'type' : 'apireturn',
+	    'content_type' : 'xml',
+	    'payload' : '<result>ok</result>'
+	});
     },
 
     // message sent to the IFRAME when the "ready" message has been received
-    send_setup_message: function(origin, frame) {
-	// FIXME: send the setup message
-	alert('sending setup message now');
+    send_setup_message: function(app) {
+	var message = this.creds_and_info_generator(app);
+	
+	// add a type to the object to make it the full message
+	message['type'] = 'setup';
+
+	// send it
+	this.send_app_message(app, message);
+    },
+
+    send_app_message: function(app, message) {
+	// find the frame for this app, and send the json'ified message to it, specifying the proper origin
+	this.frames_by_app[app].postMessage(JSON.stringify(message), this.origins_by_app[app]);
     }
 });
 
-SMART = new SMART_CONTAINER();
-
-function __SMART_receive_message(message) {
-    SMART.receive_message(message);
-}
-
-window.addEventListener("message", __SMART_receive_message, false);

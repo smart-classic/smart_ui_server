@@ -7,8 +7,17 @@
 
 MainController = MVC.Controller.extend('main', {
   load: function(params) {
-   ACCOUNT = new Account(ACCOUNT_ID); // init the account via model
-   this.setup();
+      ACCOUNT = new Account(ACCOUNT_ID); // init the account via model
+      SMART = new SMART_CONTAINER(function(app) {
+	  // this is called when a new app is started
+	  // credentials are bogus for now
+	  return {'credentials' : 'foobar',
+		  'record_info' : {
+		      'full_name' : RecordController.CURRENT_RECORD.label
+		  }};
+      });
+
+      this.setup();
   },
     
   setup: function(params) {
@@ -136,7 +145,7 @@ MainController = MVC.Controller.extend('main', {
 	  // set up the app as being added
 	  RecordController.CURRENT_RECORD.add_app(params.pha.id, function() {
 	      // set up the SMArt API for this
-	      SMART.register_app(params.pha.id, $('#app_content_iframe'), startURL);
+	      SMART.register_app(params.pha.id, $('#app_content_iframe')[0], startURL);
 
 	      // load and show the iframe
 	      $('#app_content_iframe').attr('src', startURL);
@@ -170,7 +179,7 @@ MainController = MVC.Controller.extend('main', {
 
   // used when switching records
   _clear_apps: function(params) {
-    var app_list_sans_hf = $('#app_selector_inner').children().slice(2);
+    var app_list_sans_hf = $('#app_selector_inner').children().slice(1);
     $.each(app_list_sans_hf, function(i, v){
       $(v).remove();
     })
