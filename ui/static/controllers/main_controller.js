@@ -151,6 +151,7 @@ MainController = MVC.Controller.extend('main', {
 	      $('#app_content_iframe').attr('src', startURL);
               $('#app_content').hide();
               $('#app_content_iframe').show();
+              $('#app_content_iframe').focus();
 	  });
       });
       
