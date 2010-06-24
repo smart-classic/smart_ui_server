@@ -75,11 +75,35 @@ SMART_CONTAINER = Class.extend({
 
 	// FIXME: do stuff here
 	// for now just return simple ok message
-	this.send_app_message(app, {
-	    'uuid' : message.uuid,
-	    'type' : 'apireturn',
-	    'content_type' : 'xml',
-	    'payload' : '<result>ok</result>'
+
+	var _this = this;
+
+	$.ajax({
+			url: "/smart_api/"+
+				message.func+"/records/"+
+				this.creds_and_info_generator(app).record_info.id+
+				"/apps/"+app,
+				
+			data: message.params,
+			type: "POST",
+			dataType: "json",
+			success: 
+			      function(data) {
+		
+				// no XHR passed to jquery 1.3 success callback (need 1.4 in JSMVC).
+				  var ct = "json"; //xhr.getResponseHeader("Content-Type"): "json";
+			
+				  _this.send_app_message(app, {
+					  'uuid' : message.uuid,
+					  'type' : 'apireturn',
+					  'content_type' : ct,
+					  'payload' : data
+					   });
+			      },
+			error: function(data) {
+			    	  // error handler
+			    	  alert("error");
+			      }
 	});
     },
 
@@ -96,7 +120,9 @@ SMART_CONTAINER = Class.extend({
 
     send_app_message: function(app, message) {
 	// find the frame for this app, and send the json'ified message to it, specifying the proper origin
-	this.frames_by_app[app].postMessage(JSON.stringify(message), this.origins_by_app[app]);
+    	this.frames_by_app[app].postMessage(
+    			JSON.stringify(message), 
+    			this.origins_by_app[app]);
     }
 });
 

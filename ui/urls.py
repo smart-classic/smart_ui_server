@@ -21,6 +21,7 @@ urlpatterns = patterns(
     # indivo api calls
     (r'^indivoapi/delete_record_app/$', indivo_api_call_delete_record_app),
     (r'^indivoapi/', indivo_api_call_get),
+    (r'^smart_api/', indivo_api_call_get),  # AWFUL hack relies on 10-letter name.
 
     # oauth
     (r'^oauth/authorize$', authorize),

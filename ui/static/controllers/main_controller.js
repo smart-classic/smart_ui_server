@@ -13,7 +13,8 @@ MainController = MVC.Controller.extend('main', {
 	  // credentials are bogus for now
 	  return {'credentials' : 'foobar',
 		  'record_info' : {
-		      'full_name' : RecordController.CURRENT_RECORD.label
+		      'full_name' : RecordController.CURRENT_RECORD.label,
+		      'id' : RecordController.CURRENT_RECORD.record_id
 		  }};
       });
 
