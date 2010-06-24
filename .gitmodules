@@ -1,3 +1,0 @@
-[submodule "indivo_client_py"]
-	path = indivo_client_py
-	url = git@git.chip.org:indivo_client_py.git
