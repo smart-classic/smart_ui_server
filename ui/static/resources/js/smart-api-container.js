@@ -86,13 +86,13 @@ SMART_CONTAINER = Class.extend({
 				
 			data: message.params,
 			type: "POST",
-			dataType: "json",
+			dataType: "text",
 			success: 
 			      function(data) {
 		
 				// no XHR passed to jquery 1.3 success callback (need 1.4 in JSMVC).
-				  var ct = "json"; //xhr.getResponseHeader("Content-Type"): "json";
-			
+				  var ct = "xml"; //xhr.getResponseHeader("Content-Type"): "json";
+				  
 				  _this.send_app_message(app, {
 					  'uuid' : message.uuid,
 					  'type' : 'apireturn',

@@ -3,4 +3,6 @@
 session/*
 log/
 settings.py
-*.log
+*.log.project
+.pydevproject
+.project
