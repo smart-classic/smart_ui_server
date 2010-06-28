@@ -44,7 +44,9 @@ MainController = MVC.Controller.extend('main', {
     $("#CloseApp a").click(function() {
         $('#app_content_iframe').addClass("grid_12");
         $('#app_content_iframe').removeClass("fullScreen");
+        $('#app_content_iframe').attr("src","about:blank");
         $('#CloseApp').hide();
+        
     	HealthfeedController.dispatch('index');
     });
   },
