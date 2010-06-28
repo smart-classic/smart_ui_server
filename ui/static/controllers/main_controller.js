@@ -40,6 +40,13 @@ MainController = MVC.Controller.extend('main', {
     HealthfeedController.dispatch('index');
     
     // init complete
+    
+    $("#CloseApp a").click(function() {
+        $('#app_content_iframe').addClass("grid_12");
+        $('#app_content_iframe').removeClass("fullScreen");
+        $('#CloseApp').hide();
+    	HealthfeedController.dispatch('index');
+    });
   },
 
   _init_get_more_apps_overlay: function(){
@@ -153,6 +160,10 @@ MainController = MVC.Controller.extend('main', {
               $('#app_content').hide();
               $('#app_content_iframe').show();
               $('#app_content_iframe').focus();
+              $('#app_content_iframe').removeClass("grid_12");
+              $('#app_content_iframe').addClass("fullScreen");
+              $("#CloseAppID").html(params.pha.id);
+              $('#CloseApp').show();
 	  });
       });
       

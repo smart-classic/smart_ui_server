@@ -71,10 +71,6 @@ SMART_CONTAINER = Class.extend({
     },
 
     receive_apicall_message: function(app, message) {
-	// alert('received API call from ' + app);
-
-	// FIXME: do stuff here
-	// for now just return simple ok message
 
 	var _this = this;
 
@@ -112,7 +108,7 @@ SMART_CONTAINER = Class.extend({
 	var message = this.creds_and_info_generator(app);
 	
 	// add a type to the object to make it the full message
-	message['type'] = 'setup';
+	message.type = 'setup';
 
 	// send it
 	this.send_app_message(app, message);

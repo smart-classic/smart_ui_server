@@ -233,21 +233,8 @@ font-style: oblique;
 
 /* TODO: DRY up. Not to DRY to make sure props are overridden there */
 #app_content_iframe {
-  height: 444px;
-  padding: 10px;
-  -moz-border-radius-bottomleft:5px;
-  -moz-border-radius-bottomright:5px;
-  -moz-border-radius-topleft:0px;
-  -moz-border-radius-topright:5px;
-  -webkit-border-radius-bottomleft:5px;
-  -webkit-border-radius-bottomright:5px;
-  -webkit-border-radius-topleft:0px;
-  -webkit-border-radius-topright:5px;
   margin: 0 0;
   background: #fafafa;
-  -moz-box-shadow: 1px 1px 3px #aaa;
-  -webkit-box-shadow: 1px 1px 3px #aaa;
-  border: 1px solid #ccc;
 }
 
 #app_container {
@@ -451,3 +438,20 @@ ul.menu li a { border: none;}
 /* fixme: this one is a little odd in ff */
 /*input.search.text { background: none; }*/
 
+
+.fullScreen  { 
+ position:absolute;
+ top:0;
+ left:0;
+ width:100%;
+ height: 100%;
+}
+
+
+#CloseApp  { 
+ position:absolute;
+ top:0;
+ right:0;
+ z-index: 1;
+ padding-right: .3em;
+}
