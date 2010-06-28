@@ -16,50 +16,32 @@
   </head>
   <body>
 
-    <!-- begin grid container -->
-    <div class="container_16">
-      <div class="grid_11" id="header">
+      <div  id="header">
         {% if branding %}
-          <img style="height: 100px; margin-bottom: -35px; margin-right: 10px;"
-               src='{{ branding.logo_image_src }}'/>
+ <!--         <img id='HeaderBrandImage'
+               src='{{ branding.logo_image_src }}'/> -->
         {% endif %}
         <span id="logo">
         {% if branding %}
           {{ branding.pretty_name }}</span>
         {% else %}
-          Indivohealth</span><span id="trademark">&trade;</span>
+          SMArt</span><span id="trademark">&trade;</span>
         {% endif %}
         &nbsp;<span id="header_name">for {{FULLNAME}}</span>
+          <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
       </div>
-      <div class="grid_5" id="header_controls">
-          <!-- <a href="#help">
-            <img class="header_icons" height="16px" width="16px" src="/static/resources/images/icons_16/help.png" />
-            Help
-          </a>
-          <a href="#settings">
-            <img class="header_icons" height="16px" width="16px" src="/static/resources/images/icons_16/package_settings.png" />
-            Settings
-          </a> -->
-          <a href="{% url ui.views.logout %}">
-            <img class="header_icons" height="16px" width="16px" style="opacity: 0.7; margin-left: 9px" src="/static/resources/images/icons_16/goto.png" />
-            Logout
-          </a>
-      </div>
-      <div class="clear"></div>
 
-      <div id="record_tabs" class="prefix_8 grid_8">
-        <ul id="record_tabs_inner">
-          <!-- record tab divs are inserted here -->
-        </ul>
+      <div id="record_tabs">
+        <ul id="record_tabs_inner"></ul>
       </div>
-      <div class="clear"></div>
 
-      <div class="grid_16" id="app_container">
-        <div id="app_selector" class="grid_4">
+	<div id='bigbody' style="position: relative; width: 100%; height: 100%;">
+
+      <div id="app_selector">       
           <ul id="app_selector_inner">
             <li>
               <a href="#_healthfeed_tab_panel_hidden">
-                <img class="app_tab_img" height="32px" width="32px" src="/static/resources/images/app_icons_32/healthfeed.png" />
+                <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/healthfeed.png" />
                 Updates
               </a>
             </li>
@@ -69,7 +51,7 @@
             <ul id="get_more_apps_list">
               <li>
                 <a id="get_more_apps" rel="#overlay">
-                   <img class="app_tab_img_small" height="24px" width="24px" src="/static/resources/images/icons_24/edit_add.png" />Get more apps
+                   <img class="app_tab_img_small" height="16px" width="16px" src="/static/resources/images/icons_24/edit_add.png" />Get more apps
                 </a>
               </li>
             </ul>
@@ -78,20 +60,16 @@
           <!-- used for jquery ui tabs for healthfeed -->
           <div id="_healthfeed_tab_panel_hidden" style="display: none"></div>
           <div id="_inbox_tab_panel_hidden" style="display: none"></div>
-        </div>
+        
+      </div> <!-- end app selector -->
+      <div id="app_content"></div><iframe id="app_content_iframe" src="" style="display: none"></iframe>
 
         <!-- used for jquery tools overlay -->
         <div class="overlay" id="overlay"><div class="wrap"></div></div>
-
-        <!-- App content goes here. I'm about 666px x 444px (set) at XGA. Should be resized based
-        on size of viewport?? -->
-        <div class="grid_12" id="app_content"></div>
 	<div id="CloseApp" style="display: none"><span id="CloseAppID">app-id-here</span> [<a href="#">Close</a>]</div>
-        <iframe class="grid_12" id="app_content_iframe" src="" style="display: none"></iframe>
-      </div>
-      <div class="clear"></div>
-    </div>
-    <!-- end grid container -->
+        
+    
+    </div> <!-- end big body -->
 
     {% if branding %}
       {% include branding.footer_template %}

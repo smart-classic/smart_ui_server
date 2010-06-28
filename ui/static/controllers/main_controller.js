@@ -39,16 +39,32 @@ MainController = MVC.Controller.extend('main', {
     // Run Healthfeed
     HealthfeedController.dispatch('index');
     
+
+    $(window).resize(function() {
+    	
+    	var $elt = $("#app_content_iframe").is(":visible")? 
+    			   $("#app_content_iframe") : $("#app_content");
+    	
+        $elt.hide();
+        	
+        $elt.css("height", $("#bigbody").height()- 25);
+        $elt.css("width", $("#bigbody").width()-175);
+                        
+        $elt.show();    		
+    });
+    
+    $(window).resize();
+
     // init complete
     
-    $("#CloseApp a").click(function() {
-        $('#app_content_iframe').addClass("grid_12");
-        $('#app_content_iframe').removeClass("fullScreen");
-        $('#app_content_iframe').attr("src","about:blank");
-        $('#CloseApp').hide();
+ //   $("#CloseApp a").click(function() {
+//        $('#app_content_iframe').addClass("grid_12");
+ //       $('#app_content_iframe').removeClass("fullScreen");
+ //       $('#app_content_iframe').attr("src","about:blank");
+ //       $('#CloseApp').hide();
         
-    	HealthfeedController.dispatch('index');
-    });
+ //   	HealthfeedController.dispatch('index');
+ //   });
   },
 
   _init_get_more_apps_overlay: function(){
@@ -162,10 +178,11 @@ MainController = MVC.Controller.extend('main', {
               $('#app_content').hide();
               $('#app_content_iframe').show();
               $('#app_content_iframe').focus();
-              $('#app_content_iframe').removeClass("grid_12");
-              $('#app_content_iframe').addClass("fullScreen");
-              $("#CloseAppID").html(params.pha.id);
-              $('#CloseApp').show();
+              $(window).resize();
+            //  $('#app_content_iframe').removeClass("grid_12");
+            //  $('#app_content_iframe').addClass("fullScreen");
+            //  $("#CloseAppID").html(params.pha.id);
+            //s  $('#CloseApp').show();
 	  });
       });
       

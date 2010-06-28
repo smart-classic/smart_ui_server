@@ -23,7 +23,7 @@ RecordController = MVC.Controller.extend('record', {
     // color them
     // TODO: cycle colors
     $('.record_tab').each(function(i,v){
-            COLORS = ['#fafafa', '#eef', '#efe', '#fef', '#ffe', 'fee', '#eef', '#efe', '#fef', '#ffe', 'fee'];
+            COLORS = ['#eaeaea', '#eef', '#efe', '#fef', '#ffe', 'fee', '#eef', '#efe', '#fef', '#ffe', 'fee'];
             $(v).css({'background':COLORS[i]})
     });
     
