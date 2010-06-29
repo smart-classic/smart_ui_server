@@ -191,8 +191,8 @@ def indivo_api_call_get(request):
     #   res = p.findall(request.path)
     #   utils.log('indivo_api_call_get query params: ' + str(res))
     # else:
-    
-  return HttpResponse(api.call(request.method, request.path[10:], options= {'data': data}), mimetype="application/xml")
+  ret = HttpResponse(api.call(request.method, request.path[10:], options= {'data': data}), mimetype="application/xml")
+  return ret
 
 def indivo_api_call_delete_record_app(request):
   """
@@ -232,7 +232,6 @@ def authorize(request):
     # claim request token and check return value
     if api.claim_request_token(request_token=REQUEST_TOKEN).response['response_status'] != 200:
       return HttpResponse('bad response to claim_request_token')
-    
     app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
     e = ET.fromstring(app_info)
     
@@ -252,9 +251,7 @@ def authorize(request):
         record_xml = api.read_record(record_id = record_id).response['response_data']
         record_node = ET.fromstring(record_xml)
         RECORDS = [[record_node.attrib['id'], record_node.attrib['label']]]
-        
-        carenet_els = ET.fromstring(api.get_record_carenets(record_id = record_id).response['response_data']).findall('Carenet')
-        carenets = [{'id': c.attrib['id'], 'name': c.attrib['name']} for c in carenet_els]
+        carenets = None
       else:
         records_xml = api.read_records(account_id = urllib.unquote(request.session['account_id'])).response['response_data']
         RECORDS = [[r.get('id'), r.get('label')] for r in ET.fromstring(records_xml).findall('Record')]
