@@ -75,13 +75,9 @@ SMART_CONTAINER = Class.extend({
 	var _this = this;
 
 	$.ajax({
-			url: "/smart_api/"+
-				message.func+"/records/"+
-				this.creds_and_info_generator(app).record_info.id+
-				"/apps/"+app,
-				
+			url: "/smart_api/"+message.func,
 			data: message.params,
-			type: "POST",
+			type: "GET",
 			dataType: "text",
 			success: 
 			      function(data) {

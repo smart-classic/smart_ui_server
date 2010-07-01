@@ -54,6 +54,13 @@ MainController = MVC.Controller.extend('main', {
     });
     
     $(window).resize();
+    $('#app_content_iframe').load( 
+    		function() {
+		    $('#app_content_iframe').show();
+		    $('#app_content_iframe').focus();
+		    $(window).resize();
+    		});
+
 
     // init complete
     
@@ -89,8 +96,8 @@ MainController = MVC.Controller.extend('main', {
               // Create a <div> for each pha, with maybe an image
               // todo: be dry! see _add_app below!
               var img_name = pha.data.name.toLowerCase().replace(/ +/, '_')
-              var line = '<img class="app_tab_img" src="/static/resources/images/app_icons_32/'+img_name+'.png" />';
-              line += '<a>'+pha.data.name;
+              var line = '<a><img class="app_tab_img" src="/static/resources/images/app_icons_32/'+img_name+'.png" />';
+              line += ''+pha.data.name;
               if (pha.data.description && pha.data.description != "None") line += '&nbsp;&ndash;&nbsp;<i>'+pha.data.description+'</i>';
               line += '</a>'
 
@@ -161,8 +168,8 @@ MainController = MVC.Controller.extend('main', {
 	  $(third_span).hide();
 	  
 	  $(first_span).hover(
-	      function(){ $(second_span).show() ; $(third_span).show() ; },
-	      function(){ setTimeout(function(){ $(second_span).hide(); $(third_span).hide();},1500)}
+	      function(){ $(second_span).show() },//; $(third_span).show() ; },
+	      function(){ setTimeout(function(){ $(second_span).hide();},1000)}// $(third_span).hide();},1500)}
 	  );
       }
       
@@ -174,15 +181,11 @@ MainController = MVC.Controller.extend('main', {
 	      SMART.register_app(params.pha.id, $('#app_content_iframe')[0], startURL);
 
 	      // load and show the iframe
-	      $('#app_content_iframe').attr('src', startURL);
-              $('#app_content').hide();
-              $('#app_content_iframe').show();
-              $('#app_content_iframe').focus();
-              $(window).resize();
-            //  $('#app_content_iframe').removeClass("grid_12");
-            //  $('#app_content_iframe').addClass("fullScreen");
-            //  $("#CloseAppID").html(params.pha.id);
-            //s  $('#CloseApp').show();
+	   
+	   
+	    $('#app_content').hide();
+	    $('#app_content_iframe').attr('src', startURL);
+	    
 	  });
       });
       

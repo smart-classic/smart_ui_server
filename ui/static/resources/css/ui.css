@@ -153,6 +153,12 @@ color: #C2E1D8;
   z-index: 2;
 }
 
+#bigbody ul span {
+vertical-align: top;
+margin-top: 15px;
+display: inline-block;
+margin-top: 8px;
+}
 
 
 #trademark {vertical-align: super; font-size: 1.2em; color: #999;cursor: pointer;}
@@ -175,10 +181,14 @@ color: #C2E1D8;
 
 #footer { position: fixed; bottom: 0px; background: #0c5161; color: #C2E1D8; width: 100%; }
 #footer a { font-weight: normal; color: #C2E1D8; }
-#footer a img, li img {
+#footer a img {
 max-height: 1em;
 min-width: 1em;
 border: 0px;
+}
+li img {
+	height: 32px;
+	width: 32px;
 }
 #copyright { text-align: center; font-size: .8em;}
 
@@ -189,7 +199,7 @@ border: 0px;
 	position: absolute;
 	top: 1.5em;
 	left: 0px;
-	width: 175px; 
+	width: 200px; 
     vertical-align: top;
     padding-top: .4em;
 	border-right: 1px solid #dadada;
@@ -213,14 +223,7 @@ border: 0px;
 #app_selector_inner li a { padding: 0px 0px 0px 0px; }
 #app_selector_inner li a:hover { border-bottom: none; }
 
-#get_more_apps_list, #sharing_list {
-  border: none !important;
-  font-weight: normal !important;
-  text-transform: uppercase;
-  border-right: 1px solid white;
-  list-style-type: none;
-}
-
+#get_more_apps {cursor:pointer;}
 
 #app_content, #app_content_iframe {
   position: absolute;
