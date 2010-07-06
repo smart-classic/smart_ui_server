@@ -38,8 +38,8 @@ RecordController = MVC.Controller.extend('record', {
             RecordController.RECORD_ID = $(ui.tab).attr('href').substring(1);
         
         // make sure the iframe is hidden and the div is shown
-        $('#app_content_iframe').hide();
-        $('#app_content').show();
+//        $('#app_content_iframe').hide();
+//        $('#app_content').show();
         
             RecordController.dispatch('_load_record');
     });
@@ -85,7 +85,8 @@ RecordController = MVC.Controller.extend('record', {
       }
 
       var record_load_callback = function(record) {
-      PHA.get_all(function(phas) {
+
+    	  PHA.get_all(function(phas) {
           _this.phas = phas;
           
           // get the ones associated with this record
@@ -101,11 +102,9 @@ RecordController = MVC.Controller.extend('record', {
           
           // do we have an app selected?
           if (RecordController.APP_ID) {
-              PHA.get(RecordController.RECORD_ID, RecordController.APP_ID, function(pha) {
-              RecordController.dispatch('one_pha', {pha:pha});
-              });
-          }
-              };
+        	  $('[href=\'#'+RecordController.APP_ID.replace(/@/, '_at_').replace(/\./g,'_')+'\']').click();
+             }
+          };
           
           if (record_info.carenet_id)
           PHA.get_by_carenet(record_info.carenet_id, null, after_pha_callback);
@@ -118,6 +117,7 @@ RecordController = MVC.Controller.extend('record', {
       _this.record = record;
 	  RecordController.CURRENT_RECORD = record;
       record_load_callback(record);
+      
       });
   },
 
@@ -143,7 +143,7 @@ RecordController = MVC.Controller.extend('record', {
   },
 
   "one_pha": function(params) {
-    this.pha = params.pha;
+	  this.pha = params.pha;
     
     // interpolate the start URL
     // this.pha.data.startURL = interpolate_url_template(this.pha.data.startURLTemplate, {'record_id' : RecordController.RECORD_ID, 'document_id' : RecordController.DOCUMENT_ID || ""});

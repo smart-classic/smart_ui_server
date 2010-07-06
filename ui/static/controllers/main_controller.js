@@ -176,15 +176,14 @@ MainController = MVC.Controller.extend('main', {
       // add the click handler
       $('#app_selector_inner li:last a').click(function(){
 	  // set up the app as being added
-	  RecordController.CURRENT_RECORD.add_app(params.pha.id, function() {
+    	  RecordController.APP_ID = params.pha.id;
+    	  RecordController.CURRENT_RECORD.add_app(params.pha.id, function() {
 	      // set up the SMArt API for this
 	      SMART.register_app(params.pha.id, $('#app_content_iframe')[0], startURL);
-
-	      // load and show the iframe
-	   
-	   
-	    $('#app_content').hide();
-	    $('#app_content_iframe').attr('src', startURL);
+	      
+	      // load and show the iframe	   
+		    $('#app_content').hide();
+		    $('#app_content_iframe').attr('src', startURL);
 	    
 	  });
       });
