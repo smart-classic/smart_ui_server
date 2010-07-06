@@ -29,11 +29,11 @@ RecordController = MVC.Controller.extend('record', {
     
     // add color events
     $('#record_tabs').bind('tabsselect', function(event, ui) {
-            $('.box, .box h2, #app_selector, #app_content, #app_content_iframe').stop(true);
+            $('.box, .box h2,  #app_content, #app_content_iframe').stop(true);
             event.stopPropagation();
-            $('.box, .box h2, #app_selector, #app_content, #app_content_iframe').animate({
+            $('.box, .box h2,  #app_content, #app_content_iframe').animate({
         backgroundColor: $(ui.tab).parent().css('background-color')
-            }, 1000);
+            }, 70);
         
             RecordController.RECORD_ID = $(ui.tab).attr('href').substring(1);
         
