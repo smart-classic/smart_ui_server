@@ -155,7 +155,7 @@ MainController = MVC.Controller.extend('main', {
 	  
 	  $(second_span).click(function(e){
 	      var id = this.id.replace(/_delete_button/, '')
-	      MainController.dispatch('_remove_app', {'id': id, 'index': len-1});
+	      MainController.dispatch('_remove_app', {'id': id});
 	  });
 	  
 	  $(second_span).hide();
@@ -194,7 +194,6 @@ MainController = MVC.Controller.extend('main', {
 
   _remove_app: function(params) {
     var id = params.id.substring(1);
-    var index = params.index;
 
     $.ajax({
       type: 'POST',
@@ -203,10 +202,7 @@ MainController = MVC.Controller.extend('main', {
       success: function(data, textstatus, xhr) {
         // shouldn't ever be called: fixme write onerror
         if (textstatus != 'success') { alert('Error in delete_record_app') };
-        // destroy, delete tab ul, and re-init -- workaround tabs lameness
-	//        $('#app_selector').tabs('destroy');
-	//	alert("destroyed tabs, now removing  " + index);
-        $('#app_selector_inner li:eq('+index+')').remove();
+	$('[href=\'#'+id.replace(/@/, '_at_').replace(/\./g,'_')+'\']').parent().remove();
 	//        $('#app_selector').tabs();
       }
     });
