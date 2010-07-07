@@ -167,9 +167,9 @@ MainController = MVC.Controller.extend('main', {
 	  
 	  $(third_span).hide();
 	  
-	  $(first_span).hover(
+	  $("#app_selector_inner li:last").hover(
 	      function(){ $(second_span).show() },//; $(third_span).show() ; },
-	      function(){ setTimeout(function(){ $(second_span).hide();},1000)}// $(third_span).hide();},1500)}
+	      function(){ setTimeout(function(){ $(second_span).hide();},100)}// $(third_span).hide();},1500)}
 	  );
       }
       
@@ -204,9 +204,10 @@ MainController = MVC.Controller.extend('main', {
         // shouldn't ever be called: fixme write onerror
         if (textstatus != 'success') { alert('Error in delete_record_app') };
         // destroy, delete tab ul, and re-init -- workaround tabs lameness
-        $('#app_selector').tabs('destroy');
+	//        $('#app_selector').tabs('destroy');
+	//	alert("destroyed tabs, now removing  " + index);
         $('#app_selector_inner li:eq('+index+')').remove();
-        $('#app_selector').tabs();
+	//        $('#app_selector').tabs();
       }
     });
   },
