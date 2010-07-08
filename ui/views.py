@@ -235,47 +235,31 @@ def authorize(request):
     app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
     e = ET.fromstring(app_info)
     
-    record_id = e.find('record').attrib.get('id', None)
-    carenet_id = e.find('carenet').attrib.get('id', None)
     name = e.findtext('App/name')
     app_id = e.find('App').attrib['id']
     kind = e.findtext('kind')
     description = e.findtext('App/description')
     
     offline_capable = (e.findtext('DataUsageAgreement/offline') == "1")
-    
+ 
     # the "kind" param lets us know if this is app setup or a normal call
-    if kind == 'new':
-      if record_id:
-        # single record
-        record_xml = api.read_record(record_id = record_id).response['response_data']
-        record_node = ET.fromstring(record_xml)
-        RECORDS = [[record_node.attrib['id'], record_node.attrib['label']]]
-        carenets = None
-      else:
-        records_xml = api.read_records(account_id = urllib.unquote(request.session['account_id'])).response['response_data']
-        RECORDS = [[r.get('id'), r.get('label')] for r in ET.fromstring(records_xml).findall('Record')]
-        carenets = None
-      
+    if kind == 'new':     
       return utils.render_template('ui/authorize',
-          {'NAME': name, 'DESCRIPTION': description, 'REQUEST_TOKEN': REQUEST_TOKEN, 'RECORDS': RECORDS, 'carenets': carenets, 'offline_capable' : offline_capable})
+          {'NAME': name, 'DESCRIPTION': description, 'REQUEST_TOKEN': REQUEST_TOKEN, 'offline_capable' : offline_capable})
     elif kind == 'same':
       # return HttpResponse('fixme: kind==same not implimented yet')
       # in this case we will have record_id in the app_info
-      return _approve_and_redirect(request, REQUEST_TOKEN, record_id, carenet_id)
+      return _approve_and_redirect(request, REQUEST_TOKEN)
     else:
       return HttpResponse('bad value for kind parameter')
   
   # process POST
   elif request.method == HTTP_METHOD_POST \
-    and request.POST.has_key('oauth_token') \
-    and request.POST.has_key('record_id'):
+    and request.POST.has_key('oauth_token'):
     
     app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
     e = ET.fromstring(app_info)
     
-    record_id = e.find('record').attrib.get('id', None)
-    carenet_id = e.find('carenet').attrib.get('id', None)
     name = e.findtext('App/name')
     app_id = e.find('App').attrib['id']
     kind = e.findtext('kind')
@@ -285,29 +269,18 @@ def authorize(request):
     if offline_capable == "0":
       offline_capable = False
     
-    location = _approve_and_redirect(request, request.POST['oauth_token'], request.POST['record_id'], offline_capable = offline_capable)
-    
-    approved_carenet_ids = request.POST.getlist('carenet_id')
-    
-    # go through the carenets and add the app to the record
-    for approved_carenet_id in approved_carenet_ids:
-      api.post_carenet_app(carenet_id = approved_carenet_id, app_id = app_id)
-    
+    location = _approve_and_redirect(request, request.POST['oauth_token'],  offline_capable = offline_capable)    
     return location
   else:
     return HttpResponse('bad request method or missing param in request to authorize')
 
-def _approve_and_redirect(request, request_token, record_id=None, carenet_id=None, offline_capable=False):
+def _approve_and_redirect(request, request_token, account_id=None,  offline_capable=False):
   """
   carenet_id is the carenet that an access token is limited to.
   """
   api = get_api(request)
   data = {}
-  if record_id:
-    data['record_id'] = record_id
-  if carenet_id:
-    data['carenet_id'] = carenet_id
-  
+    
   if offline_capable:
     data['offline'] = 1
   

@@ -1,1 +1,1 @@
-include.controllers('healthfeed','main','messaging','sharing','pha','record');
+include.controllers('healthfeed','main','pha','record', 'patient_search');

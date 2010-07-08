@@ -124,6 +124,7 @@ body {
 .indivo_muted { opacity: .8; filter:Alpha(Opacity=80); }
 .small {font-size: .9em;}
 
+
 i { font-family: "Lucida Sans", "Lucida Grande", "Helvetica Neue", Helvetica, Verdana, sans-serif;
 font-style: oblique;
 }
@@ -153,6 +154,15 @@ color: #C2E1D8;
   z-index: 2;
 }
 
+#working_with {
+float: right;
+}
+
+#current_patient {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
 #bigbody ul span {
 vertical-align: top;
 margin-top: 15px;
@@ -160,6 +170,8 @@ display: inline-block;
 margin-top: 8px;
 }
 
+#patient_search_sparql {margin-top: 2em;}
+.inputHintOverlay { color: #999; font-size: 12px; }
 
 #trademark {vertical-align: super; font-size: 1.2em; color: #999;cursor: pointer;}
 

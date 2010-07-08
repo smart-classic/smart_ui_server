@@ -42,28 +42,8 @@ PHA.multi_callback = function(callback) {
     return ajax_callback;
 };
 
-PHA.get_by_record = function(record_id, type, callback) {
-  var url = '/records/' + encodeURIComponent(record_id) + '/apps/';
-  if (type) {
-	  url += "?type=" + encodeURIComponent(type);
-  }
-  $.getXML(url, PHA.multi_callback(callback));
-};
-
-PHA.get_by_carenet = function(carenet_id, type, callback) {
-    var url = '/carenets/' + encodeURIComponent(carenet_id) + '/apps/';
-  if (type) {
-	  url += "?type=" + encodeURIComponent(type);
-  }
-  $.getXML(url, PHA.multi_callback(callback));
-};
 
 PHA.get_all = function(callback) {
   $.getXML('/apps/', PHA.multi_callback(callback));
 };
 
-PHA.get = function(record_id, pha_id, callback) {
-  var url = '/records/' + encodeURIComponent(record_id) + '/apps/' + encodeURIComponent(pha_id);
-
-  $.getXML(url, PHA.single_callback(callback));
-};

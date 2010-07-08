@@ -1,0 +1,35 @@
+/*
+ * the Record model
+ */
+
+Record = Class.extend({
+    init: function(record_id, label, demographics, base_url, carenet) {
+	this.record_id = record_id;
+	this.demographics = demographics;
+	this.base_url = base_url;
+	this.label = label;
+    },
+    
+    get_document_list: function(tags, callback) {
+	$.getXML(this.base_url + '/documents/', function(doc_list) {
+	    callback(doc_list);
+	});
+    },
+    
+    // for SMArt
+    add_app: function(app_email, callback) {
+	indivo_api_call("PUT", this.base_url + "/apps/" + encodeURIComponent(app_email), null, function(result) {
+	    callback();
+	});
+    },
+});
+
+// aks: why the syntax differnce in method adding? 
+Record.get = function(record_id, carenet_id, callback) {
+    var base_url = '/records/' + encodeURIComponent(record_id);
+
+     $.getXML(base_url, function(result) {
+	var r = new Record(record_id, result.Record['@label'], result.Record.demographics, base_url, carenet_id);
+	callback(r);
+    });
+};

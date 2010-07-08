@@ -29,6 +29,8 @@
         {% endif %}
         &nbsp;<span id="header_name">for {{FULLNAME}}</span>
           <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
+          
+          <div id="working_with">Working with patient record: <span id="current_patient">&lt;none&gt;</span></div>
       </div>
 
       <div id="record_tabs">
@@ -40,11 +42,19 @@
       <div id="app_selector">       
           <ul id="app_selector_inner">
             <li>
+              <a href="#_patient_search_tab_panel_hidden">
+                <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/patientsearch.png" />
+                <span>Patient Search</span>
+              </a>
+            </li>
+
+            <li>
               <a href="#_healthfeed_tab_panel_hidden">
                 <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/healthfeed.png" />
                 <span>Updates</span>
               </a>
             </li>
+
           </ul>
 	  <div id="record_owned_options">
           {% if not HIDE_GET_MORE_APPS %}
@@ -59,9 +69,8 @@
           {% endif %}
 	  </div>
           <!-- used for jquery ui tabs for healthfeed -->
+          <div id="_patient_search_tab_panel_hidden" style="display: none"></div>
           <div id="_healthfeed_tab_panel_hidden" style="display: none"></div>
-          <div id="_inbox_tab_panel_hidden" style="display: none"></div>
-        
       </div> <!-- end app selector -->
       <div id="app_content"></div><iframe id="app_content_iframe" src="" style="display: none"></iframe>
 

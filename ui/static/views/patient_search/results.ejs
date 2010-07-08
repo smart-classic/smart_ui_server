@@ -1,0 +1,11 @@
+<% for (var i = 0; i < records.length; i++) { %>
+<% var record = records[i]; %>
+	
+  <div class="record_result"><a href="#"><%= record.label%> - <span class="record_id"><%= record.record_id %></span></a>: 
+	<% if (record.demographics) { %>
+	    <strong><%= record.demographics.lastname %>, <%= record.demographics.firstnames %></strong> (<%= record.demographics.gender %>)<br />
+	    <%= record.demographics.address %>
+	<% } %>
+  </div>
+  
+<% } %>

@@ -6,13 +6,20 @@
 
 // fixme: probably move this after move to JMVC 2.0
 // a hack for the new api now
-jQuery.getXML = function(url, callback) {
-    url = '/indivoapi'+url;
+jQuery.getXML = function(url,data, callback) {
+	if (arguments.length == 2)
+	{
+		callback = data;
+		data = null;
+	}
+	
+	url = '/indivoapi'+url;
     
     jQuery.get(url, null, function(data) {
       callback(MVC.Tree.parseXML(data));
     }, "text");
 };
+
 
 // the new way to do an Indivo API call with jQuery XML parsing
 indivo_api_call = function(method, url, data, callback, error_callback) {

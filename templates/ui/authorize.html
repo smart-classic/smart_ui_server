@@ -12,26 +12,8 @@
         {{DESCRIPTION}}
       </p>
       <p>
-        You are about to authorize <strong>{{NAME}}</strong> for
-
-        <select name='record_id'>
-          {% for record in RECORDS %}
-            <option value='{{ record.0 }}'>{{ record.1 }}</option>
-          {% endfor %}
-        </select>
+        You are about to authorize <strong>{{NAME}}</strong> to access patient records on your behalf.
       </p>
-
-{% if carenets %}
-      <p>
-	This app will be visible to:<br />
-{% for carenet in carenets %}
-	<input type="checkbox" checked name="carenet_id" value="{{carenet.id}}" /> {{carenet.name}}<br />
-{% endfor %}
-You will still be able to control, independently, what <em>data</em> people see in your record.
-It is only worth limiting an app's visibility to others when the app itself reveals private information,
-for example if the app is "pregnancy tracker", "diabetes manager", etc.
-      </p>
-{% endif %}
 
 {% if offline_capable %}
 <p>

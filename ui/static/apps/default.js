@@ -4,7 +4,9 @@ include.resources("js/underscore-min.js",
 		   "js/jquery.tools.sans.tabs.min.js",
 		   "js/xml2json.js",
 		   "js/utils.js",
-		   "js/ui.js");
+		   "js/ui.js",
+		   "js/jquery.inputHintOverlay.js",
+		   "js/jquery.form.js");
 
 // Make sure you're actually using what's in here! 
 include.plugins(
@@ -14,7 +16,7 @@ include.plugins(
   'io/ajax',
   'model/xml_rest'
 );
-include.models('account', 'message', 'pha', 'record', 'carenet');
+include.models('account', 'pha', 'record');
 
 include(function(){
     //runs after prior includes are loaded
