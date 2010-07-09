@@ -26,9 +26,11 @@ SMART_CONTAINER = Class.extend({
     // and should include basic information about the current record
     init: function(creds_and_info_generator) {
 	this.creds_and_info_generator = creds_and_info_generator;
+
 	this.apps_by_origin = {};
 	this.frames_by_app = {};
 	this.origins_by_app = {};
+	this.tokens_by_app = {}
 	
 	// register the message receiver
 	// wrap in a function because of "this" binding
@@ -41,11 +43,39 @@ SMART_CONTAINER = Class.extend({
     // set up the IFRAME and the app that it corresponds to
     // the URL is used to determine the proper origin
     register_app: function(app_email, iframe, url) {
-	var origin = __SMART_extract_origin(url);
-
-	this.apps_by_origin[origin] = app_email;
-	this.frames_by_app[app_email] = iframe.contentWindow;
-	this.origins_by_app[app_email] = origin;
+    	var origin = __SMART_extract_origin(url);
+		this.apps_by_origin[origin] = app_email;
+		this.frames_by_app[app_email] = iframe.contentWindow;
+		this.origins_by_app[app_email] = origin;	
+    },
+    
+    launch_app: function(app_email, account_id, record_id, callback) {
+    	var account_id_enc = encodeURIComponent(account_id);
+    	var record_id_enc = encodeURIComponent(record_id);
+    	var app_email_enc = encodeURIComponent(app_email);
+    	var _this = this;
+    	
+    	$.ajax({
+			url: "/smart_api/accounts/"+account_id_enc+"/records/"+record_id_enc+"/apps/"+app_email_enc,
+			data: null,
+			type: "PUT",
+			dataType: "text",
+			success: 
+			      function(data) {
+    				// todo: we probably shouldn't rely on MVC in the smart-container. -JM
+    				d  = MVC.Tree.parseXML(data);
+    				
+    				if (d.AccessToken.App["@id"] !== app_email)
+    					throw "Got back access tokens for a different app! " + app_email +  " vs. " + d.AccessToken.App["@id"];
+    					_this.tokens_by_app[app_email] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+    					callback();
+			      },
+			error: function(data) {
+			    	  // error handler
+			    	  err = data;
+			    	  alert("error fetching token xml " + data);
+			      }
+    	});    		
     },
 
     // process an incoming message

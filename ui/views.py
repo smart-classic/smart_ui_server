@@ -182,6 +182,8 @@ def indivo_api_call_get(request):
   # strip the leading /indivoapi, do API call, and return result
   if request.method == "POST":
     data = dict((k,v) for k,v in request.POST.iteritems())
+  elif request.method == "GET":
+    data = dict((k,v) for k,v in request.GET.iteritems())
   else:
     data = {}
     # import ipdb; ipdb.set_trace()

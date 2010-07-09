@@ -15,7 +15,7 @@ jQuery.getXML = function(url,data, callback) {
 	
 	url = '/indivoapi'+url;
     
-    jQuery.get(url, null, function(data) {
+    jQuery.get(url, data, function(data) {
       callback(MVC.Tree.parseXML(data));
     }, "text");
 };
@@ -38,6 +38,14 @@ indivo_api_call = function(method, url, data, callback, error_callback) {
 // interpolate a URL template
 // based on mnot's idea, simplified here for explicit use and vars
 function interpolate_url_template(url_template, vars) {
+	
+	// allow for late binding of variables, e.g. to resolve a 
+	// record ID that can't be known at time of app creation.
+	if (typeof(vars) === 'function')
+	{
+		vars = vars();
+	}
+	
     var result = url_template;
     $.each(vars, function(var_name, var_value) {
       var regexp = new RegExp("{" + var_name + "}");

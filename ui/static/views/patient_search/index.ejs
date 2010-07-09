@@ -4,11 +4,11 @@
 
 <form id="patient_search_form">
 <table>
-<tr><td>Last Name</td><td><input type="text" id="patient_search_lname" title="Last Name" /></td></tr>
-<tr><td>First Name</td><td><input type="text" id="patient_search_fname" title="First Name" /></td></tr>
+<tr><td>Last Name</td><td><input type="text" name='lname' id="patient_search_lname" title="Last Name" /></td></tr>
+<tr><td>First Name</td><td><input type="text" name='fname' id="patient_search_fname" title="First Name" /></td></tr>
 <tr><td>Sex</td><td><input type="radio" name="patient_search_sex" value="male" /> Male &nbsp; &nbsp;<input type="radio" name="patient_search_sex" value="female" /> Female</td></tr>
-<tr><td>DOB</td><td><input type="text" id="patient_search_dob" size="10" title="mm/dd/yyyy" /></td></tr>
-<tr><td>Zip code</td><td><input type="text" id="patient_search_zip" size="5" title="12345" /></td></tr>
+<tr><td>DOB</td><td><input type="text" id="patient_search_dob" name='dob' size="10" title="mm/dd/yyyy" /></td></tr>
+<tr><td>Zip code</td><td><input type="text" id="patient_search_zip" name='zip' size="5" title="12345" /></td></tr>
 <tr><td>Last Visit</td><td>
 	<select name="patient_search_when">
 		<option value="Anytime">Any time</option>
@@ -21,5 +21,5 @@
 </table>
 <input type="submit" Value="Search Patients" />
 <br>
-<textarea id="patient_search_sparql" rows="8" cols="80"  DISABLED></textarea>
+<textarea id="patient_search_sparql" rows="20" cols="80"  DISABLED></textarea>
 </form>

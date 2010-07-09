@@ -13,15 +13,13 @@ Record = Class.extend({
 
     // for SMArt
     add_app: function(app_email, callback) {
-    	indivo_api_call("PUT", "/accounts/"+ACCOUNT_ID+ "/apps/" + encodeURIComponent(app_email), null, function(result) {
-    		callback();
-    	});
+    	SMART.launch_app(app_email, callback);    	
     },
 });
 
-Record.search = function(search_terms, callback) {
+Record.search = function(sparql, callback) {
 	var base_url = '/records/search/';
-	$.getXML(base_url, search_terms,  function(record_list) {
+	$.getXML(base_url, sparql,  function(record_list) {
 		var lst = record_list.Records.Record;
 	    if (!(lst instanceof Array)) lst = [lst];
 	    callback($(lst).map(function(el_num, el) {return  new Record(el['@id'], el['@label'], el.demographics, base_url);}));

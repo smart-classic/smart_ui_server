@@ -158,10 +158,6 @@ color: #C2E1D8;
 float: right;
 }
 
-#current_patient {
-	font-weight: bold;
-	font-size: 1.2em;
-}
 
 #bigbody ul span {
 vertical-align: top;
@@ -170,6 +166,15 @@ display: inline-block;
 margin-top: 8px;
 }
 
+SELECT#current_patient  {background: white; color: #0C5161; 	font-weight: bold;
+	font-size: 1em;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+	border 0px;
+}
+
+#patient_search_results {margin-bottom: 2em; padding: 1em; display: none;}
 #patient_search_sparql {margin-top: 2em;}
 .inputHintOverlay { color: #999; font-size: 12px; }
 

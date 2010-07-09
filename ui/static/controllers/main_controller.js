@@ -12,7 +12,7 @@ MainController = MVC.Controller.extend('main', {
 	  // this is called when a new app is started
 	  // credentials are bogus for now
 	  return {'credentials' : 'foobar',
-		  'record_info' : {
+		  	  'record_info' : {
 		      'full_name' : RecordController.CURRENT_RECORD.label,
 		      'id' : RecordController.CURRENT_RECORD.record_id
 		  }};
@@ -65,11 +65,12 @@ MainController = MVC.Controller.extend('main', {
       $('#app_selector').tabs('add', '#'+pha.id.replace(/@/, '_at_').replace(/\./g,'_')  , pha.data.name);
       var len = $('#app_selector').tabs('length');
       
-      var interpolation_args = {
-	  'record_id' : RecordController.RECORD_ID,
-	  'account_id' : ACCOUNT_ID
+      var interpolation_args = function() { 
+    	  return {
+    		  'record_id' : RecordController.RECORD_ID,
+    		  'account_id' : ACCOUNT_ID};
 	  };
-      var startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
+	  
       
       // Create a <div> for each pha, with maybe an image
       var img_name = pha.data.name.toLowerCase().replace(/ +/, '_')
@@ -101,17 +102,23 @@ MainController = MVC.Controller.extend('main', {
       
       // add the click handler
       $('#app_selector_inner li:last a').click(function(){
-	  // set up the app as being added
+    	  startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
     	  RecordController.APP_ID = params.pha.id;
-    	  RecordController.CURRENT_RECORD.add_app(params.pha.id, function() {
-	      // set up the SMArt API for this
-	      SMART.register_app(params.pha.id, $('#app_content_iframe')[0], startURL);
-	      
-	      // load and show the iframe	   
-		    $('#app_content').hide();
-		    $('#app_content_iframe').attr('src', startURL);
-	    
-	  });
+
+
+    	  SMART.register_app(	params.pha.id, 
+    			  				$('#app_content_iframe')[0],  
+    			  				startURL);
+
+    	  SMART.launch_app(	
+    			params.pha.id, 
+    			ACCOUNT_ID, 
+    			RecordController.CURRENT_RECORD.record_id,     			  			
+    	  		function() {
+    				// load and show the iframe	   
+    				$('#app_content').hide();
+    				$('#app_content_iframe').attr('src',  startURL);    		  
+    			});
       });
       
       // fire click event!!
