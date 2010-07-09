@@ -67,8 +67,8 @@ SMART_CONTAINER = Class.extend({
     				
     				if (d.AccessToken.App["@id"] !== app_email)
     					throw "Got back access tokens for a different app! " + app_email +  " vs. " + d.AccessToken.App["@id"];
-    					_this.tokens_by_app[app_email] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
-    					callback();
+    				_this.tokens_by_app[app_email] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+    				callback();
 			      },
 			error: function(data) {
 			    	  // error handler

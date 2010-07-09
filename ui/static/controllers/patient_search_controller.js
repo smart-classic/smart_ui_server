@@ -47,7 +47,7 @@ PREFIX dcterms:  <http://purl.org/dc/terms/>\n\
 PREFIX  bio:  <http://purl.org/vocab/bio/0.1/>\n\
 SELECT  ?person\n\
 WHERE   {\n\
-  ?person rdf:type foaf:Person.{WHERE_givenName}{WHERE_familyName}{WHERE_DOB}{WHERE_sex}{FILTER_givenName}{FILTER_familyName}{FILTER_DOB}{FILTER_sex}\n\
+  ?person rdf:type foaf:Person.{WHERE_givenName}{WHERE_familyName}{WHERE_DOB}{WHERE_sex}{WHERE_zip}{FILTER_givenName}{FILTER_familyName}{FILTER_DOB}{FILTER_sex}{FILTER_zip}\n\
 }";
         
 
@@ -55,10 +55,12 @@ WHERE   {\n\
         		 WHERE_familyName : "", 
         		 WHERE_DOB : "", 
         		 WHERE_sex : "", 
+        		 WHERE_zip : "", 
         		 FILTER_givenName: "", 
         		 FILTER_familyName : "", 
         		 FILTER_DOB : "", 
         		 FILTER_sex : "", 
+        		 FILTER_zip : "", 
         		 };
          var r = $("#patient_search_lname").val();
          if (r != "") { 
@@ -78,10 +80,16 @@ WHERE   {\n\
         	 args.FILTER_DOB = '\n  FILTER regex(?bday, "^'+r+'","i") ';	 
          }
          
+         var r = $("#patient_search_zip").val();
+         if (r != "") { 
+        	 args.WHERE_DOB = '\n  ?person sp:zipcode ?zip ';
+        	 args.FILTER_DOB = '\n  FILTER regex(?zip, "'+r+'") ';	 
+         }
+         
          var r = $('input[name=patient_search_sex]:checked').val();
          if (r !== "" && r !== undefined) { 
         	 args.WHERE_sex = '\n  ?person foaf:gender ?sex. ';
-        	 args.FILTER_sex = '\n  FILTER regex(?sex, "'+r+'","i") ';	 
+        	 args.FILTER_sex = '\n  FILTER regex(?sex, "^'+r+'$","i") ';	 
          }
          
          $("#patient_search_sparql").val(interpolate_url_template(sparql_base, args));
