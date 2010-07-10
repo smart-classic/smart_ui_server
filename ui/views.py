@@ -236,7 +236,9 @@ def authorize(request):
       return HttpResponse('bad response to claim_request_token')
     app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
     e = ET.fromstring(app_info)
-    
+
+    record_id = e.find('record').attrib.get('id', None)
+
     name = e.findtext('App/name')
     app_id = e.find('App').attrib['id']
     kind = e.findtext('kind')
