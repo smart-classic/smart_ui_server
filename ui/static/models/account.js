@@ -31,7 +31,7 @@ Account = Class.extend({
     $.getXML('/accounts/' + this.email + '/recent_records/', function(record_list) {
     var lst = record_list.Records.Record;
     if (!(lst instanceof Array)) lst = [lst];
-    callback($(lst).map(function(el_num, el) {return {'id': el['@id'], 'label': el['@label'], 'shared': el['@shared'] != null, 'carenet_id': el['@carenet_id']};}));
+    callback($(lst).map(function(el_num, el) {return  new Record(el['@id'], el['@label'], el.demographics, '/records/' + encodeURIComponent(el['@id']));}));
     });
   },
 });

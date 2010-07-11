@@ -3,8 +3,10 @@
 //
 
 RecordController = MVC.Controller.extend('record', {
-  // NOT called automatically on init! Called from main controller setup (workaround for IE issues
-  // with include ordering -- ACCOUNT not being defined when this is called automatically)
+  // NOT called automatically on init! Called from main controller setup
+	// (workaround for IE issues
+  // with include ordering -- ACCOUNT not being defined when this is called
+	// automatically)
   setup: function(params) {
     var _this = this;
     
@@ -29,9 +31,9 @@ RecordController = MVC.Controller.extend('record', {
 	  if (	exists.attr("selected") &&  record_id == RecordController.CURRENT_RECORD.record_id ) {
 		  return;
 	  }
-      
-      
-      Record.get(record_id, function(record) {
+
+	  
+	  var after_record_obtained = function(record) {
     	  _this.record = record;
     	  RecordController.CURRENT_RECORD = record;
     	
@@ -39,9 +41,9 @@ RecordController = MVC.Controller.extend('record', {
       	
     	  if (exists.length === 1)
     	  {
-    		  // doesn't exist in jQuery 1.3 :-(  
+    		  // doesn't exist in jQuery 1.3 :-(
     		  // exists.detach();
-    		  //$('SELECT#current_patient').prepend(exists);
+    		  // $('SELECT#current_patient').prepend(exists);
         	  exists.remove()
     	  }
 		  exists = $("<option value='"+record.record_id+"'>"+record.label+"</option>");
@@ -50,12 +52,20 @@ RecordController = MVC.Controller.extend('record', {
     	  $('SELECT#current_patient OPTION:selected').each(function() {$(this).removeAttr("selected");});
 		  exists.attr('selected', 'selected');
 	      
-          // If there was an app open on the old record, open it automatically on the new one.
+          // If there was an app open on the old record, open it automatically
+			// on the new one.
           if (RecordController.APP_ID) {
         	  $('[href=\'#'+RecordController.APP_ID.replace(/@/, '_at_').replace(/\./g,'_')+'\']').click();
           }
           $('#current_patient').change();
-      });
+  
+	  };
+	  
+	  var already_obtained = RecordController.RECENT_RECORDS[record_id];
+	  if (already_obtained)
+		  after_record_obtained(already_obtained);
+      else
+    	  Record.get(record_id,after_record_obtained);
   },
 
 });
@@ -64,6 +74,6 @@ RecordController.set_recent_records= function(rlist) {
     RecordController.recent_records_list = rlist;
     RecordController.RECENT_RECORDS = {};
     $(rlist).each(function(i, record) {
-    RecordController.RECENT_RECORDS[record.id] = record;
+    RecordController.RECENT_RECORDS[record.record_id] = record;
     });
 };
