@@ -3,10 +3,11 @@
 //
 // Ben Adida (ben.adida@childrens.harvard.edu)
 // Arjun Sanyal (arjun.sanyal@childrens.harvard.edu)
-//
+// Josh Mandel (joshua.mandel@childrens.harvard.edu)
 
 HealthfeedController= MVC.Controller.extend('healthfeed', {
   index: function(params) {
+	RecordController.APP_ID = null;
     var _this = this;
     ACCOUNT.get_healthfeed(function(notifications) {
       _this.notifications = _.map(notifications, function(n){

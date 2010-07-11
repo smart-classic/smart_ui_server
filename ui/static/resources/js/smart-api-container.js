@@ -56,9 +56,9 @@ SMART_CONTAINER = Class.extend({
     	var _this = this;
     	
     	$.ajax({
-			url: "/smart_api/accounts/"+account_id_enc+"/records/"+record_id_enc+"/apps/"+app_email_enc,
+          		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
 			data: null,
-			type: "PUT",
+			type: "GET",
 			dataType: "text",
 			success: 
 			      function(data) {

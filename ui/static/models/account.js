@@ -21,7 +21,12 @@ Account = Class.extend({
       callback(notifications);
     });
   },
-
+  
+  add_app: function(app_id, callback) {
+	
+	//************ todo FIll here.  
+  },
+  
   get_recent_records: function(callback) {
     $.getXML('/accounts/' + this.email + '/recent_records/', function(record_list) {
     var lst = record_list.Records.Record;

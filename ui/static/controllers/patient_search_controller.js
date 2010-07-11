@@ -1,14 +1,12 @@
-//
-// JMVC Controller for HeathFeed
-//
-// Ben Adida (ben.adida@childrens.harvard.edu)
-// Arjun Sanyal (arjun.sanyal@childrens.harvard.edu)
-//
+// SMArt bootstrap patient search controller
+// Josh Mandel (joshua.mandel@childrens.harvard.edu)
+ 
 
 PatientSearchController= MVC.Controller.extend('patient_search', {
   index: function(params) {
     var _this = this;
-
+	RecordController.APP_ID = null;
+	
     _this.render({to: 'app_content'});
 
     $('#patient_search_form').inputHintOverlay(4,8);

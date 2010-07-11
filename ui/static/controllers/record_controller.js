@@ -1,5 +1,5 @@
 //
-// JMVC Controller for the Indivo Record
+// JMVC Controller for the SMArt bootstrap
 //
 
 RecordController = MVC.Controller.extend('record', {
@@ -7,32 +7,17 @@ RecordController = MVC.Controller.extend('record', {
   // with include ordering -- ACCOUNT not being defined when this is called automatically)
   setup: function(params) {
     var _this = this;
-
-    PHA.get_all(function(phas) {this.phas = phas;
-	    jQuery.each(this.phas, function(i,v){
-	        MainController.dispatch('_add_app', {'pha': v, 'fire_p': false})
-	    });
-    });
-
     
     ACCOUNT.get_recent_records(function(record_list) {
 	    RecordController.set_recent_records(record_list);
 	    });
     
-    
     $('#current_patient').change(function() {
+		$("LI.app").removeClass("greyed_out");
     	RecordController.RECORD_ID = $('SELECT#current_patient OPTION:selected').attr("value");
     	_this._load_record();
     	return false;
     });},
-  
-  // set_record_id: function(params) {
-  //   RecordController.RECORD_ID = params.record_id;
-  // },
-   
-  // set_app_id: function(params) {
-  //   RecordController.APP_ID = params.app_id;
-  // },
 
   _load_record: function() {
       var _this = this;
@@ -49,7 +34,9 @@ RecordController = MVC.Controller.extend('record', {
       Record.get(record_id, function(record) {
     	  _this.record = record;
     	  RecordController.CURRENT_RECORD = record;
-    	  
+    	
+    	  $("#select_patient_warning").html("&nbsp;patient: <strong>"+record.label+"</strong>");
+      	
     	  if (exists.length === 1)
     	  {
     		  // doesn't exist in jQuery 1.3 :-(  
@@ -62,11 +49,12 @@ RecordController = MVC.Controller.extend('record', {
     	  
     	  $('SELECT#current_patient OPTION:selected').each(function() {$(this).removeAttr("selected");});
 		  exists.attr('selected', 'selected');
-    	  
+	      
           // If there was an app open on the old record, open it automatically on the new one.
           if (RecordController.APP_ID) {
         	  $('[href=\'#'+RecordController.APP_ID.replace(/@/, '_at_').replace(/\./g,'_')+'\']').click();
           }
+          $('#current_patient').change();
       });
   },
 
