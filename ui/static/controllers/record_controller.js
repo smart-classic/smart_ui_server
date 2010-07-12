@@ -34,6 +34,7 @@ RecordController = MVC.Controller.extend('record', {
 
 	  
 	  var after_record_obtained = function(record) {
+		  $("#header").flash( $("#header").css("color"), 500 );
     	  _this.record = record;
     	  RecordController.CURRENT_RECORD = record;
     	
@@ -41,7 +42,7 @@ RecordController = MVC.Controller.extend('record', {
       	
     	  if (exists.length === 1)
     	  {
-    		  // doesn't exist in jQuery 1.3 :-(
+    		  // detach doesn't exist in jQuery 1.3 :-(
     		  // exists.detach();
     		  // $('SELECT#current_patient').prepend(exists);
         	  exists.remove()
