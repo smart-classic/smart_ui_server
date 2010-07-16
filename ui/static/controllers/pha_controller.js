@@ -115,7 +115,7 @@ _add_app: function(params) {
   			  				$('#app_content_iframe')[0],  
   			  				startURL);
 
-  	  SMART.launch_app(	
+  	  SMART_HELPER.launch_app(	
   			params.pha.id, 
   			ACCOUNT_ID, 
   			RecordController.CURRENT_RECORD.record_id,     			  			

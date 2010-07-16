@@ -24,14 +24,13 @@ SMART_CONTAINER = Class.extend({
     // prior to every "setup" message sent to the smart app.
     // it should generate a credential for that app and the current record, 
     // and should include basic information about the current record
-    init: function(creds_and_info_generator) {
-	this.creds_and_info_generator = creds_and_info_generator;
-
+    init: function(SMART_HELPER) {
+	this.SMART_HELPER = SMART_HELPER;
 	this.apps_by_origin = {};
 	this.frames_by_app = {};
 	this.origins_by_app = {};
 	this.tokens_by_app = {}
-	
+	this.cached_results = {};	
 	// register the message receiver
 	// wrap in a function because of "this" binding
 	var _this = this;
@@ -47,35 +46,6 @@ SMART_CONTAINER = Class.extend({
 		this.apps_by_origin[origin] = app_email;
 		this.frames_by_app[app_email] = iframe.contentWindow;
 		this.origins_by_app[app_email] = origin;	
-    },
-    
-    launch_app: function(app_email, account_id, record_id, callback) {
-    	var account_id_enc = encodeURIComponent(account_id);
-    	var record_id_enc = encodeURIComponent(record_id);
-    	var app_email_enc = encodeURIComponent(app_email);
-    	var _this = this;
-    	
-    	$.ajax({
-          		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
-			data: null,
-			type: "GET",
-			dataType: "text",
-			success: 
-			      function(data) {
-    				// todo: we probably shouldn't rely on MVC in the smart-container. -JM
-    				d  = MVC.Tree.parseXML(data);
-    				
-    				if (d.AccessToken.App["@id"] !== app_email)
-    					throw "Got back access tokens for a different app! " + app_email +  " vs. " + d.AccessToken.App["@id"];
-    				_this.tokens_by_app[app_email] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
-    				callback();
-			      },
-			error: function(data) {
-			    	  // error handler
-			    	  err = data;
-			    	  alert("error fetching token xml " + data);
-			      }
-    	});    		
     },
 
     // process an incoming message
@@ -101,37 +71,28 @@ SMART_CONTAINER = Class.extend({
     },
 
     receive_apicall_message: function(app, message) {
-
 	var _this = this;
 
-	$.ajax({
-			url: "/smart_api/"+message.func,
-			data: message.params,
-			type: "GET",
-			dataType: "text",
-			success: 
-			      function(data) {
-		
-				// no XHR passed to jquery 1.3 success callback (need 1.4 in JSMVC).
-				  var ct = "xml"; //xhr.getResponseHeader("Content-Type"): "json";
-				  
+	var returnData = function(data) {
+				 _this.cached_results[message.func] = data;
 				  _this.send_app_message(app, {
 					  'uuid' : message.uuid,
 					  'type' : 'apireturn',
-					  'content_type' : ct,
+					  'content_type' : "xml",
 					  'payload' : data
-					   });
-			      },
-			error: function(data) {
-			    	  // error handler
-			    	  alert("error");
-			      }
-	});
+					   });}
+
+	if (_this.cached_results[message.func] !== undefined)
+		return returnData(_this.cached_results[message.func]);
+
+
+	this.SMART_HELPER.api(message, returnData);
     },
+
 
     // message sent to the IFRAME when the "ready" message has been received
     send_setup_message: function(app) {
-	var message = this.creds_and_info_generator(app);
+	var message = this.SMART_HELPER.creds_and_info_generator(app);
 	
 	// add a type to the object to make it the full message
 	message.type = 'setup';

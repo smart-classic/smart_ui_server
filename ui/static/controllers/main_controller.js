@@ -6,19 +6,63 @@
  * Josh Mandel (joshua.mandel@childrens.harvard.edu)
  */
 
-MainController = MVC.Controller.extend('main', {
-  load: function(params) {
-      ACCOUNT = new Account(ACCOUNT_ID); // init the account via model
-      SMART = new SMART_CONTAINER(function(app) {
-	  // this is called when a new app is started
-	  // credentials are bogus for now
-	  return {'credentials' : 'foobar',
-		  	  'record_info' : {
-		      'full_name' : RecordController.CURRENT_RECORD.label,
-		      'id' : RecordController.CURRENT_RECORD.record_id
-		  }};
-      });
+SMART_HELPER  = {};
+SMART_HELPER.tokens_by_app = {};
 
+SMART_HELPER.creds_and_info_generator = function(app) { 
+    return {'credentials' : 'foobar',
+     	    'record_info' : {
+		'full_name' : RecordController.CURRENT_RECORD.label,
+		'id' : RecordController.CURRENT_RECORD.record_id
+	         }
+    };
+};
+
+SMART_HELPER.api = function(message, callback) {
+    	$.ajax({
+			url: "/smart_api/"+message.func,
+			data: message.params,
+			type: "GET",
+			dataType: "text",
+			success: callback,
+			error: function(data) {
+			    	  alert("error");
+			      }
+	});
+};
+
+SMART_HELPER.launch_app = function(app_email, account_id, record_id, callback) {
+    	var account_id_enc = encodeURIComponent(account_id);
+    	var record_id_enc = encodeURIComponent(record_id);
+    	var app_email_enc = encodeURIComponent(app_email);
+    	
+    	$.ajax({
+          		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
+			data: null,
+			type: "GET",
+			dataType: "text",
+			success: 
+			      function(data) {
+    				d  = MVC.Tree.parseXML(data);    				
+    				if (d.AccessToken.App["@id"] !== app_email)
+    					throw "Got back access tokens for a different app! " + app_email +  " vs. " + d.AccessToken.App["@id"];
+    				SMART_HELPER.tokens_by_app[app_email] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+    				callback();
+			      },
+			error: function(data) {
+			    	  // error handler
+			    	  err = data;
+			    	  alert("error fetching token xml " + data);
+			      }
+    	});    		
+};
+
+
+
+MainController = MVC.Controller.extend('main', {
+  load: function(params) {      
+      ACCOUNT = new Account(ACCOUNT_ID); // init the account via model
+      SMART = new SMART_CONTAINER(SMART_HELPER);
       this.setup();
   },
     
@@ -33,11 +77,9 @@ MainController = MVC.Controller.extend('main', {
     $('[href=\'#_healthfeed_tab_panel_hidden\']').click(function(){ HealthfeedController.dispatch('index'); });
     $('[href=\'#_patient_search_tab_panel_hidden\']').click(function(){ PatientSearchController.dispatch('index'); });
     $('#manage_apps_link').click(function(){ PHAController.dispatch('index'); });
-    // Run Healthfeed
-    
+    // Run Healthfeed    
     PatientSearchController.dispatch('index');
     
-
     $(window).resize(function() {
     	
     	var $elt = $("#app_content_iframe").is(":visible")? 
