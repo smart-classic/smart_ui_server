@@ -19,8 +19,15 @@ SMART_HELPER.creds_and_info_generator = function(app) {
 };
 
 //todo: this fn should take app_emai, for per-call token management
-SMART_HELPER.api = function(message, callback) {
-    var os = SMART_HELPER.oauth_service;
+SMART_HELPER.api = function(app_id, message, callback) {
+    var app = jQuery.grep(PHAController.phas, function(pha) {return (pha.id === app_id);})[0];
+
+    var os = new OAuthServiceSmart(
+                  {consumer_key: app.data.consumer_key, 
+                   consumer_secret: app.data.secret, 
+                   token_key: SMART_HELPER.tokens_by_app[app.id].token, 
+                   token_secret: SMART_HELPER.tokens_by_app[app.id].secret, });
+
     var request = os.getSignedRequest({method: 'GET',
 				       url: SMART_API_SERVER+message.func,
 				       query:message.params
@@ -60,7 +67,6 @@ SMART_HELPER.launch_app = function(app, account_id, record_id, callback) {
     				if (d.AccessToken.App["@id"] !== app.id)
     					throw "Got back access tokens for a different app! " + app.id +  " vs. " + d.AccessToken.App["@id"];
     				SMART_HELPER.tokens_by_app[app.id] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
-				SMART_HELPER.oauth_service  = new OAuthServiceSmart({consumer_key: app.data.consumer_key, consumer_secret: app.data.secret, token_key: d.AccessToken.Token, token_secret: d.AccessToken.Secret});
 
 
     				callback();

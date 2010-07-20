@@ -86,7 +86,7 @@ SMART_CONTAINER = Class.extend({
 		return returnData(_this.cached_results[message.func]);
 
 
-	this.SMART_HELPER.api(message, returnData);
+	this.SMART_HELPER.api(app, message, returnData);
     },
 
 
