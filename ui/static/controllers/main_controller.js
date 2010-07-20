@@ -7,8 +7,8 @@
  */
 
 SMART_HELPER  = {};
-SMART_HELPER.tokens_by_app = {};
 
+SMART_HELPER.tokens_by_app = {};
 SMART_HELPER.creds_and_info_generator = function(app) { 
     return {'credentials' : 'foobar',
      	    'record_info' : {
@@ -18,11 +18,23 @@ SMART_HELPER.creds_and_info_generator = function(app) {
     };
 };
 
+//todo: this fn should take app_emai, for per-call token management
 SMART_HELPER.api = function(message, callback) {
+    var os = SMART_HELPER.oauth_service;
+    var request = os.getSignedRequest({method: 'GET',
+				       url: SMART_API_SERVER+message.func,
+				       query:message.params
+	});
+    
     	$.ajax({
-			url: "/smart_api/"+message.func,
-			data: message.params,
-			type: "GET",
+		beforeSend: function(xhr) {
+		    var request_headers = request.getRequestHeaders();
+		    for (var header in request_headers) {
+			xhr.setRequestHeader(header, request_headers[header]);
+		    }},
+		    url: request.getUrl(),
+		    data: request.getQueryParams(),
+		    type: request.getMethod(),
 			dataType: "text",
 			success: callback,
 			error: function(data) {
@@ -31,10 +43,11 @@ SMART_HELPER.api = function(message, callback) {
 	});
 };
 
-SMART_HELPER.launch_app = function(app_email, account_id, record_id, callback) {
+SMART_HELPER.launch_app = function(app, account_id, record_id, callback) {
     	var account_id_enc = encodeURIComponent(account_id);
     	var record_id_enc = encodeURIComponent(record_id);
-    	var app_email_enc = encodeURIComponent(app_email);
+    	var app_email_enc = encodeURIComponent(app.id);
+
     	
     	$.ajax({
           		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
@@ -44,9 +57,12 @@ SMART_HELPER.launch_app = function(app_email, account_id, record_id, callback) {
 			success: 
 			      function(data) {
     				d  = MVC.Tree.parseXML(data);    				
-    				if (d.AccessToken.App["@id"] !== app_email)
-    					throw "Got back access tokens for a different app! " + app_email +  " vs. " + d.AccessToken.App["@id"];
-    				SMART_HELPER.tokens_by_app[app_email] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+    				if (d.AccessToken.App["@id"] !== app.id)
+    					throw "Got back access tokens for a different app! " + app.id +  " vs. " + d.AccessToken.App["@id"];
+    				SMART_HELPER.tokens_by_app[app.id] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+				SMART_HELPER.oauth_service  = new OAuthServiceSmart({consumer_key: app.data.consumer_key, consumer_secret: app.data.secret, token_key: d.AccessToken.Token, token_secret: d.AccessToken.Secret});
+
+
     				callback();
 			      },
 			error: function(data) {

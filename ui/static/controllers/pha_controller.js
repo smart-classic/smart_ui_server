@@ -110,13 +110,12 @@ _add_app: function(params) {
   	  startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
   	  RecordController.APP_ID = params.pha.id;
 
-
   	  SMART.register_app(	params.pha.id, 
   			  				$('#app_content_iframe')[0],  
   			  				startURL);
 
   	  SMART_HELPER.launch_app(	
-  			params.pha.id, 
+  			params.pha, 
   			ACCOUNT_ID, 
   			RecordController.CURRENT_RECORD.record_id,     			  			
   	  		function() {

@@ -13,6 +13,7 @@ from django.conf import settings
 
 import xml.etree.ElementTree as ET
 import urllib, re
+import httplib, urllib, urllib2
 
 import utils
 HTTP_METHOD_GET = 'GET'
@@ -29,7 +30,6 @@ def get_api(request=None):
     api.update_token(request.session['oauth_token_set'])
   
   return api
-
 def tokens_p(request):
   try:
     if request.session['oauth_token_set']:
@@ -66,12 +66,41 @@ def index(request):
     ret = api.account_info(account_id = account_id)
     e = ET.fromstring(ret.response['response_data'])
     fullname = e.findtext('fullName')
+
     return utils.render_template('ui/index',
       { 'ACCOUNT_ID': account_id,
         'FULLNAME': fullname,
-        'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS })
+        'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
+        'SMART_API_SERVER': api_server(request),
+        'SMART_PASSTHROUGH_SERVER': passthrough_server(request) })
   else:
     return HttpResponseRedirect(reverse(login))
+
+def smart_passthrough(request):
+  full_path = "%s/%s"%(request.get_host(),  request.get_full_path())
+  full_path = full_path.replace(passthrough_server(request), api_server(request))
+  body = request.raw_post_data
+  headers = {'Authorization': request.META.AUTHORIZATION}
+  api = api_server(request)
+
+  if (api.startswith("http:")):
+    conn = httplib.HTTPConnection(api)
+  else:
+    conn = httplib.HTTPSConnection(api)
+    
+  conn.request(request.method, full_path.split(api)[1], body, headers)
+  r = conn.getresponse()
+  data = r.read()
+  conn.close()
+  return data
+
+def api_server(request):
+    loc = settings.INDIVO_SERVER_LOCATION
+    return "%s://%s:%s/"%(loc['scheme'], loc['host'], loc['port'] )
+
+def passthrough_server(request):
+  called_scheme = request.is_secure() and "https" or "http"  
+  return "%s://%s:%s/smart_passthrough"%(called_scheme, request.META['SERVER_NAME'], request.META['SERVER_PORT'] )
 
 def login(request, info=""):
   """

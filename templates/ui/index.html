@@ -7,9 +7,28 @@
       {% include 'ui/header.html' %}
     {% endif %}
     <!-- development or production -->
+
+        <script src="/static/resources/js/auth/Library/2.0.0-crypto.js"></script>
+        <script src="/static/resources/js/auth/Library/2.0.0-sha1.js"></script>
+        <script src="/static/resources/js/auth/Library/2.0.0-hmac.js"></script>
+
+        <script src="/static/resources/js/auth/OAuth/Token.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Cookie.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Request.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Consumer.js"></script>
+        <script src="/static/resources/js/auth/OAuth/SignatureMethod.js"></script>
+        <script src="/static/resources/js/auth/OAuth/SignatureMethod/Plaintext.js"></script>
+        <script src="/static/resources/js/auth/OAuth/SignatureMethod/HMAC-SHA1.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Service.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Service/OAuthSandbox.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Service/Smart.js"></script>
+        <script src="/static/resources/js/auth/OAuth/Utilities.js"></script>
+
     <script type="text/javascript" src="/static/jmvc/include.js?default,development"></script>
     <script type="text/javascript">
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
+      var SMART_API_SERVER = "{{SMART_API_SERVER}}"
+      var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
       var FULLNAME = "{{ FULLNAME }}";
     </script>
     <title>{% block title %}SMArt for {{FULLNAME}}{% endblock %}</title>
