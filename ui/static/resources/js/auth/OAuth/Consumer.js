@@ -267,7 +267,8 @@ function OAuthConsumer(options) {
 				method: options.method, 
 				url: options.url,
 				query: options.query,
-				authorization_header_params: header_params
+				authorization_header_params: header_params,
+				contentType: options.contentType
 			});
 		}
 		

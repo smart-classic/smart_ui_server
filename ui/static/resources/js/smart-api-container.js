@@ -74,17 +74,12 @@ SMART_CONTAINER = Class.extend({
 	var _this = this;
 
 	var returnData = function(data) {
-				 _this.cached_results[message.func] = data;
 				  _this.send_app_message(app, {
 					  'uuid' : message.uuid,
 					  'type' : 'apireturn',
 					  'content_type' : "xml",
 					  'payload' : data
 					   });}
-
-	if (_this.cached_results[message.func] !== undefined)
-		return returnData(_this.cached_results[message.func]);
-
 
 	this.SMART_HELPER.api(app, message, returnData);
     },

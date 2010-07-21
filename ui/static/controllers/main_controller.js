@@ -28,9 +28,10 @@ SMART_HELPER.api = function(app_id, message, callback) {
                    token_key: SMART_HELPER.tokens_by_app[app.id].token, 
                    token_secret: SMART_HELPER.tokens_by_app[app.id].secret, });
 
-    var request = os.getSignedRequest({method: 'GET',
+    var request = os.getSignedRequest({method: message.method,
 				       url: SMART_API_SERVER+message.func,
-				       query:message.params
+				       query:message.params,
+				       contentType: message.contentType
 	});
     
     	$.ajax({
@@ -40,7 +41,7 @@ SMART_HELPER.api = function(app_id, message, callback) {
 			xhr.setRequestHeader(header, request_headers[header]);
 		    }},
 		    url: request.getUrl(),
-		    data: request.getQueryParams(),
+		    data: message.params,
 		    type: request.getMethod(),
 			dataType: "text",
 			success: callback,

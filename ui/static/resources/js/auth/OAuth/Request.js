@@ -1,6 +1,6 @@
 
 OAuthRequest = function(options) {
-    var method = 'GET', url, query_params, headers={};
+    var method = 'GET', url, query_params, headers={}, raw_body;
     var oauth_header_params = {
 		    'oauth_callback': 'oob',
             'oauth_consumer_key': '',
@@ -15,22 +15,43 @@ OAuthRequest = function(options) {
     this.init = function (options) {
     	this.setMethod(options.method);
     	this.setUrl(options.url);
-    	if ('query' in options && typeof options.query == 'string') {
-            // turn into an object
-            var query = options.query.split('&');
-            options.query = {}; // reset
-            for (var i = 0; i < query.length; i++) {
-                var kv = query.split('=');
-                options.query[kv[0]] = kv[1];
-            }
-        }
-    	query_params = options.query || {};
-		
-		if ('authorization_header_params' in options) {
-			for (var i in options.authorization_header_params) {
-				oauth_header_params[i] = options.authorization_header_params[i];
-			}
+
+	if (options.contentType === undefined) {
+	    options.contentType = 'application/x-www-form-urlencoded';
+	}
+
+	this.setRequestHeader('Content-Type', options.contentType);
+	
+	if (options.contentType === 'application/x-www-form-urlencoded'){
+
+	    if ('query' in options && 
+		typeof options.query == 'string'){
+		// turn into an object
+		var query = options.query.split('&');
+		options.query = {}; // reset
+		for (var i = 0; i < query.length; i++) {
+		    var kv = query.split('=');
+		    options.query[kv[0]] = kv[1];
 		}
+	    }
+
+	    query_params = options.query || {};
+	} else { // dealing with a body hashing case here.
+	    query_params = {};
+	    raw_body = options.query;
+	    oauth_header_params['oauth_body_hash'] = this.signBody(raw_body);
+	}
+		
+	if ('authorization_header_params' in options) {
+	    for (var i in options.authorization_header_params) {
+		oauth_header_params[i] = options.authorization_header_params[i];
+	    }
+	}
+    };
+
+    this.signBody = function(raw) {
+	var signature = new OAuthConsumer.signatureMethods['SHA1']().sign(raw);
+	return signature;
     };
     
     this.getMethod = function() {
@@ -39,9 +60,6 @@ OAuthRequest = function(options) {
     
     this.setMethod = function(method_string) {
         method = method_string.toUpperCase() || 'GET';
-		if (method === 'POST') {
-			this.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		}
     };
     
     this.getUrl = function() {
