@@ -41,6 +41,7 @@ SMART_HELPER.api = function(app_id, message, callback) {
 			xhr.setRequestHeader(header, request_headers[header]);
 		    }},
 		    url: request.getUrl(),
+//		    contentType: message.contentType, //  todo: THIS BREAKS THINGS (better in jQuery 1.4?) -JM 
 		    data: message.params,
 		    type: request.getMethod(),
 			dataType: "text",
