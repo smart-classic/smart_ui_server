@@ -40,11 +40,11 @@ SMART_HELPER.api = function(app_id, message, callback) {
 		    for (var header in request_headers) {
 			xhr.setRequestHeader(header, request_headers[header]);
 		    }},
-		    url: request.getUrl(),
+		    dataType: "text",
+		    url: SMART_API_SERVER+message.func,
 //		    contentType: message.contentType, //  todo: THIS BREAKS THINGS (better in jQuery 1.4?) -JM 
 		    data: message.params,
 		    type: request.getMethod(),
-			dataType: "text",
 			success: callback,
 			error: function(data) {
 			    	  alert("error");

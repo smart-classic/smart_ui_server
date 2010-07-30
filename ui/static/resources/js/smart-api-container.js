@@ -97,8 +97,8 @@ SMART_CONTAINER = Class.extend({
     },
 
     send_app_message: function(app, message) {
-	// find the frame for this app, and send the json'ified message to it, specifying the proper origin
     	this.frames_by_app[app].postMessage(
+    			// find the frame for this app, and send the json'ified message to it, specifying the proper origin
     			JSON.stringify(message), 
     			this.origins_by_app[app]);
     }

@@ -96,7 +96,7 @@ def smart_passthrough(request):
 
 def api_server(request):
     loc = settings.INDIVO_SERVER_LOCATION
-    return "%s://%s:%s/"%(loc['scheme'], loc['host'], loc['port'] )
+    return "%s://%s:%s"%(loc['scheme'], loc['host'], loc['port'] )
 
 def passthrough_server(request):
   called_scheme = request.is_secure() and "https" or "http"  
