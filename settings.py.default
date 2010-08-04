@@ -12,7 +12,7 @@ INDIVO_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
 #  quick and dirty private labeling
 BRANDING = {
   'short_name': 'smart',
-  'pretty_name': 'SMArt Bootstrap',
+  'pretty_name': 'Reference SMArt Container',
   'pretty_name_prepend': '',
   'header_template': 'ui/header_gpp.html',
   'footer_template': 'ui/footer_smart.html'

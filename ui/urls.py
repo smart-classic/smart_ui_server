@@ -30,6 +30,7 @@ urlpatterns = patterns(
     # widgets
     (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.INDIVO_UI_BASE + '/ui/lib'}),
     (r'^widgets/DocumentAccess$', document_access),
+    (r'^create_developer_account$', create_developer_account),
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.INDIVO_UI_BASE + '/ui/static'}),
 )

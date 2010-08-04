@@ -321,3 +321,26 @@ def _approve_and_redirect(request, request_token, account_id=None,  offline_capa
   # strip location= (note: has token and verifer)
   location = urllib.unquote(result.response['prd'][9:])
   return HttpResponseRedirect(location)
+
+def create_developer_account(request):
+  if request.method == "GET":
+    return utils.render_template('ui/create_developer_account',
+      { 'SMART_API_SERVER': api_server(request) })
+    
+
+  api = get_api()
+
+  username = request.POST.get("username")
+  password = request.POST.get("password")
+  full_name = request.POST.get("full_name")
+
+  data = {"account_id" : username, "password" : password, "full_name" : full_name}
+  
+  ret = api.call("POST", "/accounts/", options={'data': data})
+  if (ret == "account_exists"):
+    return utils.render_template('ui/create_developer_account',
+      { 'error': "Account '%s' is already registered."%username })
+  
+
+  return utils.render_template('ui/create_developer_account_2',
+      { 'SMART_API_SERVER': api_server(request) })
