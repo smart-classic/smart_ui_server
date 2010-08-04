@@ -61,20 +61,22 @@ def tokens_get_from_server(request, username, password):
 def index(request):
   if tokens_p(request):
     # get the realname here. we already have it in the js account model
-    api = get_api(request)
-    account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
-    ret = api.account_info(account_id = account_id)
-    e = ET.fromstring(ret.response['response_data'])
-    fullname = e.findtext('fullName')
-
-    return utils.render_template('ui/index',
-      { 'ACCOUNT_ID': account_id,
-        'FULLNAME': fullname,
-        'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
-        'SMART_API_SERVER': api_server(request),
-        'SMART_PASSTHROUGH_SERVER': passthrough_server(request) })
-  else:
-    return HttpResponseRedirect(reverse(login))
+    try:
+        api = get_api(request)
+        account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
+        ret = api.account_info(account_id = account_id)
+        e = ET.fromstring(ret.response['response_data'])
+        fullname = e.findtext('fullName')
+    
+        return utils.render_template('ui/index',
+          { 'ACCOUNT_ID': account_id,
+            'FULLNAME': fullname,
+            'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
+            'SMART_API_SERVER': api_server(request),
+            'SMART_PASSTHROUGH_SERVER': passthrough_server(request) })
+    except:  pass
+    
+  return HttpResponseRedirect(reverse(login))
 
 def smart_passthrough(request):
   full_path = "%s/%s"%(request.get_host(),  request.get_full_path())
