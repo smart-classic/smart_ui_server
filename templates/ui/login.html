@@ -12,6 +12,12 @@
     <script type="text/javascript">
       $(function(){
         $('#username').focus();
+        
+    {% if account %}
+        $('#username').val('{{account}}');
+        $('#password').focus();
+    {% endif %}
+    
         $('#form').submit(function() {
           if (!$('#username').val()) {
             alert('Please enter a username.');

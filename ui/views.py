@@ -122,7 +122,11 @@ def login(request, info=""):
   # process form vars
   if request.method == HTTP_METHOD_GET:
     return_url = request.GET.get(FORM_RETURN_URL, '/')
-    return utils.render_template(LOGIN_PAGE, {FORM_RETURN_URL: return_url})
+    template_data = {FORM_RETURN_URL: return_url}
+
+    return utils.render_template(LOGIN_PAGE, 
+                                 template_data
+                                 )
   
   if request.method == HTTP_METHOD_POST:
     return_url = request.POST.get(FORM_RETURN_URL, '/')
@@ -342,5 +346,8 @@ def create_developer_account(request):
       { 'error': "Account '%s' is already registered."%username })
   
 
-  return utils.render_template('ui/create_developer_account_2',
-      { 'SMART_API_SERVER': api_server(request) })
+  return utils.render_template(LOGIN_PAGE, 
+                                 {"error": "Account %s has been created.  Please log in."%username,
+                                  "account" : username
+                                  }
+                                 )
