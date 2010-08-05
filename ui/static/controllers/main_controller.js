@@ -93,15 +93,6 @@ MainController = MVC.Controller.extend('main', {
   setup: function(params) {
     RecordController.dispatch('setup');
 	PHAController.dispatch('setup');
-
-    // init the "app tabs"
-    $("#app_selector").tabs();
-
-    // Attach the Healthfeed click handler
-    $('[href=\'#_healthfeed_tab_panel_hidden\']').click(function(){ HealthfeedController.dispatch('index'); });
-    $('[href=\'#_patient_search_tab_panel_hidden\']').click(function(){ PatientSearchController.dispatch('index'); });
-    $('#manage_apps_link').click(function(){ PHAController.dispatch('index'); });
-    // Run Healthfeed    
     PatientSearchController.dispatch('index');
     
     $(window).resize(function() {
@@ -116,6 +107,7 @@ MainController = MVC.Controller.extend('main', {
     });
     
     $(window).resize();
+
     $('#app_content_iframe').load( 
     		function() {
 		    $('#app_content_iframe').show();
@@ -123,6 +115,23 @@ MainController = MVC.Controller.extend('main', {
 		    $(window).resize();
     		});
 
+    $.address.change(function(event) {
+    	if (event.value === "manage_apps")
+    	{
+    		PHAController.dispatch('index');
+    	}
+    	if (event.value === "_patient_search_tab_panel_hidden")	
+    	{
+    		PatientSearchController.dispatch('index');
+    	}
+    	if (event.value.match(/^app\//))	
+    	{
+    		PHAController.dispatch('hash_change', event);
+    	}
+
+    });
+
+    
   }
 
 });

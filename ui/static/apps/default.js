@@ -6,7 +6,9 @@ include.resources("js/underscore-min.js",
 		   "js/utils.js",
 		   "js/ui.js",
 		   "js/jquery.inputHintOverlay.js",
-		   "js/jquery.form.js");
+		   "js/jquery.form.js",
+		   "js/jquery.address-1.2.2.min.js"
+		  );
 
 // Make sure you're actually using what's in here! 
 include.plugins(

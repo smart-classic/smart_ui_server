@@ -83,51 +83,51 @@ _add_app: function(params) {
     var fire_p = params.fire_p;
     
     // add the tab, save the length-1 as index for removal closure
-    $('#app_selector').tabs('add', '#'+pha.safeid(), pha.data.name);
-    var len = $('#app_selector').tabs('length');
+//    $('#app_selector').tabs('add', '#'+pha.safeid(), pha.data.name);
+//    var len = $('#app_selector').tabs('length');
     
-    var interpolation_args = function() { 
-  	  return {
-  		  'record_id' : RecordController.RECORD_ID,
-  		  'account_id' : ACCOUNT_ID};
-	  };
-	  
-    
+	     
+	$('#app_selector_inner').append('<li><a href="#app/'+pha.safeid()+'">'+pha.data.name+'</a></li>');//('add', '#'+pha.safeid(), pha.data.name);
     // Create a <div> for each pha, with maybe an image
     var img_name =pha.safename();
     var line = '<img class="app_tab_img" src="/static/resources/images/app_icons_32/'+img_name+'.png" />';
   
-    $('#app_selector_inner li:last').addClass('app');
+    $('#app_selector_inner li:last').addClass('app');    
     if (!RecordController.CURRENT_RECORD)
         $('#app_selector_inner li:last').addClass('greyed_out');
     
     $('#app_selector_inner li:last').prepend(line);
     
-    var first_span = $('#app_selector_inner li:last span')[0];
-     
-    // add the click handler
-    $('#app_selector_inner li:last a').click(function(){
-  	  startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
-  	  RecordController.APP_ID = params.pha.id;
+},  
+hash_change: function(event) {
+	var app_id = event.value.match(/app\/(.*)/)[1];
+	var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
+	PHAController.dispatch('launch_app', app);
+},
+launch_app: function(pha) {
+	 
+    var interpolation_args = {
+    		  'record_id' : RecordController.RECORD_ID,
+    		  'account_id' : ACCOUNT_ID
+    		  };
 
-  	  SMART.register_app(	params.pha.id, 
+  	  startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
+  	  RecordController.APP_ID = pha.id;
+
+  	  SMART.register_app(	pha.id, 
   			  				$('#app_content_iframe')[0],  
   			  				startURL);
 
   	  SMART_HELPER.launch_app(	
-  			params.pha, 
+  			pha, 
   			ACCOUNT_ID, 
   			RecordController.CURRENT_RECORD.record_id,     			  			
   	  		function() {
   				// load and show the iframe
   				$('#app_content').hide();
   				$('#app_content_iframe').attr('src',  startURL);    		  
-  			});
-    });
-    
-    // fire click event!!
-    if (fire_p) $('#app_selector_inner li:last a').click();
-},    
+  			});	
+},
 
 draw_phas :function() {
 	$('.app').remove();
