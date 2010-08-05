@@ -96,7 +96,7 @@ _add_app: function(params) {
     if (!RecordController.CURRENT_RECORD)
         $('#app_selector_inner li:last').addClass('greyed_out');
     
-    $('#app_selector_inner li:last').prepend(line);
+    $('#app_selector_inner li:last A').prepend(line);
     
 },  
 hash_change: function(event) {

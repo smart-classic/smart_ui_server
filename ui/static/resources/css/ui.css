@@ -154,7 +154,7 @@ color: #C2E1D8;
   z-index: 2;
 }
 
-.greyed_out { opacity: 0.6;}
+.greyed_out { opacity: 0.4;}
 
 #working_with {
 float: right;
@@ -235,8 +235,9 @@ li img {
 }
 
 
-#app_selector LI#select_patient_warning {font-size: .7em; padding-bottom: .5em;}
+#app_selector LI#select_patient_warning {font-size: .7em; padding-bottom: .7em; padding-top: .3em;}
 #app_selector ul{padding: 0px; list-style: none; margin: 0px;}
+
 #app_selector li{padding-bottom: .3em;padding: 0px; list-style: none; margin: 0px;}
 #app_selector LI.final_static_tab { padding-bottom: 1em; margin-bottom: 1em; border-bottom: 2px dotted #999999;}
 
@@ -251,6 +252,7 @@ li img {
 
 
 #app_selector_inner li a { padding: 0px 0px 0px 0px; }
+#app_selector_inner li img { padding: 0px 0px 0px 0px; position: relative; top: 0.7em; }
 #app_selector_inner li a:hover { border-bottom: none; }
 
 #get_more_apps {cursor:pointer;}
