@@ -56,7 +56,8 @@ RecordController = MVC.Controller.extend('record', {
           // If there was an app open on the old record, open it automatically
 			// on the new one.
           if (RecordController.APP_ID) {
-        	  $('[href=\'#'+RecordController.APP_ID.replace(/@/, '_at_').replace(/\./g,'_')+'\']').click();
+        		var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
+        		PHAController.dispatch('launch_app', app);
           }
           $('#current_patient').change();
   
