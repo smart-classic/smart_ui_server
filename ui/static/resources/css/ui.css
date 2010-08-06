@@ -115,7 +115,7 @@ h2 {margin: 0px; padding: 0px;}
 body {
   margin: 0px;
   font-family: "Lucida Grande", "Lucida Sans", "Helvetica Neue", Helvetica, Verdana, sans-serif;
-  background: #FEFCF7;
+  background: white;
   color: #464337;
   height: 100%;
 }
@@ -135,6 +135,7 @@ img {border: 0px;}
 /*** Header ***/
 #logo{
 	font-weight: bold;
+
 }
 
 
@@ -158,6 +159,10 @@ color: #C2E1D8;
 
 #working_with {
 float: right;
+}
+
+#app_selector UL#manage_apps_list {
+	margin-top: 1.5em;
 }
 
 UL.manage_apps {

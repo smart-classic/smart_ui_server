@@ -35,46 +35,43 @@
       })
     </script>
   </head>
-  <body>
-    <div style="margin: 100px auto; width: 70%;">
+  <body> <img src="/static/resources/images/badges/SMArt-Logo.png" style="float: left; margin-right: 2em;" alt='smart'/>
+    <div style="width: 800px; margin-left: auto; margin-right: auto; padding-top: 1em;">
       <form id="form" method="post" action="/login">
-        <div style="text-align: center;">
-          <span id="logo">
-            Welcome to the Reference SMArt Container
+        <div >
+
+          <span id="logo" style="font-size: 2em;">
+            Welcome to the Reference  Container
           {% if error %}
-            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px; text-align: center;">
+            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px; ">
               {{error}}
             </div>
           {% endif %}
           
         </div>
 
-        <div style="text-align: center; margin-top: 1em;">
-        > <a href="/create_developer_account"> Create Developer Account</a>
-		</div>
-        <br />
-        <br />
-        <div style="width: 39%; float: left; text-align: right; color: #666; padding-top: 3px;">
-          <span style="font-size: 22px;">Username:</span>
-          <br />
-          <span style="font-size: 22px;">Password:</span>
-        </div>
-        <div style="width: 60%; float: right; font-size: 24px;">
-          <input type="text" style="font-size: 20px;" id="username" name="username" tabindex="1"/>
-          <br />
-          <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="2" />
-          <br />
-        </div>
-        <br clear="both" />
-        <div style="text-align: center; margin-top: 20px;">
-          <input type="hidden" name="return_url" value="{{return_url}}" />
-          <input style="font-size: 18px; width: 300px;"
+        <br clear="both"/>
+        <table>
+        <tr><Td> <span style="font-size: 22px;">Username:</span></td><td><input type="text" style="font-size: 20px;" id="username" name="username" tabindex="1"/>
+          </td></tr>
+        <tr><Td> <span style="font-size: 22px;">Password:</span></td><td>
+          <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="2" /></td></tr>
+		<tr><td colspan="2">          <input type="hidden" name="return_url" value="{{return_url}}" />
+          <input style="font-size: 18px; width: 100%;"
                  type="submit"
                  name="submit"
                  id="submit"
                  tabindex="3"
                  value="          Login          "/>
+		</td></tr>
+        </table>
+        <div >
         </div>
+
+        <div style="margin-top: 1em;">
+        > <a href="/create_developer_account"> Create Developer Account</a>
+		</div>
+
       </form>
 
 
