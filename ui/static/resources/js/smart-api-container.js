@@ -87,13 +87,15 @@ SMART_CONTAINER = Class.extend({
 
     // message sent to the IFRAME when the "ready" message has been received
     send_setup_message: function(app) {
-	var message = this.SMART_HELPER.creds_and_info_generator(app);
-	
-	// add a type to the object to make it the full message
-	message.type = 'setup';
+	var finishSetup = function(message) {
+	    // add a type to the object to make it the full message
+	    message.type = 'setup';
 
-	// send it
-	this.send_app_message(app, message);
+	    // send it
+	    this.send_app_message(app, message);
+	 }
+
+	this.SMART_HELPER.creds_and_info_generator(app, finishSetup);
     },
 
     send_app_message: function(app, message) {

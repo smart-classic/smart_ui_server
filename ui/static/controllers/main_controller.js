@@ -9,13 +9,13 @@
 SMART_HELPER  = {};
 
 SMART_HELPER.tokens_by_app = {};
-SMART_HELPER.creds_and_info_generator = function(app) { 
-    return {'credentials' : 'foobar',
+SMART_HELPER.creds_and_info_generator = function(app, callback) { 
+    callback( {'credentials' : 'foobar',
      	    'record_info' : {
 		'full_name' : RecordController.CURRENT_RECORD.label,
 		'id' : RecordController.CURRENT_RECORD.record_id
-	         }
-    };
+	    }
+	});
 };
 
 //todo: this fn should take app_emai, for per-call token management
