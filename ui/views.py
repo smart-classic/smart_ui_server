@@ -124,6 +124,7 @@ def login(request, info=""):
   # process form vars
   if request.method == HTTP_METHOD_GET:
     return_url = request.GET.get(FORM_RETURN_URL, '/')
+    if (return_url.strip()==""): return_url='/'
     template_data = {FORM_RETURN_URL: return_url}
 
     return utils.render_template(LOGIN_PAGE, 
@@ -132,6 +133,7 @@ def login(request, info=""):
   
   if request.method == HTTP_METHOD_POST:
     return_url = request.POST.get(FORM_RETURN_URL, '/')
+    if (return_url.strip()==""): return_url='/'
     if request.POST.has_key(FORM_USERNAME) and request.POST.has_key(FORM_PASSWORD):
       username = request.POST[FORM_USERNAME]
       password = request.POST[FORM_PASSWORD]
@@ -146,7 +148,6 @@ def login(request, info=""):
   ret = tokens_get_from_server(request, username, password)
   if not ret:
     return utils.render_template(LOGIN_PAGE, {'error': errors['incorrect'], FORM_RETURN_URL: return_url})
-  
   return HttpResponseRedirect(return_url)
 
 def logout(request):
