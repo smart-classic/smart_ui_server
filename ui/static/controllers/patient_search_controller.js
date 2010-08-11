@@ -42,7 +42,6 @@ PREFIX  sp:  <http://smartplatforms.org/>\n\
 PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
 PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n\
 PREFIX dcterms:  <http://purl.org/dc/terms/>\n\
-PREFIX  bio:  <http://purl.org/vocab/bio/0.1/>\n\
 SELECT  ?person\n\
 WHERE   {\n\
   ?person rdf:type foaf:Person.{WHERE_givenName}{WHERE_familyName}{WHERE_DOB}{WHERE_sex}{WHERE_zip}{FILTER_givenName}{FILTER_familyName}{FILTER_DOB}{FILTER_sex}{FILTER_zip}\n\
@@ -73,14 +72,18 @@ WHERE   {\n\
          }
          
          var r = $("#patient_search_dob").val();
-         if (r != "") { 
-        	 args.WHERE_DOB = '\n  ?person bio:Birth ?birth.   \n?birth dc:date ?bday. ';
-        	 args.FILTER_DOB = '\n  FILTER regex(?bday, "^'+r+'","i") ';	 
+         if (r.length === 10) { 
+        	 args.WHERE_DOB = '\n  ?person sp:birthday ?bday.';
+        	 var m = r.substring(0,2);
+        	 var d = r.substring(3,5);
+        	 var y = r.substring(6,10);
+        	 var ss_date = y+m+d;
+        	 args.FILTER_DOB = '\n  FILTER regex(?bday, "^'+ss_date+'$","i") ';	 
          }
          
          var r = $("#patient_search_zip").val();
          if (r != "") { 
-        	 args.WHERE_DOB = '\n  ?person sp:zipcode ?zip ';
+        	 args.WHERE_DOB = '\n  ?person sp:zipcode ?zip. ';
         	 args.FILTER_DOB = '\n  FILTER regex(?zip, "'+r+'") ';	 
          }
          
