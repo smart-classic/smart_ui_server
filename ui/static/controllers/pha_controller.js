@@ -106,6 +106,10 @@ hash_change: function(event) {
 },
 launch_app: function(pha) {
 	 
+	if (RecordController.RECORD_ID === undefined) {
+		alert("Please choose a patient before running an app.");
+	}
+	
     var interpolation_args = {
     		  'record_id' : RecordController.RECORD_ID,
     		  'account_id' : ACCOUNT_ID
