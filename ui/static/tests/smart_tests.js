@@ -1,6 +1,6 @@
 module("Reference SMArt Platform",{
 	setup : function(){
-		S.open("http://localhost:7001/login")
+		S.open("/login")
 	}
 })
 
@@ -25,7 +25,7 @@ test("Developer Login", function(){
 
 module("Reference SMArt Platform",{
 	setup : function(){
-		S.open("http://localhost:7001/")
+		S.open("/")
 	}
 })
 
