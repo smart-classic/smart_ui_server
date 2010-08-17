@@ -50,38 +50,38 @@ SMART_CONTAINER = Class.extend({
 
     // process an incoming message
     receive_message: function(event) {
-	// alert('received message from ' + event.origin + ', which is app ' + this.apps_by_origin[event.origin]);
+		// alert('received message from ' + event.origin + ', which is app ' + this.apps_by_origin[event.origin]);
+		
+		// determine origin, stop if unknown
+		var app = this.apps_by_origin[event.origin];
+		if (app == null)
+		    return;
+		
+		// parse message
+		var parsed_message = JSON.parse(event.data);
 	
-	// determine origin, stop if unknown
-	var app = this.apps_by_origin[event.origin];
-	if (app == null)
-	    return;
-	
-	// parse message
-	var parsed_message = JSON.parse(event.data);
-
-	// setup message with credentials and initial data
-	if (parsed_message.type == 'ready') {
-	    this.send_setup_message(app);
-	}
-	
-	if (parsed_message.type == 'apicall') {
-	    this.receive_apicall_message(app, parsed_message);
-	}
+		// setup message with credentials and initial data
+		if (parsed_message.type == 'ready') {
+		    this.send_setup_message(app);
+		}
+		
+		if (parsed_message.type == 'apicall') {
+		    this.receive_apicall_message(app, parsed_message);
+		}
     },
 
     receive_apicall_message: function(app, message) {
-	var _this = this;
-
-	var returnData = function(data) {
-				  _this.send_app_message(app, {
-					  'uuid' : message.uuid,
-					  'type' : 'apireturn',
-					  'content_type' : "xml",
-					  'payload' : data
-					   });}
-
-	this.SMART_HELPER.api(app, message, returnData);
+		var _this = this;
+	
+		var returnData = function(data) {
+					  _this.send_app_message(app, {
+						  'uuid' : message.uuid,
+						  'type' : 'apireturn',
+						  'content_type' : "xml",
+						  'payload' : data
+						   });}
+	
+		this.SMART_HELPER.api(app, message, returnData);
     },
 
 
@@ -89,15 +89,15 @@ SMART_CONTAINER = Class.extend({
     send_setup_message: function(app) {
     
     	var _this = this;
-	var finishSetup = function(message) {
-	    // add a type to the object to make it the full message
-	    message.type = 'setup';
+    	var finishSetup = function(message) {
+		    // add a type to the object to make it the full message
+		    message.type = 'setup';
+	
+		    // send it
+		    _this.send_app_message(app, message);
+	 	}
 
-	    // send it
-	    _this.send_app_message(app, message);
-	 }
-
-	this.SMART_HELPER.creds_and_info_generator(app, finishSetup);
+		this.SMART_HELPER.creds_and_info_generator(app, finishSetup);
     },
 
     send_app_message: function(app, message) {
