@@ -50,7 +50,7 @@ get_patient = function() {
 
 
 test("App Add / Remove", function(){
-	S("#manage_apps_link").exists().wait(100);
+	S("#manage_apps_link").exists().wait(2000);
 	S("#manage_apps_link").click();
 	S("UL.manage_apps").exists();
 
