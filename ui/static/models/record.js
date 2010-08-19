@@ -29,7 +29,6 @@ Record.search = function(sparql, callback) {
 
 Record.get = function(record_id, callback) {
     var base_url = '/records/' + encodeURIComponent(record_id);
-
     $.getXML(base_url, function(result) {
     var r = new Record(record_id, result.Record['@label'], result.Record.demographics, base_url);
 	callback(r);

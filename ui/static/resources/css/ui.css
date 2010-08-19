@@ -118,6 +118,7 @@ body {
   background: white;
   color: #464337;
   height: 100%;
+  overflow-x: hidden;
 }
 .indivo_error { color: #cc6644; }
 .indivo_full { opacity: 1; filter:Alpha(Opacity=100); }
@@ -239,6 +240,10 @@ li img {
 	border-right: 1px solid #dadada;
 }
 
+.record_id {
+  font-size: .6em; 
+  font-family: "courier new", fixed;
+}
 
 #app_selector LI#select_patient_warning {font-size: .7em; padding-bottom: .7em; padding-top: .3em;}
 #app_selector ul{padding: 0px; list-style: none; margin: 0px;}
@@ -265,7 +270,7 @@ li img {
 #app_content, #app_content_iframe {
   position: absolute;
   top: 1.5em;
-  left: 175px;
+  left: 185px;
   vertical-align: top;
   margin: 0px;
   background: #eaeaea;

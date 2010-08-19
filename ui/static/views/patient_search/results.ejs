@@ -1,11 +1,11 @@
+<table>
 <% for (var i = 0; i < records.length; i++) { %>
 <% var record = records[i]; %>
-	
-  <div class="record_result"><a href="#"><%= record.label%> - <span class="record_id"><%= record.record_id %></span></a>: 
-	<% if (record.demographics) { %>
-	    <strong><%= record.demographics.lastname %>, <%= record.demographics.firstnames %></strong> (<%= record.demographics.gender %>)<br />
-	    <%= record.demographics.address %>
-	<% } %>
-  </div>
-  
+	<tr>
+	<td  class="record_result">
+  <a href="#"><%= record.demographics.firstname%> <%= record.demographics.lastname%></td>
+  <td class="record_result"> <a href='#'> <%= record.demographics.dob %></a></td> 
+  <td>  <span class="record_id" style='display: none;'><%= record.record_id %></span></a></td>
+</tr>
 <% } %>
+</table>  

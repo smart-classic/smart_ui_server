@@ -24,11 +24,13 @@ PatientSearchController= MVC.Controller.extend('patient_search', {
   submit_form : function() {
 	  var _this = this;
 	  Record.search({sparql : $("#patient_search_sparql").val()}, function(records) {
+		  for (var i=0; i < records.length; i++)
+			  RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
 		  _this.render({action: "results", to: "patient_search_results", using: {records: records}});
 		  $("#patient_search_results").show();
 		  $('.record_result').click(function() {
-			  var record_id = $(".record_id", $(this)).html();
-			  	    	  RecordController.RECORD_ID = record_id;
+			  var record_id = $(".record_id", $(this).parent()).html();
+			  RecordController.RECORD_ID = record_id;
 	    	  RecordController.dispatch("_load_record");
 		  });
 	  });
@@ -42,10 +44,13 @@ PREFIX  sp:  <http://smartplatforms.org/>\n\
 PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
 PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n\
 PREFIX dcterms:  <http://purl.org/dc/terms/>\n\
-SELECT  ?person\n\
+CONSTRUCT {?person ?p ?o.} \n\
 WHERE   {\n\
+  ?person ?p ?o.\n\
+  ?person foaf:familyName ?ln.\n\
   ?person rdf:type foaf:Person.{WHERE_givenName}{WHERE_familyName}{WHERE_DOB}{WHERE_sex}{WHERE_zip}{FILTER_givenName}{FILTER_familyName}{FILTER_DOB}{FILTER_sex}{FILTER_zip}\n\
-}";
+}\n\
+order by ?ln";
         
 
          args = {WHERE_givenName : "", 
