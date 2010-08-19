@@ -37,8 +37,8 @@ get_patient = function() {
 	   });
 
 
-	S(".record_result").exists(function() {
-		equal(S(".record_result").size(), 1, "Found patient Hiram Bach");
+	S("td.record_result").exists(function() {
+		equal(S(".record_result").size(), 2, "Found patient Hiram Bach");
 		S(".record_result:first A").click();
 	});
 
@@ -55,12 +55,12 @@ test("App Add / Remove", function(){
 	S("UL.manage_apps").exists();
 
 	S(function() {
-	  if (S("#remove_app_am-i-on-a-statin_at_apps_smart_org").size() == 1) {
-	    S("#remove_app_am-i-on-a-statin_at_apps_smart_org").click();
+	  if (S("#remove_app_are-statins-on-board_at_apps_smart_org").size() == 1) {
+	    S("#remove_app_are-statins-on-board_at_apps_smart_org").click();
 	  }
 
-	  S("#add_app_am-i-on-a-statin_at_apps_smart_org").exists( function () {
-		  S("#add_app_am-i-on-a-statin_at_apps_smart_org").click();		   
+	  S("#add_app_are-statins-on-board_at_apps_smart_org").exists( function () {
+		  S("#add_app_are-statins-on-board_at_apps_smart_org").click();		   
 	      });
 	    });
 
@@ -81,9 +81,9 @@ test("App Add / Remove", function(){
 test("Statin App", function(){
 	get_patient();
 
-	S("A[href=#app/am-i-on-a-statin_at_apps_smart_org]").exists(function(){
-	  equal(S("A[href=#app/am-i-on-a-statin_at_apps_smart_org]").size(), 1, "Added Statin App");
-	  S("A[href=#app/am-i-on-a-statin_at_apps_smart_org]").click();  
+	S("A[href=#app/are-statins-on-board_at_apps_smart_org]").exists(function(){
+	  equal(S("A[href=#app/are-statins-on-board_at_apps_smart_org]").size(), 1, "Added Statin App");
+	  S("A[href=#app/are-statins-on-board_at_apps_smart_org]").click();  
 	  
 	});
 
