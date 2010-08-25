@@ -269,7 +269,7 @@ li img {
 
 #main_canvas {
   width: 100%;
-  background: blue;
+  background: #eaeaea;
   position: absolute;
   top: 1.5em;
   left: 160px;
