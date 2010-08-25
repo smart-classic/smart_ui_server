@@ -40,8 +40,7 @@ setup: function(params){
     				  using: {enabled_phas: PHAController.enabled_phas,
     						  disabled_phas: PHAController.disabled_phas}});
     	
-        $('#app_content_iframe').hide();
-        $('#app_content').show();
+		MainController.dispatch('make_visible', $('#app_content'));
 
         $(".manage_apps BUTTON").click(function() {
         	var command = $(this).attr('id');
@@ -118,9 +117,9 @@ launch_app: function(pha) {
   	  startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
   	  RecordController.APP_ID = pha.id;
 
-  	  SMART.register_app(	pha.id, 
-  			  				$('#app_content_iframe')[0],  
-  			  				startURL);
+  	  SMART.register_app(pha.id, 
+  			     $('#app_content_iframe')[0],  
+  			      startURL);
 
   	  SMART_HELPER.launch_app(	
   			pha, 
@@ -128,8 +127,10 @@ launch_app: function(pha) {
   			RecordController.CURRENT_RECORD.record_id,     			  			
   	  		function() {
   				// load and show the iframe
-  				$('#app_content').hide();
-  				$('#app_content_iframe').attr('src',  startURL);    		  
+
+  			$('#app_content_iframe').attr('src',  startURL);
+			MainController.dispatch('make_visible', $('#app_content_iframe'));
+
   			});	
 },
 

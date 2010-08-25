@@ -11,14 +11,12 @@ PatientSearchController= MVC.Controller.extend('patient_search', {
 
     $('#patient_search_form').inputHintOverlay(4,8);
     $('#patient_search_form').submit(function() {return _this.submit_form();});
-    $('#app_content_iframe').hide();
-    $('#app_content').show();
 
     $('#patient_search_form INPUT').change(this.search_terms_changed);
     $('#patient_search_form INPUT').keyup(this.search_terms_changed);
     $('#patient_search_form INPUT:first').change();
     
-    
+    MainController.dispatch("make_visible", $('#app_content'));    
   },
   
   submit_form : function() {

@@ -234,7 +234,7 @@ li img {
 	position: absolute;
 	top: 1.5em;
 	left: 0px;
-	width: 200px; 
+	width: 160px; 
     vertical-align: top;
     padding-top: .4em;
 	border-right: 1px solid #dadada;
@@ -267,17 +267,22 @@ li img {
 
 #get_more_apps {cursor:pointer;}
 
-#app_content, #app_content_iframe {
+#main_canvas {
+  width: 100%;
+  background: blue;
   position: absolute;
   top: 1.5em;
-  left: 185px;
+  left: 160px;
   vertical-align: top;
   margin: 0px;
-  background: #eaeaea;
   border: 0px;
   border-bottom: 1px solid #ccc;
   overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: hidden;
+}
+
+#app_content, #app_content_iframe {
+    overflow: auto;
 }
 
 

@@ -65,7 +65,7 @@ SMART_HELPER.launch_app = function(app, account_id, record_id, callback) {
 			dataType: "text",
 			success: 
 			      function(data) {
-    				d  = MVC.Tree.parseXML(data);    				
+    				d  = MVC.Tree.parseXML(data);    		   
     				if (d.AccessToken.App["@id"] !== app.id)
     					throw "Got back access tokens for a different app! " + app.id +  " vs. " + d.AccessToken.App["@id"];
     				SMART_HELPER.tokens_by_app[app.id] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
@@ -89,20 +89,41 @@ MainController = MVC.Controller.extend('main', {
       SMART = new SMART_CONTAINER(SMART_HELPER);
       this.setup();
   },
-    
+
+  make_visible: function(element) {
+	    $("#app_content").hide();
+	    $("#app_content_iframe").hide();
+	    element.show();
+  },
   setup: function(params) {
     RecordController.dispatch('setup');
 	PHAController.dispatch('setup');
     PatientSearchController.dispatch('index');
+
+    var scrollbarWidth = function() {
+	var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div>');
+	// Append our div, do our calculation and then remove it
+	$('body').append(div);
+	var w1 = $('div', div).innerWidth();
+	div.css('overflow-y', 'scroll');
+	var w2 = $('div', div).innerWidth();
+	$(div).remove();
+	return (w1 - w2);
+    }();
     
     $(window).resize(function() {
     	
     	var $elt = $("#app_content_iframe").is(":visible")? 
     			   $("#app_content_iframe") : $("#app_content");
     	
-        $elt.hide();        	
-        $elt.css("height", $("#bigbody").height()- 25);
-        $elt.css("width", $("#bigbody").width()-175); // hard-wired width to match left-column width in CSS.  Sigh...  -JM
+        $elt.hide();
+	
+	$("#app_content").css("height",$("#bigbody").height()- $("#footer").height()-$('#header').height());
+	$("#app_content").css("width", $("#bigbody").width()-$('#app_selector').width()); 
+
+	$("#app_content_iframe").css("height",$("#bigbody").height()- $("#footer").height()-$('#header').height());
+	$("#app_content_iframe").css("width", $("#bigbody").width()-$('#app_selector').width()); 
+
         $elt.show();    		
     });
     
