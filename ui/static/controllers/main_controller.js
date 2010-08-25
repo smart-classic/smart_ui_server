@@ -94,6 +94,7 @@ MainController = MVC.Controller.extend('main', {
 	    $("#app_content").hide();
 	    $("#app_content_iframe").hide();
 	    element.show();
+	    element.css("border", "0px");
   },
   setup: function(params) {
     RecordController.dispatch('setup');
