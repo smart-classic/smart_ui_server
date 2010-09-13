@@ -18,7 +18,7 @@ include.plugins(
   'io/ajax',
   'model/xml_rest'
 );
-include.models('account', 'pha', 'record');
+include.models('account', 'pha', 'record','activity');
 
 include(function(){
     //runs after prior includes are loaded

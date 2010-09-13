@@ -26,11 +26,8 @@ SMART_CONTAINER = Class.extend({
     // and should include basic information about the current record
     init: function(SMART_HELPER) {
 	this.SMART_HELPER = SMART_HELPER;
-	this.apps_by_origin = {};
-	this.frames_by_app = {};
-	this.origins_by_app = {};
-	this.tokens_by_app = {}
-	this.cached_results = {};	
+	this.activities = {};
+	
 	// register the message receiver
 	// wrap in a function because of "this" binding
 	var _this = this;
@@ -39,72 +36,153 @@ SMART_CONTAINER = Class.extend({
 	}, false);
     },
 
-    // set up the IFRAME and the app that it corresponds to
-    // the URL is used to determine the proper origin
-    register_app: function(app_email, iframe, url) {
-    	var origin = __SMART_extract_origin(url);
-		this.apps_by_origin[origin] = app_email;
-		this.frames_by_app[app_email] = iframe.contentWindow;
-		this.origins_by_app[app_email] = origin;	
-    },
 
     // process an incoming message
     receive_message: function(event) {
-		// alert('received message from ' + event.origin + ', which is app ' + this.apps_by_origin[event.origin]);
-		
-		// determine origin, stop if unknown
-		var app = this.apps_by_origin[event.origin];
-		if (app == null)
-		    return;
 		
 		// parse message
 		var parsed_message = JSON.parse(event.data);
-	
+
 		// setup message with credentials and initial data
 		if (parsed_message.type == 'ready') {
-		    this.send_setup_message(app);
+
+			var activity_ids = [];
+			var _this = this;
+			$.each(this.activities, function(one_aid, one_a) {
+				if (one_a.ready === false && one_a.origin === event.origin)
+					activity_ids.push(one_aid);
+			});
+			
+			var activity = this.activities[activity_ids[0]];
+			activity.ready = true;
+		    this.send_setup_message(activity, parsed_message);
 		}
 		
+		var activity = this.activities[parsed_message.activity_id];
 		if (parsed_message.type == 'apicall') {
-		    this.receive_apicall_message(app, parsed_message);
+		    this.receive_apicall_message(activity, parsed_message);
+		}
+				
+		if (parsed_message.type == 'start_activity') {
+		    this.receive_start_activity_message(activity, parsed_message);
+		}
+				
+		if (parsed_message.type == 'end_activity') {
+		    this.receive_end_activity_message(activity, parsed_message);
 		}
     },
 
-    receive_apicall_message: function(app, message) {
+    start_activity: function(activity_name, app){
+    	var message = {
+			   name: activity_name,
+			   app: app
+			   };
+    	
+    	this.receive_start_activity_message(null, message);
+    },
+    
+
+    end_activity: function(activity_id){
+    	var activity = this.activities[activity_id];
+    	this.receive_end_activity_message(activity, {response: null});
+    },
+
+    receive_end_activity_message: function(activity, message) {
+    	var callee = activity;
+    	var caller = activity.caller;
+    	var response = message.response;
+    	var _this = this;
+    	
+    	if (caller === undefined) return;
+
+		this.SMART_HELPER.resume_activity(
+			caller, 
+			function() {
+				  _this.send_activity_message(
+							 caller,
+							  {
+							  'uuid' : callee.caller_message_id,
+							  'type' : 'activityreturn',
+							  'content_type' : "xml",
+							  'payload' : response
+							   });
+				  });
+    },
+    receive_start_activity_message: function(activity, message) {
+		var uuid = randomUUID();
+
+    	var new_activity = this.activities[uuid]= {
+    			uuid: uuid,
+    			caller: activity,
+				caller_message_id: message.uuid,
+				name: message.name,
+				app: message.app,
+				ready: false
+		};
+    	
+    	this.SMART_HELPER.start_activity(
+    		new_activity, 
+			function(iframe) {
+		    	var origin  = __SMART_extract_origin($(iframe).attr('src'));
+		    	new_activity.origin = origin;
+		    	new_activity.iframe = iframe;
+			});
+    },
+
+    receive_apicall_message: function(activity, message) {
 		var _this = this;
 	
 		var returnData = function(data) {
-					  _this.send_app_message(app, {
+					  _this.send_activity_message(
+						 activity,
+						  {
 						  'uuid' : message.uuid,
 						  'type' : 'apireturn',
 						  'content_type' : "xml",
 						  'payload' : data
 						   });}
-	
-		this.SMART_HELPER.api(app, message, returnData);
+		
+		this.SMART_HELPER.api(activity, message, returnData);
     },
-
 
     // message sent to the IFRAME when the "ready" message has been received
-    send_setup_message: function(app) {
-    
-    	var _this = this;
+    send_setup_message: function(activity) {
+		var _this = this;
+		
     	var finishSetup = function(message) {
 		    // add a type to the object to make it the full message
-		    message.type = 'setup';
-	
+    	    message.type = 'setup';
+    	    message.activity_id = activity.uuid;
+    		
 		    // send it
-		    _this.send_app_message(app, message);
+		    _this.send_activity_message(activity, message);
 	 	}
 
-		this.SMART_HELPER.creds_and_info_generator(app, finishSetup);
+		this.SMART_HELPER.creds_and_info_generator(activity.app, finishSetup);
     },
 
-    send_app_message: function(app, message) {
-    	this.frames_by_app[app].postMessage(
+    send_activity_message: function(activity, message) {
+    	activity.iframe.contentWindow.postMessage(
     			// find the frame for this app, and send the json'ified message to it, specifying the proper origin
     			JSON.stringify(message), 
-    			this.origins_by_app[app]);
+    			activity.origin);
     }
 });
 
+function randomUUID() {
+	var s = [], itoh = '0123456789ABCDEF';
+	// Make array of random hex digits. The UUID only has 32 digits in it, but
+	// we
+	// allocate an extra items to make room for the '-'s we'll be inserting.
+	for ( var i = 0; i < 36; i++)
+		s[i] = Math.floor(Math.random() * 0x10);
+	// Conform to RFC-4122, section 4.4
+	s[14] = 4; // Set 4 high bits of time_high field to version
+	s[19] = (s[19] & 0x3) | 0x8; // Specify 2 high bits of clock sequence
+	// Convert to hex chars
+	for ( var i = 0; i < 36; i++)
+		s[i] = itoh[s[i]];
+	// Insert '-'s
+	s[8] = s[13] = s[18] = s[23] = '-';
+	return s.join('');
+};

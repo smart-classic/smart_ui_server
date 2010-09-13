@@ -103,35 +103,23 @@ hash_change: function(event) {
 	var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
 	PHAController.dispatch('launch_app', app);
 },
+
 launch_app: function(pha) {
 	 
 	if (RecordController.RECORD_ID === undefined) {
 		alert("Please choose a patient before running an app.");
 	}
 	
-    var interpolation_args = {
-    		  'record_id' : RecordController.RECORD_ID,
-    		  'account_id' : ACCOUNT_ID
-    		  };
-
-  	  startURL = interpolate_url_template(pha.data.startURLTemplate, interpolation_args);
-  	  RecordController.APP_ID = pha.id;
-
-  	  SMART.register_app(pha.id, 
-  			     $('#app_content_iframe')[0],  
-  			      startURL);
-
-  	  SMART_HELPER.launch_app(	
-  			pha, 
-  			ACCOUNT_ID, 
-  			RecordController.CURRENT_RECORD.record_id,     			  			
-  	  		function() {
-  				// load and show the iframe
-
-  			$('#app_content_iframe').attr('src',  startURL);
-			MainController.dispatch('make_visible', $('#app_content_iframe'));
-
-  			});	
+	var already_running = [];
+	$.each(SMART.activities,
+			function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
+	
+	if (already_running.length > 0) {
+		MainController.dispatch('make_visible', $(already_running[0].iframe));
+		return;
+	}
+		
+	SMART.start_activity("main", pha.id);
 },
 
 draw_phas :function() {
