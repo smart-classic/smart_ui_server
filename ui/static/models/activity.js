@@ -15,6 +15,8 @@ Activity = Class.extend({
     	self.app =  activity_info.Activity.app;
     	self.url =  activity_info.Activity.url;
     	self.description = activity_info.Activity.description;
+    	self.consumer_key = activity_info.Activity.consumer_key;
+    	self.secret= activity_info.Activity.secret;
     	self.callback();
     };
     

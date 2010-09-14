@@ -8,26 +8,30 @@ PHAController= MVC.Controller.extend('pha', {
 
 setup: function(params){
     PHA.get_for_account(ACCOUNT_ID, function(phas) {
-    	PHAController.enabled_phas = phas;
-    	PHAController.dispatch("draw_phas");
 
-    	var enabled_phas = phas;
-        var enabled_pha_ids = $.map(enabled_phas, function(e){return e.id;})
+        var enabled_pha_ids = $.map(phas, function(e){return e.id;})
+        
         PHA.get_all(function(phas) {
-        	
+        	var enabled_phas = [] ;        	
         	var disabled_phas = [];
         	
         	$.each(phas, function(i,pha) {
         		if ($.inArray(pha.id, enabled_pha_ids) == -1) {
         			disabled_phas.push(pha);
         		}
+        		else {
+        			enabled_phas.push(pha);
+        		}
         	});
 
         	disabled_phas.sort(PHA.compare);
 
+
         	PHAController.phas = phas;
         	PHAController.enabled_phas = enabled_phas;
-        	PHAController.disabled_phas = disabled_phas;
+        	PHAController.disabled_phas = disabled_phas;    	
+        	PHAController.dispatch("draw_phas");
+
         });        
     });
 },
@@ -115,6 +119,7 @@ launch_app: function(pha) {
 			function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
 	
 	if (already_running.length > 0) {
+		SMART.foreground_activity(already_running[0].uuid);
 		MainController.dispatch('make_visible', $(already_running[0].iframe));
 		return;
 	}

@@ -46,14 +46,21 @@ SMART_CONTAINER = Class.extend({
 		// setup message with credentials and initial data
 		if (parsed_message.type == 'ready') {
 
-			var activity_ids = [];
+			var waiting_activity_ids = [];
+			var ready_activity_ids = [];
+
 			var _this = this;
 			$.each(this.activities, function(one_aid, one_a) {
 				if (one_a.ready === false && one_a.origin === event.origin)
-					activity_ids.push(one_aid);
+					waiting_activity_ids.push(one_aid);
+				else if (one_a.origin === event.origin)
+					ready_activity_ids.push(one_aid);
 			});
 			
-			var activity = this.activities[activity_ids[0]];
+			var activity = waiting_activity_ids.length > 0 ? 
+					this.activities[waiting_activity_ids[0]] :
+					this.activities[ready_activity_ids[0]];
+					
 			activity.ready = true;
 		    this.send_setup_message(activity, parsed_message);
 		}
@@ -72,6 +79,25 @@ SMART_CONTAINER = Class.extend({
 		}
     },
 
+
+    foreground_activity: function(activity_id){
+    	var activity = this.activities[activity_id];
+		this.send_activity_message(
+					 activity,
+					  {
+					  'type' : 'activityforeground'
+					  });
+    },
+
+    background_activity: function(activity_id){
+    	var activity = this.activities[activity_id];
+		this.send_activity_message(
+					activity,
+					  {
+					  'type' : 'activitybackground'
+					  });
+    },
+    
     start_activity: function(activity_name, app){
     	var message = {
 			   name: activity_name,
@@ -101,7 +127,7 @@ SMART_CONTAINER = Class.extend({
 				  _this.send_activity_message(
 							 caller,
 							  {
-							  'uuid' : callee.caller_message_id,
+							  'call_uuid' : callee.caller_message_id,
 							  'type' : 'activityreturn',
 							  'content_type' : "xml",
 							  'payload' : response
@@ -114,9 +140,10 @@ SMART_CONTAINER = Class.extend({
     	var new_activity = this.activities[uuid]= {
     			uuid: uuid,
     			caller: activity,
-				caller_message_id: message.uuid,
+				caller_message_id: message.call_uuid,
 				name: message.name,
 				app: message.app,
+				ready_data: message.ready_data,
 				ready: false
 		};
     	
@@ -136,7 +163,7 @@ SMART_CONTAINER = Class.extend({
 					  _this.send_activity_message(
 						 activity,
 						  {
-						  'uuid' : message.uuid,
+						  'call_uuid' : message.call_uuid,
 						  'type' : 'apireturn',
 						  'content_type' : "xml",
 						  'payload' : data
@@ -146,14 +173,14 @@ SMART_CONTAINER = Class.extend({
     },
 
     // message sent to the IFRAME when the "ready" message has been received
-    send_setup_message: function(activity) {
+    send_setup_message: function(activity, incoming_message) {
 		var _this = this;
 		
     	var finishSetup = function(message) {
 		    // add a type to the object to make it the full message
     	    message.type = 'setup';
-    	    message.activity_id = activity.uuid;
-    		
+			message.call_uuid = incoming_message.call_uuid;
+    		message.ready_data = activity.ready_data;
 		    // send it
 		    _this.send_activity_message(activity, message);
 	 	}
@@ -162,6 +189,8 @@ SMART_CONTAINER = Class.extend({
     },
 
     send_activity_message: function(activity, message) {
+	    message.activity_id = activity.uuid;
+	    
     	activity.iframe.contentWindow.postMessage(
     			// find the frame for this app, and send the json'ified message to it, specifying the proper origin
     			JSON.stringify(message), 

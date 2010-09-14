@@ -8,8 +8,6 @@
 
 SMART_HELPER  = {};
 
-SMART_HELPER.apps_by_activity = {};
-SMART_HELPER.tokens_by_app = {};
 SMART_HELPER.creds_and_info_generator = function(app, callback) { 
     callback( {'credentials' : 'foobar',
      	    'record_info' : {
@@ -22,14 +20,11 @@ SMART_HELPER.creds_and_info_generator = function(app, callback) {
 
 //todo: this fn should take app_emai, for per-call token management
 SMART_HELPER.api = function(activity, message, callback) {
-	var app_id = SMART_HELPER.apps_by_activity[activity.uuid];
-    var app = jQuery.grep(PHAController.phas, function(pha) {return (pha.id === app_id);})[0];
-
     var os = new OAuthServiceSmart(
-                  {consumer_key: app.data.consumer_key, 
-                   consumer_secret: app.data.secret, 
-                   token_key: SMART_HELPER.tokens_by_app[app.id].token, 
-                   token_secret: SMART_HELPER.tokens_by_app[app.id].secret, });
+                  {consumer_key: activity.resolved_activity.consumer_key, 
+                   consumer_secret: activity.resolved_activity.secret	, 
+                   token_key: activity.session_tokens.token, 
+                   token_secret: activity.session_tokens.secret });
 
     var request = os.getSignedRequest({method: message.method,
 				       url: SMART_API_SERVER+message.func,
@@ -66,7 +61,7 @@ SMART_HELPER.start_activity = function(activity, callback) {
     	
     	var get_tokens = function() {
         	var app_email_enc = encodeURIComponent(resolved_activity.app);
-        	SMART_HELPER.apps_by_activity[activity.uuid] = resolved_activity.app;
+        	activity.resolved_activity = resolved_activity;
         	$.ajax({
               		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
     			data: null,
@@ -77,9 +72,9 @@ SMART_HELPER.start_activity = function(activity, callback) {
         				d  = MVC.Tree.parseXML(data);    		   
         				if (d.AccessToken.App["@id"] !== resolved_activity.app)
         					throw "Got back access tokens for a different app! " + resolved_activity.app +  " vs. " + d.AccessToken.App["@id"];
-        				SMART_HELPER.tokens_by_app[resolved_activity.app] = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
-        				
-        				 var interpolation_args = {
+        				activity.session_tokens = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+
+        				var interpolation_args = {
         			    		  'record_id' : RecordController.RECORD_ID,
         			    		  'account_id' : ACCOUNT_ID
         			    		  };
@@ -176,6 +171,12 @@ MainController = MVC.Controller.extend('main', {
  
 
     $.address.change(function(event) {
+    	if (event.value.match(/.handled$/)){
+    		return;
+    	}
+
+    	window.location.hash = window.location.hash+".handled";
+    	
     	if (event.value === "manage_apps")
     	{
     		PHAController.dispatch('index');
