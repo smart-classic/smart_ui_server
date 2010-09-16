@@ -1,6 +1,7 @@
 import os
 import sys
 from django.core.handlers.wsgi import WSGIHandler
+sys.stdout = sys.sterr
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../')
@@ -8,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../')
 # For production servers
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../../')
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo_ui_server.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'smart_ui_server.settings'
 
 class AdjEnvironMiddleware:
 
