@@ -120,6 +120,7 @@ launch_app: function(pha) {
 	
 	if (already_running.length > 0) {
 		SMART.foreground_activity(already_running[0].uuid);
+		RecordController.APP_ID = already_running[0].resolved_activity.app;
 		MainController.dispatch('make_visible', $(already_running[0].iframe));
 		return;
 	}

@@ -35,7 +35,9 @@ SMART_CONTAINER = Class.extend({
 	    _this.receive_message(message);
 	}, false);
     },
-
+    context_changed: function() {
+    	this.activities = {};
+    },
 
     // process an incoming message
     receive_message: function(event) {

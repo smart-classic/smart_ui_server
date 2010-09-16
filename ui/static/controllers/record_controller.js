@@ -52,7 +52,9 @@ RecordController = MVC.Controller.extend('record', {
     	  
     	  $('SELECT#current_patient OPTION:selected').each(function() {$(this).removeAttr("selected");});
 		  exists.attr('selected', 'selected');
-	      
+	   
+		  SMART.context_changed();
+		  
           // If there was an app open on the old record, open it automatically
 			// on the new one.
           if (RecordController.APP_ID) {
