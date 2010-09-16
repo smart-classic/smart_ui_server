@@ -1,7 +1,7 @@
 import os
 import sys
 from django.core.handlers.wsgi import WSGIHandler
-sys.stdout = sys.sterr
+sys.stdout = sys.stderr
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../')
