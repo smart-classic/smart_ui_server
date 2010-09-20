@@ -211,7 +211,7 @@ OAuthRequest = function(options) {
 		
         return [
             method, 
-            OAuthUtilities.urlEncode(url), 
+            OAuthUtilities.urlEncode(OAuthUtilities.urlForSignatureBaseString(url)), 
             OAuthUtilities.urlEncode(arr.sort().join('&'))
         ].join('&');
     };

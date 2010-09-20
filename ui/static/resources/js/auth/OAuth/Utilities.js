@@ -15,6 +15,22 @@ OAuthUtilities.urlEncode = function(string){
     return string_arr.join('');
 };
 
+
+OAuthUtilities.urlForSignatureBaseString = function(string){
+	port_match_http = string.match("http://(.*):80([^0-9]|$)(.*)")
+	port_match_https = string.match("https://(.*):443([^0-9]|$)(.*)")
+	
+	if (port_match_http)
+		return "http://"+port_match_http[1]+port_match_http[2]+port_match_http[3];
+	
+	else if (port_match_https)
+		return "https://"+port_match_http[1]+port_match_http[2]+port_match_http[3]; 
+		
+	else
+		return string;
+};
+
+
 OAuthUtilities.urlDecode = function(string){
 	if (!string) return '';
                           
