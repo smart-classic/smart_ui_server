@@ -8,7 +8,7 @@
 
 SMART_HELPER  = {};
 
-SMART_HELPER.creds_and_info_generator = function(app, callback) { 
+SMART_HELPER.handle_record_info = function(app, callback) { 
     callback( {'credentials' : 'foobar',
      	    'record_info' : {
 		'full_name' : RecordController.CURRENT_RECORD.label,
@@ -19,7 +19,7 @@ SMART_HELPER.creds_and_info_generator = function(app, callback) {
 
 
 //todo: this fn should take app_emai, for per-call token management
-SMART_HELPER.api = function(activity, message, callback) {
+SMART_HELPER.handle_api = function(activity, message, callback) {
     var os = new OAuthServiceSmart(
                   {consumer_key: activity.resolved_activity.consumer_key, 
                    consumer_secret: activity.resolved_activity.secret	, 
@@ -50,12 +50,12 @@ SMART_HELPER.api = function(activity, message, callback) {
 	});
 };
 
-SMART_HELPER.resume_activity = function(activity, callback) {
+SMART_HELPER.handle_resume_activity = function(activity, callback) {
 	MainController.dispatch('make_visible', $(activity.iframe));
 	callback();
 };
 
-SMART_HELPER.start_activity = function(activity, callback) {
+SMART_HELPER.handle_start_activity = function(activity, callback) {
     	var account_id_enc = encodeURIComponent(ACCOUNT.account_id);
     	var record_id_enc = encodeURIComponent(RecordController.CURRENT_RECORD.record_id);
     	

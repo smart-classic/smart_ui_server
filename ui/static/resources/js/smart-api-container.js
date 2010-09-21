@@ -5,7 +5,6 @@
  * Ben Adida
  */
 
-
 // simple pattern to match URLs with http or https
 var __SMART_URL_PATTERN = /^(https?:\/\/[^/]+)/;
 
@@ -22,21 +21,21 @@ function __SMART_extract_origin(url) {
 SMART_CONTAINER = Class.extend({
     // the creds_and_info_generator is a func that will be called
     // prior to every "setup" message sent to the smart app.
-    // it should generate a credential for that app and the current record, 
+    // it should generate a credential for that app and the current record,
     // and should include basic information about the current record
     init: function(SMART_HELPER) {
-	this.SMART_HELPER = SMART_HELPER;
-	this.activities = {};
-	
-	// register the message receiver
-	// wrap in a function because of "this" binding
-	var _this = this;
-	window.addEventListener("message", function(message) {
-	    _this.receive_message(message);
-	}, false);
-    },
-    context_changed: function() {
-    	this.activities = {};
+		this.SMART_HELPER = SMART_HELPER;
+		this.activities = {};
+		
+		// register the message receiver
+		// wrap in a function because of "this" binding
+		var _this = this;
+		window.addEventListener("message", function(message) {
+		    _this.receive_message(message);
+		}, false);
+	    },
+	    context_changed: function() {
+	    	this.activities = {};
     },
 
     // process an incoming message
@@ -47,10 +46,11 @@ SMART_CONTAINER = Class.extend({
 
 		// setup message with credentials and initial data
 		if (parsed_message.type == 'ready') {
-
 			var waiting_activity_ids = [];
 			var ready_activity_ids = [];
 
+			// a newly-launched activity is "ready" but doesn't yet know
+			// its own activity_id. So, find the ID and inform the app.
 			var _this = this;
 			$.each(this.activities, function(one_aid, one_a) {
 				if (one_a.ready === false && one_a.origin === event.origin)
@@ -59,6 +59,8 @@ SMART_CONTAINER = Class.extend({
 					ready_activity_ids.push(one_aid);
 			});
 			
+			// Preferably bind it to an ID that isn't yet claimed...
+			// but if that fails, bind to any ID whose application matches
 			var activity = waiting_activity_ids.length > 0 ? 
 					this.activities[waiting_activity_ids[0]] :
 					this.activities[ready_activity_ids[0]];
@@ -80,7 +82,6 @@ SMART_CONTAINER = Class.extend({
 		    this.receive_end_activity_message(activity, parsed_message);
 		}
     },
-
 
     foreground_activity: function(activity_id){
     	var activity = this.activities[activity_id];
@@ -123,7 +124,7 @@ SMART_CONTAINER = Class.extend({
     	
     	if (caller === undefined) return;
 
-		this.SMART_HELPER.resume_activity(
+		this.SMART_HELPER.handle_resume_activity(
 			caller, 
 			function() {
 				  _this.send_activity_message(
@@ -149,7 +150,7 @@ SMART_CONTAINER = Class.extend({
 				ready: false
 		};
     	
-    	this.SMART_HELPER.start_activity(
+    	this.SMART_HELPER.handle_start_activity(
     		new_activity, 
 			function(iframe) {
 		    	var origin  = __SMART_extract_origin($(iframe).attr('src'));
@@ -171,7 +172,7 @@ SMART_CONTAINER = Class.extend({
 						  'payload' : data
 						   });}
 		
-		this.SMART_HELPER.api(activity, message, returnData);
+		this.SMART_HELPER.handle_api(activity, message, returnData);
     },
 
     // message sent to the IFRAME when the "ready" message has been received
@@ -187,14 +188,15 @@ SMART_CONTAINER = Class.extend({
 		    _this.send_activity_message(activity, message);
 	 	}
 
-		this.SMART_HELPER.creds_and_info_generator(activity.app, finishSetup);
+		this.SMART_HELPER.handle_record_info(activity.app, finishSetup);
     },
 
     send_activity_message: function(activity, message) {
 	    message.activity_id = activity.uuid;
 	    
     	activity.iframe.contentWindow.postMessage(
-    			// find the frame for this app, and send the json'ified message to it, specifying the proper origin
+    			// find the frame for this app, and send the json'ified message
+				// to it, specifying the proper origin
     			JSON.stringify(message), 
     			activity.origin);
     }
