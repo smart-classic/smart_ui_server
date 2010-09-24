@@ -8,7 +8,7 @@
 
 SMART_HELPER  = {};
 
-SMART_HELPER.handle_record_info = function(app, callback) { 
+SMART_HELPER.handle_record_info = function(activity, callback) { 
     callback( {'credentials' : 'foobar',
      	    'record_info' : {
 		'full_name' : RecordController.CURRENT_RECORD.label,

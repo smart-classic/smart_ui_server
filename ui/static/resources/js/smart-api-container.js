@@ -188,7 +188,7 @@ SMART_CONTAINER = Class.extend({
 		    _this.send_activity_message(activity, message);
 	 	}
 
-		this.SMART_HELPER.handle_record_info(activity.app, finishSetup);
+		this.SMART_HELPER.handle_record_info(activity, finishSetup);
     },
 
     send_activity_message: function(activity, message) {
