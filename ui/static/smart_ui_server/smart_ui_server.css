@@ -159,6 +159,7 @@ color: #C2E1D8;
 
 #working_with {
 float: right;
+position: absolute;
 }
 
 #app_selector UL#manage_apps_list {
