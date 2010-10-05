@@ -11,7 +11,7 @@ if not "%BASE%" == "" ( set BASE=%BASE:\=/% )
 :: trim spaces
 for /f "tokens=1*" %%A in ("%BASE%") do SET BASE=%%A
 
-SET CP=%BASE%selenium/selenium-java-client-driver.jar;%BASE%selenium/js.jar
+SET CP=%BASE%java/selenium-java-client-driver.jar;%BASE%../steal/rhino/js.jar
 
 SET ARGS=[
 
@@ -25,4 +25,4 @@ SET ARGS=%ARGS%,'%BASE%']
 
 set ARGS=%ARGS:\=/%
 
-java -Xss1024k -cp %CP% org.mozilla.javascript.tools.shell.Main -opt -1 -e _args=%ARGS% -e load('%BASE%selenium/run.js')
+java -Xss1024k -cp %CP% org.mozilla.javascript.tools.shell.Main -opt -1 -e _args=%ARGS% -e load('%BASE%scripts/run.js')

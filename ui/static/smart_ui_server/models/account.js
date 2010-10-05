@@ -1,0 +1,41 @@
+/*
+ * Account model
+ */
+
+Account = $.Model.extend('smart_ui_server.Models.Account',
+/* @Static */
+{
+	
+  get_recent_records: function(email, callback) {
+    $.getXML('/accounts/' + email + '/recent_records/', function(record_list) {
+    var lst = record_list.Records.Record;
+	if (lst === undefined) return;
+
+    if (!(lst instanceof Array)) lst = [lst];
+    callback($.map(lst, function(el) {
+    	return new smart_ui_server.Models.Record(
+				{record_id: el['@id'], 
+					label: el['@label'], 
+					demographics: el.demographics, 
+					base_url: '/records/' + encodeURIComponent(el['@id'])});    	
+    	}));
+    });
+  },
+  
+  from_xml_node: function(xml_node) {
+	    return this.from_email($(xml_node).attr('id'));
+	},
+  
+  from_email: function(email) { 
+   $.getXML('/accounts/' + email, function(account_info){
+		return new Account({email: email, 
+							account_id: account_info.Account['@id'], 
+							username: account_info.Account.authSystem['@username']});  
+   });
+  }
+}, 
+
+/* @Prototype */
+{ }
+
+);
