@@ -51,7 +51,8 @@ init: function(params){
 					enabled_phas: PHAController.enabled_phas,
 					disabled_phas: PHAController.disabled_phas
 		}));
-    	OpenAjax.hub.publish("request_visible_element", $('#app_content'));
+
+		OpenAjax.hub.publish("request_visible_element", $('#app_content'));
 
     	var _this = this;
         $(".manage_apps BUTTON").click(function() {

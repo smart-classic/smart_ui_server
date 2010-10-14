@@ -327,6 +327,8 @@ def _approve_and_redirect(request, request_token, account_id=None,  offline_capa
   result = api.approve_request_token(request_token=request_token, data=data)
   # strip location= (note: has token and verifer)
   location = urllib.unquote(result.response['prd'][9:])
+  
+  print "the location for redirection is ", location
   return HttpResponseRedirect(location)
 
 def create_developer_account(request):
