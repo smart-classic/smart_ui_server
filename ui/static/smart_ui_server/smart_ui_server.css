@@ -158,8 +158,8 @@ color: #C2E1D8;
 .greyed_out { opacity: 0.4;}
 
 #working_with {
-float: right;
 position: absolute;
+right: 0;
 }
 
 #app_selector UL#manage_apps_list {
