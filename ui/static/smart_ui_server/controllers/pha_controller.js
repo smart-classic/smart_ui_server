@@ -93,8 +93,7 @@ _add_app: function(params) {
     var pha = params.pha;
     	     
 	$('#app_selector_inner').append('<li><a href="#app&id='+pha.safeid()+'">'+pha.data.name+'</a></li>');//('add', '#'+pha.safeid(), pha.data.name);
-    var img_name =pha.safename();
-    var line = '<img class="app_tab_img" src="/static/resources/images/app_icons_32/'+img_name+'.png" />';
+    var line = '<img class="app_tab_img" src="'+pha.data.iconURL+'" />';
   
     $('#app_selector_inner li:last').addClass('app');    
     if (!RecordController.CURRENT_RECORD)
