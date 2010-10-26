@@ -15,6 +15,7 @@ steal.plugins(
 		   "jquery.inputHintOverlay",
 		   "jquery.form",
 		   "class",
+		   "jschannel",
 		   "smart-api-container",
 		   "smart-helper",
 	        "auth/Library/2.0.0-crypto", 
