@@ -25,7 +25,7 @@ DEBUG = True
 from indivo_client_py.lib.client import IndivoClient
 
 def get_api(request=None):
-  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.INDIVO_SERVER_LOCATION)
+  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
   if request:
     api.update_token(request.session['oauth_token_set'])
   
@@ -54,7 +54,7 @@ def tokens_get_from_server(request, username, password):
   
   if DEBUG:
     utils.log('oauth_token: %(oauth_token)s outh_token_secret: %(oauth_token_secret)s' %
-              request.session['oauth_token_set'])
+             request.session['oauth_token_set'])
   
   return True
 
@@ -79,30 +79,40 @@ def index(request):
   return HttpResponseRedirect(reverse(login))
 
 def smart_passthrough(request):
-  full_path = "%s/%s"%(request.get_host(),  request.get_full_path())
+  called_scheme = request.is_secure() and "https" or "http"  
+  full_path = "%s://%s%s"%(called_scheme,request.get_host(),  request.get_full_path())
   full_path = full_path.replace(passthrough_server(request), api_server(request))
-  body = request.raw_post_data
-  headers = {'Authorization': request.META.AUTHORIZATION}
-  api = api_server(request)
 
-  if (api.startswith("http:")):
-    conn = httplib.HTTPConnection(api)
-  else:
+  body = request.raw_post_data
+  headers = {}
+  headers['Authorization']= request.META['HTTP_AUTHORIZATION']
+  headers['Content-type']= request.META['CONTENT_TYPE']
+
+  api = api_server(request, include_scheme=False)
+
+  if request.is_secure():
     conn = httplib.HTTPSConnection(api)
+  else:
+    conn = httplib.HTTPConnection(api)
     
+  print "Requesting", api
+  print "detail", full_path.split(api)[1], body, headers
   conn.request(request.method, full_path.split(api)[1], body, headers)
   r = conn.getresponse()
   data = r.read()
   conn.close()
-  return data
+  
+  return HttpResponse(data, content_type=r.getheader("Content-type"))
 
-def api_server(request):
-    loc = settings.INDIVO_SERVER_LOCATION
-    return "%s://%s:%s"%(loc['scheme'], loc['host'], loc['port'] )
+def api_server(request, include_scheme=True):
+    loc = settings.SMART_SERVER_LOCATION
+    if include_scheme:
+      return "%s://%s:%s"%(loc['scheme'], loc['host'], loc['port'] )
+    return "%s:%s"%(loc['host'], loc['port'] )
 
 def passthrough_server(request):
   called_scheme = request.is_secure() and "https" or "http"  
-  return "%s://%s:%s/smart_passthrough"%(called_scheme, request.META['SERVER_NAME'], request.META['SERVER_PORT'] )
+  return "%s://%s/smart_passthrough"%(called_scheme, request.get_host())
 
 def login(request, info=""):
   """
@@ -160,7 +170,7 @@ def account_initialization(request):
   http://localhost/indivoapi/accounts/foo@bar.com/initialize/icmloNHxQrnCQKNn
   """
   errors = {'generic': 'There was a problem setting up your account. Please try again.'}
-  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.INDIVO_SERVER_LOCATION)
+  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
   
   if request.method == HTTP_METHOD_GET:
     return utils.render_template('ui/account_init', {})
@@ -183,7 +193,7 @@ def account_initialization_2(request):
     username = request.POST['username']
     password = request.POST['pw1']
     errors = {'generic': 'There was a problem updating your data. Please try again. If you are unable to set up your account please contact support.'}
-    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.INDIVO_SERVER_LOCATION)
+    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
     ret = api.add_auth_system(
       account_id = account_id,
       data = {'system':'password',
@@ -356,3 +366,4 @@ def create_developer_account(request):
                                   "account" : username
                                   }
                                  )
+

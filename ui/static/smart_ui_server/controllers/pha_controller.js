@@ -105,8 +105,10 @@ _add_app: function(params) {
 
 "history.app.index subscribe" : function(called, data) {
 	var app_id = data.id;
-	var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
-	this.launch_app(app);
+	if (PHAController.phas && PHAController.phas.length > 0) {
+	    var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
+	    this.launch_app(app);
+	}
 },
 
 
