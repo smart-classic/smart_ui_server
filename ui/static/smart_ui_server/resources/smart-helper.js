@@ -54,6 +54,15 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
     	var get_tokens = function() {
         	var app_email_enc = encodeURIComponent(resolved_activity.app);
         	activity.resolved_activity = resolved_activity;
+
+
+		var loading_div = $("#loading_div");
+		if (loading_div.length == 0) {
+		    loading_div = $('<div class="activity_iframe" id="loading_div" width="90%" height="90%"> Loading... </div>');
+		    $('#main_canvas').append(loading_div);
+		}
+		OpenAjax.hub.publish("request_visible_element",  loading_div);
+
         	$.ajax({
               		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
     			data: null,
@@ -78,7 +87,6 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         			  	  var frame = $("#"+frame_id);
         			  	  $(window).resize();
         			  	  OpenAjax.hub.publish("request_visible_element",  frame);
-        				  
         				  callback( frame[0]);
     			      },
     			error: function(data) {

@@ -129,8 +129,8 @@ SMART_CONTAINER = Class.extend({
 			ready: false
 		};
     	
-		var _this = this;
-		this.SMART_HELPER.handle_start_activity(
+	var _this = this;
+	this.SMART_HELPER.handle_start_activity(
 			new_activity, 
 			function(iframe) {
 			    var origin  = __SMART_extract_origin($(iframe).attr('src'));
