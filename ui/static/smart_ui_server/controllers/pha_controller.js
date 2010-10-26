@@ -9,13 +9,15 @@ jQuery.Controller.extend('smart_ui_server.Controllers.PHA',
 /* @Prototype */
 {
 
-'history.manage_apps.index subscribe': function(topic, data) {
+'history.manage_apps_req.index subscribe': function(topic, data) {
+    location.hash = "manage_apps";
     this.index();
 }, 
 
 		
 init: function(params){
 	var _this = this;
+
     PHA.get_for_account(ACCOUNT_ID, function(phas) {
         var enabled_pha_ids = $.map(phas, function(e){return e.id;})
         
@@ -59,6 +61,9 @@ init: function(params){
         	var command = $(this).attr('id');
         	var app = null;
         	
+		$(this).attr("disabled", "true");
+		$(this).text("Loading...");
+
         	if (command.indexOf("remove_app_") >-1) {
         		app = command.split("remove_app_")[1];
         		command = "DELETE";

@@ -14,7 +14,8 @@ init: function(params) {
 },
 	
 
-'history.patient_search.index subscribe': function(called, data) {
+'history.patient_search_req.index subscribe': function(called, data) {
+    location.hash = "patient_search";
     this.index();
 }, 
 
@@ -39,7 +40,17 @@ index: function(params) {
   
   submit_form : function() {
 	  var _this = this;
+	  
+
+	  var sb = $('#patient_search_form INPUT[type="submit"]');
+	  var btext = sb.attr("value");
+	  sb.attr("value", "Searching...");
+	  sb.attr("disabled", "true");
+
+
 	  Record.search({sparql : $("#patient_search_sparql").val()}, function(records) {
+		  sb.attr("value", btext);
+		  sb.removeAttr("disabled");
 		  for (var i=0; i < records.length; i++)
 			  RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
 		  
