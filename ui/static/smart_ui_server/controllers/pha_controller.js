@@ -97,7 +97,7 @@ init: function(params){
 _add_app: function(params) {
     var pha = params.pha;
     	     
-	$('#app_selector_inner').append('<li><a href="#app&id='+pha.safeid()+'">'+pha.data.name+'</a></li>');//('add', '#'+pha.safeid(), pha.data.name);
+	$('#app_selector_inner').append('<li><a href="#app_req&id='+pha.safeid()+'">'+pha.data.name+'</a></li>');//('add', '#'+pha.safeid(), pha.data.name);
     var line = '<img class="app_tab_img" src="'+pha.data.iconURL+'" />';
   
     $('#app_selector_inner li:last').addClass('app');    
@@ -108,8 +108,10 @@ _add_app: function(params) {
     
 },  
 
-"history.app.index subscribe" : function(called, data) {
+"history.app_req.index subscribe" : function(called, data) {
 	var app_id = data.id;
+    location.hash = "app&id="+app_id;
+
 	if (PHAController.phas && PHAController.phas.length > 0) {
 	    var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
 	    this.launch_app(app);

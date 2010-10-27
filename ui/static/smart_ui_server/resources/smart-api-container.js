@@ -62,7 +62,7 @@ SMART_CONTAINER = Class.extend({
 
 		activity.channel.bind("start_activity", function(t, p) {
 			t.delayReturn(true);
-			_this.receive_start_activity_message(null, p);
+			_this.receive_start_activity_message(activity, p, t.complete);
 		});
 
 		activity.channel.bind("end_activity", function(t, p) {
@@ -70,6 +70,12 @@ SMART_CONTAINER = Class.extend({
 			_this.receive_end_activity_message(activity,p);
 		});
 
+		activity.channel.bind("restart_activity", function(t, p) {
+			t.delayReturn(true);
+			_this.receive_restart_activity_message(activity,t.complete);
+		});
+
+	    
 	    }
 	       
 	    this.SMART_HELPER.handle_record_info(activity, finishSetup);
@@ -77,7 +83,7 @@ SMART_CONTAINER = Class.extend({
 
     foreground_activity: function(activity_id){
     	var activity = this.activities[activity_id];
-	activity.channel.call({method: "activityforeground", success: function(){}});
+    	activity.channel.call({method: "activityforeground", success: function(){}});
     },
 
     background_activity: function(activity_id){
@@ -100,29 +106,47 @@ SMART_CONTAINER = Class.extend({
     	this.receive_end_activity_message(activity, {response: null});
     },
 
+    receive_restart_activity_message: function(activity, callback) {
+	    var _this = this;
+    	callback(true);
+    	activity.channel.destroy();
+    	
+	    activity.channel  = Channel.build({window: activity.iframe.contentWindow, 
+	    								   origin: activity.origin, 
+	    								   scope: "not_ready", 
+	    								   debugOutput: _this.debug});
+
+	    activity.channel.bind("ready", function(t, p) {
+		    t.delayReturn(true);
+		    _this.receive_ready(activity, t.complete);
+	      	});
+    },
+
+    
     receive_end_activity_message: function(activity, message) {
     	var caller = activity.caller;
-    	var response = message.response;
-    	
+    	var response = message.response;    	
+	
     	if (caller === undefined) return;
 
-	this.SMART_HELPER.handle_resume_activity(
+    	this.SMART_HELPER.handle_resume_activity(
 						 caller, 
 						 function() {
-						     caller.channel.call({
-							     method: "activityreturn", 
-							     params: response, 
-							     success: function(){}
-							 }); 
+							 caller.callbacks[activity.uuid]({contentType: "xml", data: response});
 						 });
     },
 
-    receive_start_activity_message: function(activity, message) {
-	var uuid = randomUUID();
-
+    receive_start_activity_message: function(activity, message, callback) {
+    	var uuid = randomUUID();
+    	if (activity !== null) {
+    		if (activity.callbacks === undefined)
+    			activity.callbacks = {};
+    		activity.callbacks[uuid] = callback;
+    	}
+    	
     	var new_activity = this.activities[uuid]= {
-    			uuid: uuid,
-    			caller: activity,
+    		uuid: uuid,
+    		caller: activity,
 			name: message.name,
 			app: message.app,
 			ready_data: message.ready_data,
