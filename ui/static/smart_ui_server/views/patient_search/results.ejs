@@ -1,10 +1,15 @@
-<table>
+<div class="results_header">Search Results </div>
+
+<% if (records.length == 0) { %> No patients found. <% } %>
+
+<ul class='search_results'>
 <% for (var i = 0; i < records.length; i++) { %>
 <% var record = records[i]; %>
-	<tr class='record' <%= record%>>
-	<td  class="record_result">
-  <a href="#"><%= record.demographics.firstname%> <%= record.demographics.lastname%></td>
-  <td class="record_result"> <a href='#'> <%= record.demographics.dob %></a></td> 
-</tr>
+	<li class='record' <%= record%>>
+	<div>
+	<%= record.demographics.firstname%> <%= record.demographics.lastname%>
+	</div>
+	<span class='dob'> <%= record.demographics.dob %></span>
+	</li>
 <% } %>
-</table>  
+</ul>  

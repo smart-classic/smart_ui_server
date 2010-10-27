@@ -11,7 +11,7 @@ Record= $.Model.extend('smart_ui_server.Models.Record',
 
 			var lst = record_list.Records.Record;
 			
-			if (lst === undefined) return;
+			if (lst === undefined) callback([]);
 			
 		    if (!(lst instanceof Array)) lst = [lst];
 		    

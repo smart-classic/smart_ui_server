@@ -33,11 +33,20 @@ index: function(params) {
     $('#patient_search_form INPUT').keyup(this.search_terms_changed);
     $('#patient_search_form INPUT:first').change();
     
-	this.results_element = $('#patient_search_results');
+    this.results_element = $('#patient_search_results');
     
-	OpenAjax.hub.publish("request_visible_element", $('#app_content'));
+    OpenAjax.hub.publish("request_visible_element", $('#app_content'));
 },
-  
+
+patient_selected: function(name) {
+    var _this = this;
+    var sm = $('#patient_selected_header');
+    sm.remove();
+    sm = $(this.view("patient_selected", {name: name}));
+    sm.hide();
+    this.element.prepend(sm);
+    sm.fadeIn(160);
+},
   submit_form : function() {
 	  var _this = this;
 	  
@@ -54,13 +63,16 @@ index: function(params) {
 		  for (var i=0; i < records.length; i++)
 			  RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
 		  
+		  _this.results_element.hide();
 		  _this.results_element.html(_this.view("results", {records: records}));
-		  _this.results_element.show();
+		  _this.results_element.fadeIn(160);
 
-		  $('.record_result').click(function() {
-			  var el = this;
-			  var record_id = $(el).closest(".record").model().record_id;
+		  $('.record').click(function() {
+			  var el = $(this);
+			  var name = $('div', el).text();
+			  var record_id = el.closest(".record").model().record_id;
 			  OpenAjax.hub.publish("patient_record.selected", record_id);
+			  _this.patient_selected(name);
 		  });
 	  });
 	  return false;
