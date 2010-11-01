@@ -1,10 +1,14 @@
 SMART_HELPER  = {};
 
 SMART_HELPER.handle_record_info = function(activity, callback) { 
-    callback( {'credentials' : 'foobar',
-     	    'record_info' : {
-		'full_name' : RecordController.CURRENT_RECORD.label,
-		'id' : RecordController.CURRENT_RECORD.record_id
+    callback( {
+    	'credentials' : {
+    		'user_id': ACCOUNT_ID,
+    		'full_name': FULL_NAME
+    	},
+     	'record_info' : {
+    		'full_name' : RecordController.CURRENT_RECORD.label,
+    		'id' : RecordController.CURRENT_RECORD.record_id
 	    }
 	});
 };
