@@ -2,11 +2,11 @@ SMART_HELPER  = {};
 
 SMART_HELPER.handle_record_info = function(activity, callback) { 
     callback( {
-    	'credentials' : {
+    	'user' : {
     		'user_id': ACCOUNT_ID,
-    		'full_name': FULL_NAME
+    		'full_name': FULLNAME
     	},
-     	'record_info' : {
+     	'record' : {
     		'full_name' : RecordController.CURRENT_RECORD.label,
     		'id' : RecordController.CURRENT_RECORD.record_id
 	    }

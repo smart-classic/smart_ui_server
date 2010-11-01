@@ -77,7 +77,7 @@ SMART_CONTAINER = Class.extend({
 
 	    
 	    }
-	       
+	    
 	    this.SMART_HELPER.handle_record_info(activity, finishSetup);
     },
 
