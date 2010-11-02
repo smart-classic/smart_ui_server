@@ -110,6 +110,8 @@ SMART_CONTAINER = Class.extend({
 	    var _this = this;
     	callback(true);
     	activity.channel.destroy();
+	
+    	this.clear_unbound_channels();
     	
 	    activity.channel  = Channel.build({window: activity.iframe.contentWindow, 
 	    								   origin: activity.origin, 
@@ -143,6 +145,8 @@ SMART_CONTAINER = Class.extend({
     			activity.callbacks = {};
     		activity.callbacks[uuid] = callback;
     	}
+
+    	this.clear_unbound_channels();
     	
     	var new_activity = this.activities[uuid]= {
     		uuid: uuid,
@@ -160,12 +164,23 @@ SMART_CONTAINER = Class.extend({
 			    var origin  = __SMART_extract_origin($(iframe).attr('src'));
 			    new_activity.origin = origin;
 			    new_activity.iframe = iframe;
-			    new_activity.channel  = Channel.build({window: iframe.contentWindow, origin: origin, scope: "not_ready", debugOutput: _this.debug});							    
+		    	new_activity.channel  = Channel.build({window: iframe.contentWindow, origin: origin, scope: "not_ready", debugOutput: _this.debug});							    
+			    
 			    new_activity.channel.bind("ready", function(t, p) {
 				    t.delayReturn(true);
 				    _this.receive_ready(new_activity, t.complete);
 			      	});
 		});
+    },
+    
+    clear_unbound_channels: function() {
+	    $.each(this.activities, function(aid, activity) {
+	    	if (activity.ready === false && activity.channel !== undefined)
+	    	{	
+	    		activity.channel.destroy();
+	    		activity.channel = undefined;
+	    	}
+	    });
     }
 
  });

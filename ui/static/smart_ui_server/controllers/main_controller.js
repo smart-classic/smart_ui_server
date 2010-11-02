@@ -25,7 +25,7 @@ load: function(params) {
 }, 
 
 make_visible: function(element) {
-		$(".activity_iframe:visible").each(function(pos, f) {
+	$(".activity_iframe:visible").each(function(pos, f) {
 			  f = $(f);
 			  f.hide();
 		  }

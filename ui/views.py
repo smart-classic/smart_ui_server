@@ -318,9 +318,8 @@ def authorize(request):
     offline_capable = request.POST.get('offline_capable', False)
     if offline_capable == "0":
       offline_capable = False
-    
-    location = _approve_and_redirect(request, request.POST['oauth_token'],  offline_capable = offline_capable)    
-    return location
+        
+    return _approve_and_redirect(request, request.POST['oauth_token'],  offline_capable = offline_capable)
   else:
     return HttpResponse('bad request method or missing param in request to authorize')
 
