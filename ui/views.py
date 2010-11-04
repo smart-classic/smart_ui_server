@@ -350,11 +350,16 @@ def create_developer_account(request):
 
   username = request.POST.get("username")
   password = request.POST.get("password")
-  full_name = request.POST.get("full_name")
+  given_name = request.POST.get("given_name")
+  family_name = request.POST.get("family_name")
+  department = request.POST.get("department")
+  role = request.POST.get("role")
 
-  data = {"account_id" : username, "password" : password, "full_name" : full_name}
+  data = {"account_id" : username, "password" : password, 
+          "given_name" : given_name, "family_name" : family_name, 
+          "department": department, "role" : role}
   
-  ret = api.call("POST", "/accounts/", options={'data': data})
+  ret = api.call("POST", "/users/", options={'data': data})
   if (ret == "account_exists"):
     return utils.render_template('ui/create_developer_account',
       { 'error': "Account '%s' is already registered."%username })

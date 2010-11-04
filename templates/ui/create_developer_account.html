@@ -8,14 +8,14 @@
     {% endif %}
     
     <title> Reference SMArt Container: Login</title>
-    <script type="text/javascript" src="/static/resources/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script type="text/javascript">
       $(function(){
-        $('#full_name').focus();
+        $('#given_name').focus();
         
     
         $('#form').submit(function() {
-          if (!$('#full_name').val()){
+          if (!$('#given_name').val() || !$('#family_name').val()){
             alert('Please enter your full name.');
             $('#password').focus();
             return false;
@@ -56,19 +56,28 @@
         <table>
                   
         
-        <tr><Td> <span style="font-size: 22px;">Full name:</span></td><td><input type="text" style="font-size: 20px;" id="full_name" name="full_name" tabindex="1"/>
+        <tr><Td> <span style="font-size: 22px;">First name:</span></td><td><input type="text" style="font-size: 20px;" id="given_name" name="given_name" tabindex="1"/>
           </td></tr>
         
-        <tr><Td> <span style="font-size: 22px;">E-mail:</span></td><td><input type="text" style="font-size: 20px;" id="username" name="username" tabindex="1"/>
+        <tr><Td> <span style="font-size: 22px;">Last name:</span></td><td><input type="text" style="font-size: 20px;" id="family_name" name="family_name" tabindex="2"/>
+          </td></tr>
+        
+        <tr><Td> <span style="font-size: 22px;">Department:</span></td><td><input type="text" style="font-size: 20px;" id="department" name="department" value="informatics" tabindex="3"/>
+          </td></tr>
+        
+        <tr><Td> <span style="font-size: 22px;">Role:</span></td><td><input type="text" style="font-size: 20px;" id="role" name="role" value="developer" tabindex="4"/>
+          </td></tr>
+        
+        <tr><Td> <span style="font-size: 22px;">E-mail:</span></td><td><input type="text" style="font-size: 20px;" id="username" name="username" tabindex="5"/>
           </td></tr>
         <tr><Td> <span style="font-size: 22px;">Password:</span></td><td>
-          <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="2" /></td></tr>
+          <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="6" /></td></tr>
 		<tr><td colspan="2">          <input type="hidden" name="return_url" value="{{return_url}}" />
           <input style="font-size: 18px; width: 100%;"
                  type="submit"
                  name="submit"
                  id="submit"
-                 tabindex="3"
+                 tabindex="7"
                  value="          Create Account          "/>
 		</td></tr>
         </table>
