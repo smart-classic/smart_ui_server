@@ -26,7 +26,6 @@ index: function(params) {
    
     this.element.html(this.view("index"));
     
-    $('#patient_search_form').inputHintOverlay(4,8);
     $('#patient_search_form').submit(function() {return _this.submit_form();});
 
     $('#patient_search_form INPUT').change(this.search_terms_changed);

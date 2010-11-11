@@ -11,7 +11,9 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script type="text/javascript">
       $(function(){
+        if (!("autofocus" in document.createElement("input"))) {
         $('#given_name').focus();
+        }
         
     
         $('#form').submit(function() {
@@ -56,7 +58,7 @@
         <table>
                   
         
-        <tr><Td> <span style="font-size: 22px;">First name:</span></td><td><input type="text" style="font-size: 20px;" id="given_name" name="given_name" tabindex="1"/>
+        <tr><Td> <span style="font-size: 22px;">First name:</span></td><td><input AUTOFOCUS type="text" style="font-size: 20px;" id="given_name" name="given_name" tabindex="1"/>
           </td></tr>
         
         <tr><Td> <span style="font-size: 22px;">Last name:</span></td><td><input type="text" style="font-size: 20px;" id="family_name" name="family_name" tabindex="2"/>
@@ -68,7 +70,7 @@
         <tr><Td> <span style="font-size: 22px;">Role:</span></td><td><input type="text" style="font-size: 20px;" id="role" name="role" value="developer" tabindex="4"/>
           </td></tr>
         
-        <tr><Td> <span style="font-size: 22px;">E-mail:</span></td><td><input type="text" style="font-size: 20px;" id="username" name="username" tabindex="5"/>
+        <tr><Td> <span style="font-size: 22px;">E-mail:</span></td><td><input type="email" style="font-size: 20px;" id="username" name="username" tabindex="5"/>
           </td></tr>
         <tr><Td> <span style="font-size: 22px;">Password:</span></td><td>
           <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="6" /></td></tr>

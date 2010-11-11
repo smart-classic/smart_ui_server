@@ -66,8 +66,8 @@ def index(request):
         account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
         ret = api.account_info(account_id = account_id)
         e = ET.fromstring(ret.response['response_data'])
-        fullname = e.findtext('fullName')
-    
+        
+        fullname = e.findtext('givenName') + e.findtext('familyName')
         return utils.render_template('ui/index',
           { 'ACCOUNT_ID': account_id,
             'FULLNAME': fullname,
@@ -98,9 +98,14 @@ def smart_passthrough(request):
   print "Requesting", api
   print "detail", full_path.split(api)[1], body, headers
   conn.request(request.method, full_path.split(api)[1], body, headers)
+  print "Issued request to ", request.method, full_path.split(api)[1], body, headers
+  
   r = conn.getresponse()
+  print "got response"
   data = r.read()
+  print "read data"
   conn.close()
+  print "closed response"
   
   return HttpResponse(data, content_type=r.getheader("Content-type"))
 
