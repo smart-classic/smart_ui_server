@@ -1,13 +1,13 @@
 # Django settings for indivo_ui_server project.
 
-INDIVO_UI_BASE = '/web/smart_ui_server'
+SMART_UI_BASE = '/web/smart_ui_server'
 HIDE_GET_MORE_APPS = False
 DEBUG = True
 
 # Configuration for IndivoClient (note: UI server is a 'chrome' app. see docs for more)
 CONSUMER_KEY='chrome'
 CONSUMER_SECRET='chrome'
-INDIVO_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
+SMART_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
 
 #  quick and dirty private labeling
 BRANDING = {
@@ -53,7 +53,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'smart_ui_server.ui.urls'
 
 TEMPLATE_DIRS = (
-    INDIVO_UI_BASE + "/templates"
+    SMART_UI_BASE + "/templates"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -69,4 +69,4 @@ INSTALLED_APPS = (
 
 # use file based sessions for now - fixme: security?
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-SESSION_FILE_PATH = INDIVO_UI_BASE + "/session"
+SESSION_FILE_PATH = SMART_UI_BASE + "/session"

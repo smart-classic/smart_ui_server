@@ -28,9 +28,9 @@ urlpatterns = patterns(
     (r'^oauth/authorize$', authorize),
 
     # widgets
-    (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.INDIVO_UI_BASE + '/ui/lib'}),
+    (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.SMART_UI_BASE + '/ui/lib'}),
     (r'^widgets/DocumentAccess$', document_access),
     (r'^create_developer_account$', create_developer_account),
     # static
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.INDIVO_UI_BASE + '/ui/static'}),
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SMART_UI_BASE + '/ui/static'}),
 )
