@@ -67,7 +67,7 @@ def index(request):
         ret = api.account_info(account_id = account_id)
         e = ET.fromstring(ret.response['response_data'])
         
-        fullname = e.findtext('givenName') + e.findtext('familyName')
+        fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
         return utils.render_template('ui/index',
           { 'ACCOUNT_ID': account_id,
             'FULLNAME': fullname,
