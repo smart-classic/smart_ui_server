@@ -3,12 +3,16 @@ SMART_HELPER  = {};
 SMART_HELPER.handle_record_info = function(activity, callback) { 
     callback( {
     	'user' : {
-    		'user_id': ACCOUNT_ID,
+    		'id': ACCOUNT_ID,
     		'full_name': FULLNAME
     	},
      	'record' : {
     		'full_name' : RecordController.CURRENT_RECORD.label,
     		'id' : RecordController.CURRENT_RECORD.record_id
+	    },
+	    'credentials': {
+	    	'token': activity.session_tokens.token,
+	    	'secret': activity.session_tokens.secret
 	    }
 	});
 };

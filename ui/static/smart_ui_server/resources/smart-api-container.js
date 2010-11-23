@@ -47,13 +47,17 @@ SMART_CONTAINER = Class.extend({
 	    var _this = this;
 
 	    var finishSetup = function(message) {
-		activity.ready = true;
+
+	    activity.ready = true;
 		message.activity_id = activity.uuid;
 		message.ready_data = activity.ready_data;
 		callback(message);
 		activity.channel.destroy();
 		activity.channel  = Channel.build(
-	          {window: activity.iframe.contentWindow, origin: activity.origin, scope: activity.uuid, debugOutput: _this.debug});
+	          {window: activity.iframe.contentWindow, 
+	           origin: activity.origin, 
+	           scope: activity.uuid, 
+	           debugOutput: _this.debug});
 		
 		activity.channel.bind("api_call", function(t, p) {
 			t.delayReturn(true);
@@ -74,7 +78,6 @@ SMART_CONTAINER = Class.extend({
 			t.delayReturn(true);
 			_this.receive_restart_activity_message(activity,t.complete);
 		});
-
 	    
 	    }
 	    
