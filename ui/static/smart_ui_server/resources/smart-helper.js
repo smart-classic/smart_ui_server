@@ -12,7 +12,8 @@ SMART_HELPER.handle_record_info = function(activity, callback) {
 	    },
 	    'credentials': {
 	    	'token': activity.session_tokens.token,
-	    	'secret': activity.session_tokens.secret
+	    	'secret': activity.session_tokens.secret,
+	    	'oauth_cookie':  activity.session_tokens.oauth_cookie
 	    }
 	});
 };
@@ -81,7 +82,10 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         				d  = xotree.parseXML(data);    		   
         				if (d.AccessToken.App["@id"] !== resolved_activity.app)
         					throw "Got back access tokens for a different app! " + resolved_activity.app +  " vs. " + d.AccessToken.App["@id"];
-        				activity.session_tokens = {token:d.AccessToken.Token, secret: d.AccessToken.Secret};
+        				
+        				activity.session_tokens = {token:d.AccessToken.Token, 
+        										   secret: d.AccessToken.Secret, 
+        										   oauth_cookie: d.AccessToken.OAuthCookie};        				
 
         				var interpolation_args = {
         			    		  'record_id' : RecordController.RECORD_ID,
