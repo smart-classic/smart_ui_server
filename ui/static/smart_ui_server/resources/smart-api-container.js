@@ -86,12 +86,14 @@ SMART_CONTAINER = Class.extend({
 
     foreground_activity: function(activity_id){
     	var activity = this.activities[activity_id];
-    	activity.channel.call({method: "activityforeground", success: function(){}});
+	if (activity.channel !== undefined)
+	    activity.channel.call({method: "activityforeground", success: function(){}});
     },
 
     background_activity: function(activity_id){
     	var activity = this.activities[activity_id];
-	activity.channel.call({method: "activitybackground", success: function(){}});
+	if (activity.channel !== undefined)
+	    activity.channel.call({method: "activitybackground", success: function(){}});
     },
     
     start_activity: function(activity_name, app){
