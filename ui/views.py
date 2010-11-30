@@ -95,19 +95,18 @@ def smart_passthrough(request):
   else:
     conn = httplib.HTTPConnection(api)
     
-  print "Requesting", api
-  print "detail", full_path.split(api)[1], body, headers
   conn.request(request.method, full_path.split(api)[1], body, headers)
-  print "Issued request to ", request.method, full_path.split(api)[1], body, headers
-  
-  r = conn.getresponse()
-  print "got response"
+  r = conn.getresponse()    
   data = r.read()
-  print "read data"
   conn.close()
-  print "closed response"
   
-  return HttpResponse(data, content_type=r.getheader("Content-type"))
+  ret = HttpResponse(data, content_type=r.getheader("Content-type"))
+
+  for (h,v) in r.getheaders():
+    print "Setting %s to: %s"%(h,v)
+    ret[h] = v
+
+  return ret
 
 def api_server(request, include_scheme=True):
     loc = settings.SMART_SERVER_LOCATION

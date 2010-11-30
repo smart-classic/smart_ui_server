@@ -1,8 +1,8 @@
 function OAuthSignatureMethodSHA1() {
     this.name = 'SHA1';
     this.sign = function(request){
-	var signature = Crypto.SHA1(request, {asString: true});		
-        return btoa(signature);
+	var signature = Crypto.SHA1(request, {asBytes: true});		
+        return Crypto.util.bytesToBase64(signature);
     };
 }
 

@@ -67,9 +67,13 @@ function when_ready(ready_function, callback) {
 
 jQuery.fn.flash = function( color, duration )
 {
+    try {
 	var current = this.css("background-color");
 	this.stop().animate({ backgroundColor: color}, duration/3, 'swing', function() {
 		$(this).animate({ backgroundColor: current}, 2*duration/3);
 		
 	});
+    } catch(e) {
+	this.css("background-color", current);
+    }
 };

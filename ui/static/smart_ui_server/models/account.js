@@ -8,9 +8,10 @@ Account = $.Model.extend('smart_ui_server.Models.Account',
 	
   get_recent_records: function(email, callback) {
     $.getXML('/accounts/' + email + '/recent_records/', function(record_list) {
-    var lst = record_list.Records.Record;
-	if (lst === undefined) return;
-
+    try {
+	 var lst = record_list.Records.Record;
+    } catch (e) {return;}
+	    
     if (!(lst instanceof Array)) lst = [lst];
     callback($.map(lst, function(el) {
     	return new smart_ui_server.Models.Record(
