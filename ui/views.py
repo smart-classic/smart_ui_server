@@ -14,7 +14,7 @@ from django.conf import settings
 import xml.etree.ElementTree as ET
 import urllib, re
 import httplib, urllib, urllib2
-
+import time
 import utils
 HTTP_METHOD_GET = 'GET'
 HTTP_METHOD_POST = 'POST'
@@ -102,9 +102,9 @@ def smart_passthrough(request):
   
   ret = HttpResponse(data, content_type=r.getheader("Content-type"))
 
-  for (h,v) in r.getheaders():
-    print "Setting %s to: %s"%(h,v)
-    ret[h] = v
+  ret['Expires'] = "Sun, 19 Nov 1978 05:00:00 GMT"
+  ret['Last-Modified'] =  time.ctime()
+  ret['Cache-Control'] = "store, no-cache, must-revalidate, post-check=0, pre-check=0" 
 
   return ret
 
