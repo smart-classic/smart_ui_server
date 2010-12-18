@@ -375,3 +375,40 @@ def create_developer_account(request):
                                   }
                                  )
 
+def reset_password_request(request):
+  if request.method == "GET":
+    return utils.render_template('ui/reset_password_request', {})
+
+  account_email = request.POST.get("account_email")
+  data = {"account_email" : account_email}
+
+  api = get_api()
+  ret = api.call("POST", "/users/reset_password_request", options={'data': data})
+  if (ret == "no_account_exists"):
+    return utils.render_template('ui/reset_password_request',
+      { 'error': "Account '%s' does not exist."%account_email})
+
+  
+  return utils.render_template(LOGIN_PAGE, 
+                              {"error": "Account reset link e-mailed. Please check your e-mail for the link.",
+                              "account" : account_email})
+     
+def reset_password(request):
+  if request.method == "GET":
+      account=request.GET.get('account_email', None)
+      secret=request.GET.get('account_secret', None)
+      return utils.render_template('ui/reset_password', {'account_email': account, 'account_secret': secret})
+  
+
+  account_email = request.POST.get('account_email', None)
+  data = {"account_email" : account_email,
+          "account_secret": request.POST.get('account_secret', None),
+          "new_password": request.POST.get('new_password', None)}
+
+  
+  api = get_api()
+  ret = api.call("POST", "/users/reset_password", options={'data': data})
+  
+  return utils.render_template(LOGIN_PAGE, 
+                              {"error": "Account password has been reset. Please log in below.",
+                              "account" : account_email})
