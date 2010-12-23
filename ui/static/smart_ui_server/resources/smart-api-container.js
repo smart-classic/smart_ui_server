@@ -46,8 +46,7 @@ SMART_CONTAINER = Class.extend({
     receive_ready: function(activity, callback) {	    
 	    var _this = this;
 
-	    var finishSetup = function(message) {
-
+	    var message = activity.context;
 	    activity.ready = true;
 		message.activity_id = activity.uuid;
 		message.ready_data = activity.ready_data;
@@ -79,9 +78,6 @@ SMART_CONTAINER = Class.extend({
 			_this.receive_restart_activity_message(activity,t.complete);
 		});
 	    
-	    }
-	    
-	    this.SMART_HELPER.handle_record_info(activity, finishSetup);
     },
 
     foreground_activity: function(activity_id){
@@ -170,11 +166,22 @@ SMART_CONTAINER = Class.extend({
 			    new_activity.origin = origin;
 			    new_activity.iframe = iframe;
 		    	new_activity.channel  = Channel.build({window: iframe.contentWindow, origin: origin, scope: "not_ready", debugOutput: _this.debug});							    
-			    
-			    new_activity.channel.bind("ready", function(t, p) {
-				    t.delayReturn(true);
-				    _this.receive_ready(new_activity, t.complete);
-			      	});
+
+		    	// Make sure we've received context var before letting the app call "ready" 
+		    	// to avoid a race condition.  (We could, alternatively, poll on  context 
+		    	// when "ready" is called.)
+			    this.SMART_HELPER.handle_record_info(new_activity, function(context) {
+			    	new_activity.context = context;
+
+			    	if (context.credentials !== undefined ){
+					    document.cookie = 'smart_oauth_cookie='+context.credentials.oauth_cookie+";path=/";
+				    }
+
+				    new_activity.channel.bind("ready", function(t, p) {
+					    t.delayReturn(true);
+					    _this.receive_ready(new_activity, t.complete);
+				      	});
+			    });
 		});
     },
     
