@@ -43,17 +43,6 @@ make_visible: function(element) {
 finish_initialization: function(params) {
 	OpenAjax.hub.publish("maincontroller.initialized");
 	
-  var scrollbarWidth = function() {
-	var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div>');
-	// Append our div, do our calculation and then remove it
-	$('body').append(div);
-	var w1 = $('div', div).innerWidth();
-	div.css('overflow-y', 'scroll');
-	var w2 = $('div', div).innerWidth();
-	$(div).remove();
-	return (w1 - w2);
-  }();
-  
   $(window).resize(function() {
   	var $elt =$(".activity_iframe:visible");
 
@@ -66,14 +55,19 @@ finish_initialization: function(params) {
 	  			  f.hide();
 	  	    });
   	
+  	var h=$("#bigbody").height()- $("#footer").height()-$('#header').height(),
+  	    w=$("#bigbody").width()-$('#app_selector').width();
+  	
   	$(".activity_iframe").each(function(pos, f) {
 			  f = $(f);
-	  			  f.css("height",$("#bigbody").height()- $("#footer").height()-$('#header').height());
-	  			  f.css("width", $("#bigbody").width()-$('#app_selector').width());
+	  			  f.css("height", h);
+	  			  f.css("width", w);
 	    });
 	    
-		    $("#app_content").css("height",$("#bigbody").height()- $("#footer").height()-$('#header').height());
-	    $("#app_content").css("width", $("#bigbody").width()-$('#app_selector').width()); 
+	    $("#app_content").css("height",h);
+	    $("#app_content").css("width", w); 
+	    $("#main_canvas").css("height", h); 
+	    $("#main_canvas").css("width", w); 
 
       $elt.show();    		
   });

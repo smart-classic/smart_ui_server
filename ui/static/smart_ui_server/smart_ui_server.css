@@ -224,8 +224,12 @@ record_result {
   overflow-x: hidden;
 }
 
-#app_content, #app_content_iframe {
-    overflow: auto;
+.activity_iframe {
+    overflow-x:hidden;overflow-y:hidden;
+}
+
+#app_content {
+    overflow-x:hidden;overflow-y:auto;
 }
 
 

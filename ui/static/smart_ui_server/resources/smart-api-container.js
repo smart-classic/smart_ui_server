@@ -32,10 +32,11 @@ SMART_CONTAINER = Class.extend({
     },
 
     context_changed: function() {
-	    for (var i = 0; i < this.activities.length; i++) {
-		var c = this.activities[i].channel;
-		if (c) c.destroy();
-	    }
+    	$.each(this.activities, function(aid, a){
+    		var c = a.channel;
+    		if (c) c.destroy();    		   
+    	});
+
 	    this.activities = {};	    
     },
 
@@ -52,6 +53,7 @@ SMART_CONTAINER = Class.extend({
 		message.ready_data = activity.ready_data;
 		callback(message);
 		activity.channel.destroy();
+		
 		activity.channel  = Channel.build(
 	          {window: activity.iframe.contentWindow, 
 	           origin: activity.origin, 
@@ -77,7 +79,6 @@ SMART_CONTAINER = Class.extend({
 			t.delayReturn(true);
 			_this.receive_restart_activity_message(activity,t.complete);
 		});
-	    
     },
 
     foreground_activity: function(activity_id){
@@ -173,11 +174,7 @@ SMART_CONTAINER = Class.extend({
 			    this.SMART_HELPER.handle_record_info(new_activity, function(context) {
 			    	new_activity.context = context;
 
-			    	if (context.credentials !== undefined ){
-					    document.cookie = 'smart_oauth_cookie='+context.credentials.oauth_cookie+";path=/";
-				    }
-
-				    new_activity.channel.bind("ready", function(t, p) {
+			    	new_activity.channel.bind("ready", function(t, p) {
 					    t.delayReturn(true);
 					    _this.receive_ready(new_activity, t.complete);
 				      	});

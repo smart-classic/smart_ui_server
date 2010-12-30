@@ -80,7 +80,7 @@ patient_selected: function(name) {
   search_terms_changed : function() {
 	var sparql_base = "\
 PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
-PREFIX  spdemo:  <http://smartplatforms.org/demographics/>\n\
+PREFIX  sp:  <http://smartplatforms.org/terms#>\n\
 PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
 PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n\
 PREFIX dcterms:  <http://purl.org/dc/terms/>\n\
@@ -118,13 +118,13 @@ order by ?ln";
          
          var r = $("#patient_search_dob").val();
          if (r.length === 10) { 
-        	 args.WHERE_DOB = '\n  ?person spdemo:birthday ?bday.';
+        	 args.WHERE_DOB = '\n  ?person sp:birthday ?bday.';
         	 args.FILTER_DOB = '\n  FILTER regex(?bday, "^'+r+'$","i") ';	 
          }
          
          var r = $("#patient_search_zip").val();
          if (r != "") { 
-        	 args.WHERE_DOB = '\n  ?person spdemo:zipcode ?zip. ';
+        	 args.WHERE_DOB = '\n  ?person sp:zipcode ?zip. ';
         	 args.FILTER_DOB = '\n  FILTER regex(?zip, "'+r+'") ';	 
          }
          

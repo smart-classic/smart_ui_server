@@ -133,6 +133,14 @@ launch_app: function(pha) {
 	var already_running = [];
 	$.each(SMART.activities,
 	       function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
+
+	var about_to_background= [];
+	$.each(SMART.activities,
+	       function(aid, a){if ( a.app == RecordController.APP_ID) about_to_background.push(a);});
+
+	if (about_to_background.length > 0) {
+		SMART.background_activity(about_to_background[0].uuid);
+	}
 	
 	if (already_running.length > 0) {
 		SMART.foreground_activity(already_running[0].uuid);
