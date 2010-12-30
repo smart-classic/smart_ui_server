@@ -34,7 +34,10 @@ SMART_CONTAINER = Class.extend({
     context_changed: function() {
     	$.each(this.activities, function(aid, a){
     		var c = a.channel;
-    		if (c) c.destroy();    		   
+    		if (c)  {
+        	    c.call({method: "activitydestroy", success: function(){}});
+    			c.destroy();
+    		}
     	});
 
 	    this.activities = {};	    
