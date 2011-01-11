@@ -14,6 +14,7 @@ Account = $.Model.extend('smart_ui_server.Models.Account',
 	    
     if (!(lst instanceof Array)) lst = [lst];
     callback($.map(lst, function(el) {
+		if (el === undefined) return null;
     	return new smart_ui_server.Models.Record(
 				{record_id: el['@id'], 
 					label: el['@label'], 

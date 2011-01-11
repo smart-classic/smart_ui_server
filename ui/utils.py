@@ -13,7 +13,11 @@ from django import http
 
 from xml.dom import minidom
 
-from django.forms.fields import email_re
+try:
+  from django.forms.fields import email_re
+except:
+  from django.core.validators import email_re
+
 import django.core.mail as mail
 import logging, string, random, types
 
