@@ -1,0 +1,18 @@
+<div class="results_header">Patient List</div>
+<div class="results_sub_header">Click a record to select...</div>
+
+<% if (records.length == 0) { %> No patients found. <% } %>
+
+<ul class='search_results'>
+<% for (var i = 0; i < records.length; i++) { %>
+<% var record = records[i]; %>
+	<li class='record' <%= record%>>
+	<div>
+	<%= record.demographics.firstname%> <%= record.demographics.lastname%>
+	</div>
+	<span class='dob'>Gender: <%= record.demographics.gender %></span><br>
+	<span class='dob'>DOB: <%= record.demographics.dob %></span><br>
+	<span class='dob'>Zip Code: <%= record.demographics.zipcode %></span><br>
+	</li>
+<% } %>
+</ul>  
