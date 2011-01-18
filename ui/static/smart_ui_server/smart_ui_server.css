@@ -38,13 +38,29 @@ img {border: 0px;}
 
 }
 
-
 #header_name {	
   font-style: italic;
+  position: absolute;
+  right: 0;
+  
 }
 
+#current_patient, #header_username {
+	font-weight: bold;
+}
 
- #LogoutButton {
+#working_with {
+position: absolute;
+right: 0;
+top: 1.5em;
+background: #0C3141;
+padding-bottom: .2em;
+padding-left: .4em;
+border-bottom: 4px solid white;
+border-left: 4px solid white;
+}
+
+#LogoutButton {
 color: #C2E1D8;
 }
 
@@ -56,11 +72,6 @@ color: #C2E1D8;
 }
 
 .greyed_out { opacity: 0.4;}
-
-#working_with {
-position: absolute;
-right: 0;
-}
 
 #app_selector UL#manage_apps_list {
 	margin-top: 1.5em;
@@ -173,6 +184,11 @@ li img {
     font-size: 2em;
     font-weight: bold;
     position: relative;
+}
+.results_sub_header {
+    font-size: 1.2em;
+    position: relative;
+    padding-bottom: 1em;
 }
 
 span.dob {

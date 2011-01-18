@@ -29,10 +29,12 @@ Record= $.Model.extend('smart_ui_server.Models.Record',
 	get: function(record_id, callback) {
 	    var base_url = '/records/' + encodeURIComponent(record_id);
 	    $.getXML(base_url, function(result) {
-	    var r = new Record({
+			result = result.Records.Record;
+			
+	    	var r = new Record({
 	    	record_id: record_id, 
-	    	label: result.Record['@label'], 
-	    	demographics: result.Record.demographics, 
+	    	label: result['@label'], 
+	    	demographics: result.demographics, 
 	    	base_url: base_url});
 		callback(r);
 	    });

@@ -37,7 +37,7 @@ steal.plugins(
 
 .models("account", "activity", "pha", "record")                           // loads files in models folder 
 
-.controllers("main", "patient_search", "pha", "record")                      // loads files in controllers folder
+.controllers("main", "patient_list", "pha", "record")                      // loads files in controllers folder
 
 .views()                            // adds views to be added to build
 

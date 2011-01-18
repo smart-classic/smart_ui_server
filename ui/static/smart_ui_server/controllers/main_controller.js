@@ -14,7 +14,7 @@ load: function(params) {
     SMART = new SMART_CONTAINER(SMART_HELPER);
 
     RecordController = new smart_ui_server.Controllers.Record($("#app_content"));
-    PatientSearchController = new smart_ui_server.Controllers.PatientSearch($("#app_content"));
+    PatientListController = new smart_ui_server.Controllers.PatientList($("#app_content"));
     PHAController = new smart_ui_server.Controllers.PHA($("#app_content"));
     	
     this.finish_initialization();
@@ -45,8 +45,6 @@ finish_initialization: function(params) {
 	
   $(window).resize(function() {
   	var $elt =$(".activity_iframe:visible");
-
-  	
   	if ($elt.length == 0)
   		$elt = $("#app_content");
 

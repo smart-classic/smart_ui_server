@@ -3,7 +3,7 @@
   <head>
     {% if branding %}
       {% include branding.header_template %}
-    {% else %}
+    {% else %} 
       {% include 'ui/header.html' %}
     {% endif %}
     <!-- development or production -->
@@ -20,20 +20,14 @@
   </head>
   <body>
       <div  id="header">
-        {% if branding %}
- <!--         <img id='HeaderBrandImage'
-               src='{{ branding.logo_image_src }}'/> -->
-        {% endif %}
-        <span id="logo">
-        {% if branding %}
-          {{ branding.pretty_name }}</span>
-        {% else %}
-          SMArt</span><span id="trademark">&trade;</span>
-        {% endif %}
-        &nbsp;<span id="header_name">for {{FULLNAME}}</span>
-          <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
-          
-          <span id="working_with">Working with patient record: <select id="current_patient"><option>&lt;none&gt;</option></select></span>
+        <span id="logo">SMArt EMR</span>
+
+	   	<span id='header_name'>
+	   	  Logged in as: 
+	   	  <span id='header_username'>{{FULLNAME}}</span>
+	   	  <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
+	   	</span>
+        <span id="working_with">Patient record: <span id="current_patient"></div></span>
       </div>
 
       <div id="record_tabs">
@@ -45,10 +39,10 @@
       <div id="app_selector">       
           <ul id="app_selector_inner">
 
-            <li class="patient_search">
-              <a href="#patient_search_req">
+            <li class="patient_list">
+              <a href="#patient_list_req">
                 <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/patientsearch.png" />
-                Patient Search
+                Patient List
               </a>
             </li>
 

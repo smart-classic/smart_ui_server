@@ -93,6 +93,9 @@ init: function(params){
         	});      
         });
 },
+'patient_record.selected subscribe': function(topic, record_id) {
+   $('#app_selector_inner li').removeClass('greyed_out');
+}, 
 
 _add_app: function(params) {
     var pha = params.pha;
