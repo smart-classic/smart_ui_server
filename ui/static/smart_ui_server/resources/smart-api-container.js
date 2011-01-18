@@ -174,7 +174,7 @@ SMART_CONTAINER = Class.extend({
 		    	// Make sure we've received context var before letting the app call "ready" 
 		    	// to avoid a race condition.  (We could, alternatively, poll on  context 
 		    	// when "ready" is called.)
-			    this.SMART_HELPER.handle_record_info(new_activity, function(context) {
+			    _this.SMART_HELPER.handle_record_info(new_activity, function(context) {
 			    	new_activity.context = context;
 
 			    	new_activity.channel.bind("ready", function(t, p) {
