@@ -11,21 +11,19 @@ SMART_HELPER.handle_record_info = function(activity, callback) {
     		'id' : RecordController.CURRENT_RECORD.record_id
 	    },
 	    'credentials': {
-	    	'token': activity.session_tokens.token,
-	    	'secret': activity.session_tokens.secret,
+	    	'token': activity.session_tokens.rest_token,
+	    	'secret': activity.session_tokens.rest_secret,
 	    	'oauth_cookie':  activity.session_tokens.oauth_cookie
 	    }
 	});
 };
 
-
-//todo: this fn should take app_emai, for per-call token management
 SMART_HELPER.handle_api = function(activity, message, callback) {
     var os = new OAuthServiceSmart(
                   {consumer_key: activity.resolved_activity.consumer_key, 
-                   consumer_secret: activity.resolved_activity.secret	, 
-                   token_key: activity.session_tokens.token, 
-                   token_secret: activity.session_tokens.secret });
+                   consumer_secret: "", 
+                   token_key: activity.session_tokens.connect_token, 
+                   token_secret: activity.session_tokens.connect_secret });
 
     var request = os.getSignedRequest({method: message.method,
 				       url: SMART_API_SERVER+message.func,
@@ -83,8 +81,12 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         				if (d.AccessToken.App["@id"] !== resolved_activity.app)
         					throw "Got back access tokens for a different app! " + resolved_activity.app +  " vs. " + d.AccessToken.App["@id"];
         				
-        				activity.session_tokens = {token:d.AccessToken.Token, 
-        										   secret: d.AccessToken.Secret, 
+        				activity.session_tokens = {
+        						   connect_token:d.AccessToken.SMArtConnectToken, 
+								   connect_secret: d.AccessToken.SMArtConnectSecret,
+								   rest_token:d.AccessToken.RESTToken, 
+								   rest_secret: d.AccessToken.RESTToken,
+								   
         										   oauth_cookie: d.AccessToken.OAuthCookie};        				
 
         				var interpolation_args = {
