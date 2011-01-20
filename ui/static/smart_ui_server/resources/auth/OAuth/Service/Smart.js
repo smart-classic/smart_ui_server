@@ -14,9 +14,10 @@ function OAuthServiceSmart(options) {
     this.accessTokenUrl = this.smart_server + 'access_token';
     this.authenticationUrl = null;
     this.onInitialized = function(){};
+    
    
     this.init = function(options) {
-	_private.debug = 'debug' in options ? options.debug : _private.debug;
+    	_private.debug = 'debug' in options ? options.debug : _private.debug;
         parent.init.apply(this, arguments);
     };
 	    

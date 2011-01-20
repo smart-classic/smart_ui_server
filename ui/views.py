@@ -3,14 +3,14 @@ Views for Indivo JS UI
 """
 
 # todo: rm unused
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpRequest
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseForbidden, HttpRequest
 from django.contrib.auth.models import User
 from django.core.exceptions import *
 from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.db import transaction
 from django.conf import settings
-
+from indivo_client_py.oauth import oauth
 import xml.etree.ElementTree as ET
 import urllib, re
 import httplib, urllib, urllib2
@@ -79,15 +79,56 @@ def index(request):
   return HttpResponseRedirect(reverse(login))
 
 def smart_passthrough(request):
+  if not tokens_p(request):
+    return HttpResponseForbidden()
+
   called_scheme = request.is_secure() and "https" or "http"  
   full_path = "%s://%s%s"%(called_scheme,request.get_host(),  request.get_full_path())
   full_path = full_path.replace(passthrough_server(request), api_server(request))
 
+  query_string = request.META['QUERY_STRING']
+  print "got query string", query_string
+  
   body = request.raw_post_data
-  headers = {}
-  headers['Authorization']= request.META['HTTP_AUTHORIZATION']
-  headers['Content-type']= request.META['CONTENT_TYPE']
+  print "got body", body
+  
+  content_type = request.META['CONTENT_TYPE']
+  print "ct", content_type
+  data = query_string or body
+  print "data", data
+  method = request.method
+  print "method", method
+  print "makng re"
+  http_request = oauth.HTTPRequest(method=method, path=full_path, data_content_type=content_type)  
+  print "init http req"
+  c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
+  params = { 
+        'smart_container_api_base': c['smart_container_api_base'],
+            'smart_oauth_token': c['smart_oauth_token'], 
+            'smart_oauth_token_secret': c['smart_oauth_token_secret'], 
+            'smart_record_id': c['smart_record_id'],
+            'smart_user_id': c['smart_user_id'],
+            'smart_app_id': c['smart_app_id']
+            }
 
+  
+  print request.session['oauth_token_set']
+  consumer = oauth.OAuthConsumer(consumer_key = settings.CONSUMER_KEY, 
+                                 secret = settings.CONSUMER_SECRET)
+  token = oauth.OAuthToken(token= request.session['oauth_token_set']['oauth_token'], 
+                                 secret =request.session['oauth_token_set']['oauth_token_secret'])
+
+  print "signing as", consumer.secret, token.secret
+  
+  oauth_request = oauth.OAuthRequest(consumer, 
+                                     token, 
+                                     http_request, 
+                                     oauth_parameters=params)
+  
+  print "SBS", oauth_request.get_signature_base_string()
+  oauth_request.sign()        
+  
+  headers = oauth_request.to_header(with_content_type=True)
   api = api_server(request, include_scheme=False)
 
   if request.is_secure():
@@ -95,6 +136,10 @@ def smart_passthrough(request):
   else:
     conn = httplib.HTTPConnection(api)
     
+  print "And requesting", full_path.split(api)[1]
+  print "with body", body
+  print "With headers", headers
+  
   conn.request(request.method, full_path.split(api)[1], body, headers)
   r = conn.getresponse()    
   data = r.read()
@@ -105,7 +150,6 @@ def smart_passthrough(request):
   ret['Expires'] = "Sun, 19 Nov 1978 05:00:00 GMT"
   ret['Last-Modified'] =  time.ctime()
   ret['Cache-Control'] = "store, no-cache, must-revalidate, post-check=0, pre-check=0" 
-
   return ret
 
 def api_server(request, include_scheme=True):
@@ -236,13 +280,6 @@ def indivo_api_call_get(request):
     data = dict((k,v) for k,v in request.GET.iteritems())
   else:
     data = {}
-    # import ipdb; ipdb.set_trace()
-    # if request.GET:
-    #   # capture query strings
-    #   p = re.compile(r'(?:[?&](?:abc=([^&]*)|xyz=([^&]*)|[^&]*))+$')
-    #   res = p.findall(request.path)
-    #   utils.log('indivo_api_call_get query params: ' + str(res))
-    # else:
   ret = HttpResponse(api.call(request.method, request.path[10:], options= {'data': data}), mimetype="application/xml")
   return ret
 

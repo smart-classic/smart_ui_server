@@ -25,18 +25,34 @@ SMART_HELPER.handle_api = function(activity, message, callback) {
                    token_key: activity.session_tokens.connect_token, 
                    token_secret: activity.session_tokens.connect_secret });
 
-    var request = os.getSignedRequest({method: message.method,
-				       url: SMART_API_SERVER+message.func,
-				       query:message.params,
-				       contentType: message.contentType
+	var request= new OAuthRequest({
+		method: message.method, 
+		url: SMART_API_SERVER+message.func,
+		query: message.params,
+		authorization_header_params: os.getAuthorizationHeaderParameters(),
+		contentType: message.contentType
 	});
+	
+	var params = {'smart_oauth_token': activity.session_tokens.connect_token,
+			'smart_oauth_token_secret': activity.session_tokens.connect_secret,
+			'smart_record_id': ""+RecordController.CURRENT_RECORD.record_id,
+			'smart_user_id': ACCOUNT_ID,
+			'smart_app_id': activity.resolved_activity.app,
+			'smart_container_api_base': activity.session_tokens.api_base};
+	
+	var params_array = [];
+	for (var k in params) { 
+		params_array.push (k+'="'+encodeURIComponent(params[k])+'"');
+	}
+	
+	var header =  "OAuth " + params_array.join(", ");
+
+    os.getSignedRequest(request);
     
     	$.ajax({
 		beforeSend: function(xhr) {
-		    var request_headers = request.getRequestHeaders();
-		    for (var header in request_headers) {
-			xhr.setRequestHeader(header, request_headers[header]);
-		    }},
+				xhr.setRequestHeader("Authorization", header);
+			},
 		    dataType: "text",
 		    url: SMART_PASSTHROUGH_SERVER+message.func,
 		    contentType: message.contentType,
@@ -84,6 +100,7 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         				activity.session_tokens = {
         						   connect_token:d.AccessToken.SMArtConnectToken, 
 								   connect_secret: d.AccessToken.SMArtConnectSecret,
+								   api_base: d.AccessToken.SMArtContainerAPIBase,
 								   rest_token:d.AccessToken.RESTToken, 
 								   rest_secret: d.AccessToken.RESTToken,
 								   
