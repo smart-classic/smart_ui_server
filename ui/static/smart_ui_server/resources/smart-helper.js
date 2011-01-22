@@ -19,37 +19,16 @@ SMART_HELPER.handle_record_info = function(activity, callback) {
 };
 
 SMART_HELPER.handle_api = function(activity, message, callback) {
-    var os = new OAuthServiceSmart(
-                  {consumer_key: activity.resolved_activity.consumer_key, 
-                   consumer_secret: "", 
-                   token_key: activity.session_tokens.connect_token, 
-                   token_secret: activity.session_tokens.connect_secret });
-
-	var request= new OAuthRequest({
-		method: message.method, 
-		url: SMART_API_SERVER+message.func,
-		query: message.params,
-		authorization_header_params: os.getAuthorizationHeaderParameters(),
-		contentType: message.contentType
-	});
+    var params = {'smart_oauth_token': activity.session_tokens.connect_token};
 	
-	var params = {'smart_oauth_token': activity.session_tokens.connect_token,
-			'smart_oauth_token_secret': activity.session_tokens.connect_secret,
-			'smart_record_id': ""+RecordController.CURRENT_RECORD.record_id,
-			'smart_user_id': ACCOUNT_ID,
-			'smart_app_id': activity.resolved_activity.app,
-			'smart_container_api_base': activity.session_tokens.api_base};
-	
-	var params_array = [];
-	for (var k in params) { 
-		params_array.push (k+'="'+encodeURIComponent(params[k])+'"');
-	}
-	
-	var header =  "OAuth " + params_array.join(", ");
-
-    os.getSignedRequest(request);
+    var params_array = [];
+    for (var k in params) { 
+	params_array.push (k+'="'+encodeURIComponent(params[k])+'"');
+    }
     
-    	$.ajax({
+    var header =  "OAuth " + params_array.join(", ");
+    
+    $.ajax({
 		beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", header);
 			},
@@ -57,7 +36,7 @@ SMART_HELPER.handle_api = function(activity, message, callback) {
 		    url: SMART_PASSTHROUGH_SERVER+message.func,
 		    contentType: message.contentType,
 		    data: message.params,
-		    type: request.getMethod(),
+		    type: message.method,
 			success: callback,
 			error: function(data) {
 			    	  alert("error");
@@ -87,7 +66,7 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
 		OpenAjax.hub.publish("request_visible_element",  loading_div);
 
         	$.ajax({
-              		url: "/smart_api/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
+              		url: "/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
     			data: null,
     			type: "GET",
     			dataType: "text",

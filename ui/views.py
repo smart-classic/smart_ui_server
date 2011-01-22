@@ -78,56 +78,64 @@ def index(request):
     
   return HttpResponseRedirect(reverse(login))
 
+def launch_app(request, account_id, pha_email, record_id):
+    if not tokens_p(request):
+      return HttpResponseRedirect(reverse(login))
+    
+    api = get_api(request)
+    launchdata = api.call(
+        "GET", "/accounts/%s/apps/%s/records/%s/launch"%(
+          account_id, pha_email, record_id))
+
+    launchxml = ET.fromstring(launchdata)
+
+    token_str =     launchxml.findtext("SMArtConnectToken")
+    secret =     launchxml.findtext("SMArtConnectSecret")  
+
+    token = oauth.OAuthToken(token= token_str, 
+                             secret =secret)
+
+    request.session[token_str] = token
+
+    launchxml.remove(launchxml.find("SMArtConnectSecret"))
+    return HttpResponse(ET.tostring(launchxml))
+
+
 def smart_passthrough(request):
   if not tokens_p(request):
     return HttpResponseForbidden()
 
   called_scheme = request.is_secure() and "https" or "http"  
-  full_path = "%s://%s%s"%(called_scheme,request.get_host(),  request.get_full_path())
-  full_path = full_path.replace(passthrough_server(request), api_server(request))
+  full_path = "%s://%s%s"%(called_scheme,request.get_host(),  
+                           request.get_full_path())
+
+  full_path = full_path.replace(passthrough_server(request), 
+                                api_server(request))
 
   query_string = request.META['QUERY_STRING']
-  print "got query string", query_string
-  
   body = request.raw_post_data
-  print "got body", body
-  
-  content_type = request.META['CONTENT_TYPE']
-  print "ct", content_type
   data = query_string or body
-  print "data", data
-  method = request.method
-  print "method", method
-  print "makng re"
-  http_request = oauth.HTTPRequest(method=method, path=full_path, data_content_type=content_type)  
-  print "init http req"
-  c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
-  params = { 
-        'smart_container_api_base': c['smart_container_api_base'],
-            'smart_oauth_token': c['smart_oauth_token'], 
-            'smart_oauth_token_secret': c['smart_oauth_token_secret'], 
-            'smart_record_id': c['smart_record_id'],
-            'smart_user_id': c['smart_user_id'],
-            'smart_app_id': c['smart_app_id']
-            }
 
+  content_type = request.META['CONTENT_TYPE']
+  method = request.method
+
+  http_request = oauth.HTTPRequest(method=method, 
+                                   path=full_path, 
+                                   data_content_type=content_type)  
+
+  c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
+  token_str =  c['smart_oauth_token']
+  token = request.session[token_str]
   
-  print request.session['oauth_token_set']
   consumer = oauth.OAuthConsumer(consumer_key = settings.CONSUMER_KEY, 
                                  secret = settings.CONSUMER_SECRET)
-  token = oauth.OAuthToken(token= request.session['oauth_token_set']['oauth_token'], 
-                                 secret =request.session['oauth_token_set']['oauth_token_secret'])
-
-  print "signing as", consumer.secret, token.secret
   
   oauth_request = oauth.OAuthRequest(consumer, 
                                      token, 
-                                     http_request, 
-                                     oauth_parameters=params)
+                                     http_request)
   
-  print "SBS", oauth_request.get_signature_base_string()
   oauth_request.sign()        
-  
+
   headers = oauth_request.to_header(with_content_type=True)
   api = api_server(request, include_scheme=False)
 
@@ -136,10 +144,6 @@ def smart_passthrough(request):
   else:
     conn = httplib.HTTPConnection(api)
     
-  print "And requesting", full_path.split(api)[1]
-  print "with body", body
-  print "With headers", headers
-  
   conn.request(request.method, full_path.split(api)[1], body, headers)
   r = conn.getresponse()    
   data = r.read()
