@@ -62,6 +62,9 @@
           <!-- used for jquery ui tabs for healthfeed -->
           <div id="_patient_search_tab_panel_hidden" style="display: none"></div>
           <div id="_healthfeed_tab_panel_hidden" style="display: none"></div>
+          
+          {% include 'ui/footer.html' %}
+          
       </div> <!-- end app selector -->
       <div id="main_canvas">
       <div id="app_content"></div><iframe id="app_content_iframe" src="" style="display: none"></iframe>
@@ -73,6 +76,5 @@
     
     </div> <!-- end big body -->
 
-      {% include 'ui/footer.html' %}
   </body>
 </html>

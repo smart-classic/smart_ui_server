@@ -125,7 +125,7 @@ SELECT#current_patient  {background: white; color: #0C5161; 	font-weight: bold;
 
 .header_icons {margin-bottom: -3px; margin-left: 15px;}
 
-#footer { position: fixed; bottom: 0px; background: #0c5161; color: #C2E1D8; width: 100%; }
+#footer { position: fixed; bottom: 0px; width: 160px; background: #0c5161; color: #C2E1D8;}
 #footer a { font-weight: normal; color: #C2E1D8; }
 #footer a img {
 max-height: 1em;
