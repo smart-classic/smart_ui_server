@@ -53,7 +53,7 @@ finish_initialization: function(params) {
 	  			  f.hide();
 	  	    });
   	
-  	var h=$("#bigbody").height()- $("#footer").height()-$('#header').height(),
+  	var h=$("#bigbody").height()- $('#header').height(),
   	    w=$("#bigbody").width()-$('#app_selector').width();
   	
   	$(".activity_iframe").each(function(pos, f) {
