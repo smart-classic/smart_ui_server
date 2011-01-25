@@ -12,10 +12,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
     <script type="text/javascript">
       $(function(){
-        if (!("autofocus" in document.createElement("input"))) {
-        $('#given_name').focus();
-        }
-        
+        if (!("autofocus" in document.createElement("input"))) { $('#given_name').focus(); }
     
         $('#form').submit(function() {
           if (!$('#given_name').val() || !$('#family_name').val()){
@@ -28,76 +25,75 @@
             $('#username').focus();
             return false;
           }
-
           if (!$('#password').val()){
             alert('Please enter a password.');
             $('#password').focus();
             return false;
           }
-
           return true;
         });
       })
     </script>
   </head>
-  <body> <img src="/static/resources/images/badges/SMArt-Logo.png" style="float: left; margin-right: 2em;" alt='smart'/>
-    <div style="width: 800px; margin-left: auto; margin-right: auto; padding-top: 1em;">
+  <body style="text-align: center;">
+    <div style="text-align: left; width: 550px; margin-left: auto; margin-right: auto; margin-top: 100px;">
       <form id="form" method="post" action="">
-        <div >
-
-          <span id="logo" style="font-size: 2em;">
-            Reference  Container: Create Developer Account
+        <div style="font-size: 24px">
+            SMArt EMR: Create Developer Account
           {% if error %}
-            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px; ">
+            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 18px;">
               {{error}}
             </div>
           {% endif %}
-          
         </div>
 
         <br clear="both"/>
-        <table>
-                  
-        
-        <tr><Td> <span style="font-size: 22px;">First name:</span></td><td><input AUTOFOCUS type="text" style="font-size: 20px;" id="given_name" name="given_name" tabindex="1"/>
-          </td></tr>
-        
-        <tr><Td> <span style="font-size: 22px;">Last name:</span></td><td><input type="text" style="font-size: 20px;" id="family_name" name="family_name" tabindex="2"/>
-          </td></tr>
-        
-        <tr><Td> <span style="font-size: 22px;">Department:</span></td><td><input type="text" style="font-size: 20px;" id="department" name="department" value="informatics" tabindex="3"/>
-          </td></tr>
-        
-        <tr><Td> <span style="font-size: 22px;">Role:</span></td><td><input type="text" style="font-size: 20px;" id="role" name="role" value="developer" tabindex="4"/>
-          </td></tr>
-        
-        <tr><Td> <span style="font-size: 22px;">E-mail:</span></td><td><input type="email" style="font-size: 20px;" id="username" name="username" tabindex="5"/>
-          </td></tr>
-        <tr><Td> <span style="font-size: 22px;">Password:</span></td><td>
-          <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="6" /></td></tr>
-		<tr><td colspan="2">          <input type="hidden" name="return_url" value="{{return_url}}" />
-          <input style="font-size: 18px; width: 100%;"
-                 type="submit"
-                 name="submit"
-                 id="submit"
-                 tabindex="7"
-                 value="          Create Account          "/>
-		</td></tr>
+        <table style="font-size:18px">
+          <tr>
+            <td>First name:</td>
+            <td><input AUTOFOCUS type="text" style="font-size: 18px;" id="given_name" name="given_name" tabindex="1"/></td>
+          </tr>
+          <tr>
+            <td>Last name:</td>
+            <td><input type="text" style="font-size: 18px;" id="family_name" name="family_name" tabindex="2"/></td>
+          </tr>
+          <tr>
+            <td>Department:</td>
+            <td><input type="text" style="font-size: 18px;" id="department" name="department" value="informatics" tabindex="3"/></td>
+          </tr>
+          <tr>
+            <td>Role:</td>
+            <td><input type="text" style="font-size: 18px;" id="role" name="role" value="developer" tabindex="4"/></td>
+          </tr>
+          <tr>
+            <td>Email:</td>
+            <td><input type="email" style="font-size: 18px;" id="username" name="username" tabindex="5"/></td>
+          </tr>
+          <tr>
+            <td>Password:</td>
+            <td><input type="password" style="font-size: 18px;" id="password" name="password" tabindex="6" /></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <input type="hidden" name="return_url" value="{{return_url}}" />
+              <input style="font-size: 18px; width: 100%;"
+                     type="submit"
+                     name="submit"
+                     id="submit"
+                     tabindex="7"
+                     value="          Create Account          "/>
+            </td>
+          </tr>
         </table>
-        <div >
-        </div>
-
       </form>
-
-
     </div>
 
-
-    {% if branding %}
-      {% include branding.footer_template %}
-    {% else %}
-      {% include 'ui/footer.html' %}
-    {% endif %}
+  {% if branding %}
+    {% include branding.footer_template %}
+  {% else %}
+    {% include 'ui/footer.html' %}
+  {% endif %}
+  
   </body>
 </html>
 

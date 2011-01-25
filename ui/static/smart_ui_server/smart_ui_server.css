@@ -1,9 +1,7 @@
 /*
-SMArt UI Server CSS
-Arjun Sanyal (arjun.sanyal@childrens.harvard.edu)
-
-- Loosely based on the Indivo UI server's CSS
-
+  SMArt UI Server CSS
+  Arjun Sanyal (arjun.sanyal@childrens.harvard.edu)
+  Loosely based on the Indivo UI server's CSS
 */
 
 
@@ -26,35 +24,79 @@ body {
   font-size: 15px
   line-height: 1.6em;
   background: #FEFCF7;
-  color: #464337;
-  font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Corbel, Helvetica, Tahoma, Verdana, sans-serif;
-  font-weight: 300;
+  color: #555;
+  /* need the negative letter spacing for Lucida at sizes above 12pt */
+  font-family: "Lucida Grande", Corbel,  "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif;
+  letter-spacing: -0.5px;
+  font-weight: 400;
   text-rendering: optimizelegibility;
 }
-/* override reset font face for test elements */
+
+/* override reset font face for these elements */
 select,input,button,textarea {
-  font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Corbel, Helvetica, Tahoma, Verdana, sans-serif;
-  font-weight: 300;
+  font-family: "Lucida Grande", Corbel,  "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif;
 }
-/** **/
 
-h2 {margin: 0px; padding: 0px;}
-.indivo_error { color: #cc6644; }
-.indivo_full { opacity: 1; filter:Alpha(Opacity=100); }
-.indivo_muted { opacity: .8; filter:Alpha(Opacity=80); }
-.small {font-size: .9em;}
+/* better font stack for monospaced text */
+pre,code,kbd,samp,tt { font-family: Consolas, "Andale Mono", monospace }
 
+/* better font stack for italics */
+i { font-family: "Lucida Sans", "Lucida Grande", Corbel, "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif; }
 
-/*i { font-family: "Lucida Sans", "Lucida Grande", "Helvetica Neue", Helvetica, Verdana, sans-serif;
-font-style: oblique;
+/* this allows for bold italic text in <strong><em> */
+strong { font-style: inherit; }
+em { font-weight: inherit; }
+
+/* set a standard length for all input types */
+input[type="email"] { width: 12.25em; }
+
+/* links */
+a { color: #333; text-decoration: none; font-size: 0.9em; }
+a:hover { color: #000; border-bottom: 1px dotted #000; }
+
+/* heading heirarchy based on weights a 24px line height */
+/*h1,h2,h3,h4,h5 {font-family: "Helvetica Neue", Corbel, Helvetica, Tahoma, Verdana, sans-serif;} */
+h1 { font-size: 36px; margin: 8px  0 0   0; font-weight: 300; color: #666; letter-spacing: -1.75px; }
+h2 { font-size: 28px; margin: 16px 0 4px 0; font-weight: 300; color: #666; letter-spacing: -1.25px;}
+h3 { font-size: 20px; margin: 4px  0 0   0; font-weight: 400; color: #555; letter-spacing: -1px}
+h4 { font-size: 16px; margin: 8px  0 0   0; font-weight: 700; color: #555;}
+h5 { font-size: 14px; margin: 9px  0 0   0; font-weight: 700; color: #555; text-transform: uppercase;}
+
+/* a "light" table style */
+th, td { border: 1px solid #eee;}
+
+table.light {
+  width: 100%;
+  margin: 0 auto;
 }
-*/
-a {
-  color: #666251;
-  font-weight: 400;
-  text-decoration: none;
-  font-size: 0.85em;
+
+table.light thead th { 
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  text-transform: uppercase;
+  font-weight: normal;
 }
+table.light tfoot td {
+  border: none;
+  text-align: right;
+  font-weight: normal;
+  color: #999;
+  font-style: italic;
+  font-size: .85em;
+}
+table.light tbody td:first-child { border-left:none; }
+table.light tbody td:last-child { border-right:none; }
+tr.odd { background: #fff; }
+tr.unread { font-weight: bold; }
+
+
+
+
+
+/******** below this line needs review ************************/
 
 #header_name {	
   font-style: italic;
@@ -342,61 +384,9 @@ record_result {
   border-bottom: 1px solid #666251;
 }
 
-/*** notifications ***/
-/*.notification {
-    background-color: white;
-    border-bottom: 2px solid #b4b4b4;
-    padding: 0.4em;
-    font-size: 12pt;
-}
-
-.notification .created_at {
-    display: block;
-    float: left;
-    color: #555555;
-    padding-right: 5px;
-}
-
-.notification .details {
-    color: #555555;
-    font-size: 10pt;
-}
-*/
-/*** messaging ***/
-/*
-table.message_listing {
-  border: 1px black solid;
-  border-collapse: collapse;
-  border-spacing: 0px;
-  width: 90%;
-}
-
-table.message_listing th {
-  border-bottom: 1px black solid;
-  border-right: 1px #888 dotted;
-  padding: 5px 35px 5px 5px;
-  background: #edf3fe;
-  text-align: left;
-  font-size: 12pt;
-}
-
-table.message_listing td {
-  padding: 2px 35px 2px 5px;
-  border-bottom: 1px black solid;
-  border-right: 1px #888 dotted;
-  font-size: 11pt;
-}*/
-
-/***********  Overrides of jquery UI ***********/
-
-
-
-
-
 
 /********* Overrides of fluid960gs CSS *********/
 .container_16 { background: none; }
-a:hover { color: black; }
 table { border: none; }
 tbody th, tbody td { border: none; }
 thead th.table-head { background: none; font-size: 1.1em; border: none; color: inherit; }
