@@ -23,18 +23,24 @@ html {height: 100%; overflow-x: hidden; overflow-y: hidden;}
 body {
   font-size: 15px
   line-height: 1.6em;
-  background: #FEFCF7;
+  background: #f2f2f2;
   color: #555;
-  /* need the negative letter spacing for Lucida at sizes above 12pt */
-  font-family: "Lucida Grande", Corbel,  "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif;
-  letter-spacing: -0.5px;
+  font-family: "Helvetica Neue", Corbel, Helvetica, Tahoma, Verdana, sans-serif;
+  letter-spacing: -0.25px;
   font-weight: 400;
   text-rendering: optimizelegibility;
 }
 
 /* override reset font face for these elements */
 select,input,button,textarea {
-  font-family: "Lucida Grande", Corbel,  "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif;
+  font-family: "Helvetica Neue", Corbel, Helvetica, Tahoma, Verdana, sans-serif;
+}
+
+
+/* use Lucida grande (with -0.5px neg letter spacing) for text */
+p {
+  font-family: "Lucida Grande", Corbel, "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif;
+  letter-spacing: -0.5px;
 }
 
 /* better font stack for monospaced text */
@@ -51,8 +57,9 @@ em { font-weight: inherit; }
 input[type="email"] { width: 12.25em; }
 
 /* links */
-a { color: #333; text-decoration: none; font-size: 0.9em; }
-a:hover { color: #000; border-bottom: 1px dotted #000; }
+/* highlight color #00AAFF */
+a { color: #0088CC; text-decoration: none; font-size: 0.9em; }
+a:hover { color: #0088CC; border-bottom: 1px solid #0088CC; }
 
 /* heading heirarchy based on weights a 24px line height */
 /*h1,h2,h3,h4,h5 {font-family: "Helvetica Neue", Corbel, Helvetica, Tahoma, Verdana, sans-serif;} */
