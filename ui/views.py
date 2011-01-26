@@ -58,6 +58,26 @@ def tokens_get_from_server(request, username, password):
   
   return True
 
+def proxy_index(request):
+   api = get_api()
+
+   record_id = request.GET['record_id']
+   record_name = request.GET.get('record_name', "Proxied Patient")
+   api.call("POST", "/records/create/proxied", options={'data': {'record_id':record_id, 
+                                                                 'record_name':record_name}})
+
+   ret = tokens_get_from_server(request, settings.PROXY_USER, settings.PROXY_PASSWORD)
+   if not ret:
+     return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})
+
+   return utils.render_template('ui/proxy_index',
+          { 'ACCOUNT_ID': settings.PROXY_USER,
+            'FULLNAME': "Proxy User",
+            'PROXIED_RECORD_ID' : record_id,
+            'PROXIED_RECORD_NAME': record_name,
+            'SMART_PASSTHROUGH_SERVER': passthrough_server(request) })
+
+   
 def index(request):
   if tokens_p(request):
     # get the realname here. we already have it in the js account model
