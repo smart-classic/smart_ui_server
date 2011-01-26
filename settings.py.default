@@ -1,3 +1,4 @@
+
 # Django settings for indivo_ui_server project.
 
 SMART_UI_BASE = '/web/smart_ui_server'
