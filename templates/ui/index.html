@@ -7,8 +7,6 @@
       {% include 'ui/header.html' %}
     {% endif %}
     <!-- development or production -->
-
-
     <script type="text/javascript" src="/static/steal/steal.js?steal[app]=smart_ui_server&steal[env]=development"></script>
     <script type="text/javascript">
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
@@ -20,21 +18,21 @@
   </head>
   <body>
       <div  id="header">
-        <span id="logo">SMArt EMR</span>
+      <span id="header_logo">SMArt EMR</span>
 
-	   	<span id='header_name'>
-	   	  Logged in as: 
-	   	  <span id='header_username'>{{FULLNAME}}</span>
-	   	  <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
-	   	</span>
-        <span id="working_with">Patient record: <span id="current_patient"></div></span>
+      <span id="working_with"><span id="current_patient"></span></span>
+
+      <span id='header_name'>
+        <span id='header_username'>{{FULLNAME}}</span>
+        <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
+      </span>
       </div>
 
-      <div id="record_tabs">
+      <!-- <div id="record_tabs">
         <ul id="record_tabs_inner"></ul>
-      </div>
+      </div> -->
 
-	<div id='bigbody' style="position: relative; width: 100%; height: 100%;">
+  <div id='bigbody' style="position: relative; width: 100%; height: 100%;">
 
       <div id="app_selector">       
           <ul id="app_selector_inner">
@@ -46,10 +44,13 @@
               </a>
             </li>
 
-			<li id='select_patient_warning'>&lt;To run apps, select a patient&gt;</li>
+      <li id='select_patient_warning'>&lt;To run apps, select a patient&gt;</li>
 
           </ul>
-	  <div id="record_owned_options">
+
+          <div style="width: 100px; margin: 0 20px 0 20px; border-bottom: 1px dotted #ddd">&nbsp;</div>
+
+    <div id="record_owned_options">
             <ul id="manage_apps_list">
               <li>
                 <a id="manage_apps_link" href="#manage_apps_req">
@@ -58,7 +59,7 @@
                 </a>
               </li>
             </ul>
-	  </div>
+    </div>
           <!-- used for jquery ui tabs for healthfeed -->
           <div id="_patient_search_tab_panel_hidden" style="display: none"></div>
           <div id="_healthfeed_tab_panel_hidden" style="display: none"></div>
@@ -71,7 +72,7 @@
       </div>
         <!-- used for jquery tools overlay -->
         <div class="overlay" id="overlay"><div class="wrap"></div></div>
-	<div id="CloseApp" style="display: none"><span id="CloseAppID">app-id-here</span> [<a href="#">Close</a>]</div>
+  <div id="CloseApp" style="display: none"><span id="CloseAppID">app-id-here</span> [<a href="#">Close</a>]</div>
         
     
     </div> <!-- end big body -->
