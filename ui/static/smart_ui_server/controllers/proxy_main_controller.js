@@ -3,7 +3,9 @@
  */
 jQuery.Controller.extend('smart_ui_server.Controllers.ProxyMain',
 /* @Static */
-{ },
+{
+	onDocument: true
+ },
 /* @Prototype */
 {
 

@@ -72,18 +72,6 @@ finish_initialization: function(params) {
   
   $(window).resize();  
   
-
-      console.log("creating proxied" + PROXIED_RECORD_NAME);
-      var proxied_record = new smart_ui_server.Models.Record({
-          record_id: PROXIED_RECORD_ID,
-          label: PROXIED_RECORD_NAME,
-          demographics: {}
-      });
-      console.log("creatED proxied");
-      console.log(proxied_record);
-
-      RecordController.RECENT_RECORDS[PROXIED_RECORD_ID] = proxied_record;
-      OpenAjax.hub.publish("patient_record.selected", PROXIED_RECORD_ID);
 }
 
 });
