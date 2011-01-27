@@ -1,9 +1,10 @@
+# Django settings for smart_ui_server project.
 
-# Django settings for indivo_ui_server project.
-
-SMART_UI_BASE = '/web/smart_ui_server'
+SMART_UI_BASE = '/path/to/smart_ui_server'
 HIDE_GET_MORE_APPS = False
+
 DEBUG = True
+DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Configuration for IndivoClient (note: UI server is a 'chrome' app. see docs for more)
 CONSUMER_KEY='chrome'
