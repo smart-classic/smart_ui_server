@@ -14,7 +14,10 @@ load: function(params) {
     SMART = new SMART_CONTAINER(SMART_HELPER);
 
     RecordController = new smart_ui_server.Controllers.Record($("#app_content"));
-    //    PatientListController = new smart_ui_server.Controllers.PatientList($("#app_content"));
+
+    if (typeof(PROXIED_RECORD_ID) == "undefined") 
+      PatientListController = new smart_ui_server.Controllers.PatientList($("#app_content"));
+    
     PHAController = new smart_ui_server.Controllers.PHA($("#app_content"));
     	
     this.finish_initialization();
