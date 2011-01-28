@@ -87,7 +87,7 @@ li img { height: 32px; width: 32px; }
 #working_with { color: #004488; position: absolute; left: 300px; top: 0px; font-size: 18px; }
 #app_selector { position: absolute; top: 36px; left: 10px; width: 190px; padding-top: 80px; }
 #app_selector_hairline_top { width: 100px; margin: 0 20px 0 20px; border-bottom: 1px solid #ddd; }
-#app_selector_hairline_bottom { width: 100px; margin: 0 20px 0 20px; border-top: 1px solid #ddd; }
+#app_selector_hairline_bottom { width: 100px; margin: 16px 20px 0 20px; border-top: 1px solid #ddd; }
 /* this hides the jquery ui tabs generated panels */
 #app_selector .ui-tabs-panel { display: none; }
 #app_selector ul { margin: 0px; }
@@ -97,7 +97,7 @@ li img { height: 32px; width: 32px; }
 #app_selector li a:hover { border-bottom: none; }
 /* use padding on app icons for spacing */
 #app_selector li img { position: relative; top: 9px; padding: 0px 12px 0px 0px; }
-#manage_apps_list { margin-top: 10px !important; }
+#manage_apps_list { margin-top: 5px !important; }
 #bigbody { position: relative; width: 100%; height: 100%; }
 #main_canvas {
   width: 100%;
