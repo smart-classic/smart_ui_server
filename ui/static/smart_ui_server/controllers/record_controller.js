@@ -13,7 +13,7 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 	this.RECENT_RECORDS = {};
 	this.current_patient_label = $('#current_patient');
 	this.current_patient_label.text("");
-   },
+},
     
     'patient_record.selected subscribe': function(topic, record_id) {
     	this.RECORD_ID = record_id;		  

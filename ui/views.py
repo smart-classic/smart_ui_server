@@ -72,8 +72,7 @@ def index(request):
           { 'ACCOUNT_ID': account_id,
             'FULLNAME': fullname,
             'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
-            'SMART_API_SERVER': api_server(request),
-            'SMART_PASSTHROUGH_SERVER': passthrough_server(request) })
+            'SMART_PASSTHROUGH_SERVER': passthrough_server })
     except:  pass
     
   return HttpResponseRedirect(reverse(login))
@@ -105,12 +104,8 @@ def smart_passthrough(request):
   if not tokens_p(request):
     return HttpResponseForbidden()
 
-  called_scheme = request.is_secure() and "https" or "http"  
-  full_path = "%s://%s%s"%(called_scheme,request.get_host(),  
-                           request.get_full_path())
-
-  full_path = full_path.replace(passthrough_server(request), 
-                                api_server(request))
+  relative_path =  request.get_full_path().replace(passthrough_server, "")
+  full_path = api_server() + relative_path
 
   query_string = request.META['QUERY_STRING']
   body = request.raw_post_data
@@ -137,7 +132,7 @@ def smart_passthrough(request):
   oauth_request.sign()        
 
   headers = oauth_request.to_header(with_content_type=True)
-  api = api_server(request, include_scheme=False)
+  api = api_server(include_scheme=False)
 
   if request.is_secure():
     conn = httplib.HTTPSConnection(api)
@@ -156,15 +151,13 @@ def smart_passthrough(request):
   ret['Cache-Control'] = "store, no-cache, must-revalidate, post-check=0, pre-check=0" 
   return ret
 
-def api_server(request, include_scheme=True):
+def api_server(include_scheme = True):
     loc = settings.SMART_SERVER_LOCATION
-    if include_scheme:
+    if (include_scheme):
       return "%s://%s:%s"%(loc['scheme'], loc['host'], loc['port'] )
     return "%s:%s"%(loc['host'], loc['port'] )
 
-def passthrough_server(request):
-  called_scheme = request.is_secure() and "https" or "http"  
-  return "%s://%s/smart_passthrough"%(called_scheme, request.get_host())
+passthrough_server = "/smart_passthrough"
 
 def login(request, info=""):
   """
@@ -388,7 +381,7 @@ def _approve_and_redirect(request, request_token, account_id=None,  offline_capa
 def create_developer_account(request):
   if request.method == "GET":
     return utils.render_template('ui/create_developer_account',
-      { 'SMART_API_SERVER': api_server(request) })
+      {})
     
 
   api = get_api()
