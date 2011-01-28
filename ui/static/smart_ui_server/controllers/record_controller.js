@@ -22,7 +22,7 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 
   after_record_obtained: function(record) {
 	  RecordController.CURRENT_RECORD = record;
-	  $("#select_patient_warning").html("&nbsp;patient: <strong>"+record.label+"</strong>");
+    // $("#select_patient_warning").html("&nbsp;patient: <strong>"+record.label+"</strong>");
  	  this.current_patient_label.text(record.label);   
 	  SMART.context_changed();
 	  

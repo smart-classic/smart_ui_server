@@ -17,65 +17,48 @@
     <title>{% block title %}SMArt EMR{% endblock %}</title>
   </head>
   <body>
-      <div  id="header">
+    <div id="header">
       <span id="header_logo">SMArt EMR</span>
-
       <span id="working_with"><span id="current_patient"></span></span>
-
       <span id='header_name'>
         <span id='header_username'>{{FULLNAME}}</span>
-        <a id='LogoutButton' href="{% url ui.views.logout %}">[Logout]</a>
+        &middot;
+        <a href="{% url ui.views.logout %}">Logout</a>
       </span>
-      </div>
-
-      <!-- <div id="record_tabs">
-        <ul id="record_tabs_inner"></ul>
-      </div> -->
-
-  <div id='bigbody' style="position: relative; width: 100%; height: 100%;">
-
-      <div id="app_selector">       
+    </div>
+    <div id='bigbody'>
+      <div id="app_selector">
+        <div class="app_selector_hairline_top"></div>
           <ul id="app_selector_inner">
-
             <li class="patient_list">
               <a href="#patient_list_req">
                 <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/patientsearch.png" />
                 Patient List
               </a>
             </li>
-
-      <li id='select_patient_warning'>&lt;To run apps, select a patient&gt;</li>
-
           </ul>
-
-          <div style="width: 100px; margin: 0 20px 0 20px; border-bottom: 1px solid #ddd">&nbsp;</div>
-
-    <div id="record_owned_options">
+          <div class="app_selector_hairline"></div>
+          <div id="record_owned_options">
             <ul id="manage_apps_list">
               <li>
                 <a id="manage_apps_link" href="#manage_apps_req">
-                   <img class="app_tab_img_small" height="16px" width="16px" src="/static/resources/images/icons_24/edit_add.png" />
-                   <span>Manage Apps</span>
+                 <img class="app_tab_img_small" height="16px" width="16px" src="/static/resources/images/icons_24/edit_add.png" />
+                 <span>Manage Apps</span>
                 </a>
               </li>
             </ul>
-    </div>
-          <!-- used for jquery ui tabs for healthfeed -->
-          <div id="_patient_search_tab_panel_hidden" style="display: none"></div>
-          <div id="_healthfeed_tab_panel_hidden" style="display: none"></div>
-          
+          </div>
           {% include 'ui/footer.html' %}
-          
-      </div> <!-- end app selector -->
-      <div id="main_canvas">
-      <div id="app_content"></div><iframe id="app_content_iframe" src="" style="display: none"></iframe>
-      </div>
+        </div> <!-- end app selector -->
+        <div id="main_canvas">
+          <div id="app_content"></div>
+          <iframe id="app_content_iframe" src="" style="display: none"></iframe>
+        </div>
+        
         <!-- used for jquery tools overlay -->
         <div class="overlay" id="overlay"><div class="wrap"></div></div>
-  <div id="CloseApp" style="display: none"><span id="CloseAppID">app-id-here</span> [<a href="#">Close</a>]</div>
         
-    
+        <div id="CloseApp" style="display: none"><span id="CloseAppID">app-id-here</span> [<a href="#">Close</a>]</div>
     </div> <!-- end big body -->
-
   </body>
 </html>
