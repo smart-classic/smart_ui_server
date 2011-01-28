@@ -121,8 +121,8 @@ UL.manage_apps { list-style: none; }
 #patient_search_results { display: none;}
 #patient_search_sparql {margin-top: 2em; display: none;}
 #patient_selected_header { margin-bottom: 2em; }
-.results_header { font-size: 2em; font-weight: bold; position: relative; }
-.results_sub_header { font-size: 1.2em; position: relative; padding-bottom: 1em; }
+.results_header { font-size: 20px; }
+.results_sub_header { font-size: 18px; }
 
 
 /** extras **/
