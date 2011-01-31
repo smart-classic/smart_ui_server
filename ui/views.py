@@ -75,7 +75,7 @@ def proxy_index(request):
             'FULLNAME': "Proxy User",
             'PROXIED_RECORD_ID' : record_id,
             'PROXIED_RECORD_NAME': record_name,
-            'SMART_PASSTHROUGH_SERVER': passthrough_server(request) })
+            'SMART_PASSTHROUGH_SERVER': passthrough_server })
 
    
 def index(request):
