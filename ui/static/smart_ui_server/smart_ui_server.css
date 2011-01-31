@@ -80,12 +80,12 @@ h5 { font-size: 14px; margin: 9px  0 0   0; font-weight: 700; color: #555; text-
 li img { height: 32px; width: 32px; }
 
 /** Main layout **/
-#header { position: fixed; top: 5px; left: 10px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; }
-#header_logo { color: #666; font-size: 18px; font-weight: 200; }
-#header_name { position: absolute; right: 20px; }
+#header { position: fixed; top: 5px; left: 0px; padding-left: 10px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; }
+#header_logo { width: 20%; float: left; color: #666; font-size: 18px; font-weight: 200; }
+#working_with { width: 50%; float: left; color: #004488; font-size: 18px; text-align: center;}
+#header_name { width: 28%; float: left; text-align: right;}
 #header_username { font-size: .9em; } /* to match the logout link */
-#working_with { color: #004488; position: absolute; left: 300px; top: 0px; font-size: 18px; }
-#app_selector { position: absolute; top: 36px; left: 10px; width: 190px; padding-top: 80px; }
+#app_selector { position: absolute; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
 #app_selector_hairline_top { width: 100px; margin: 0 20px 0 20px; border-bottom: 1px solid #ddd; }
 #app_selector_hairline_bottom { width: 100px; margin: 16px 20px 0 20px; border-top: 1px solid #ddd; }
 /* this hides the jquery ui tabs generated panels */

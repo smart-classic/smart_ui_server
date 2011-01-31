@@ -18,13 +18,13 @@
   </head>
   <body>
     <div id="header">
-      <span id="header_logo">SMArt EMR</span>
-      <span id="working_with"><span id="current_patient"></span></span>
-      <span id='header_name'>
+      <div id="header_logo">SMArt EMR</div>
+      <div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
+      <div id='header_name'>
         <span id='header_username'>{{FULLNAME}}</span>
         &middot;
         <a href="{% url ui.views.logout %}">Logout</a>
-      </span>
+      </div>
     </div>
     <div id='bigbody'>
       <div id="app_selector">
