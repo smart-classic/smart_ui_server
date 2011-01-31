@@ -153,9 +153,20 @@ def smart_passthrough(request):
 
 def api_server(include_scheme = True):
     loc = settings.SMART_SERVER_LOCATION
+    port = loc['port']
+    scheme=loc['scheme']
+    host = loc['host']
+
+    port_matches = (scheme=='http' and port=='80') or (scheme=='https'  and port=='443')
+
+    if (port_matches):
+      ret = host
+    else:
+      ret =  "%s:%s"%(host, port )
+
     if (include_scheme):
-      return "%s://%s:%s"%(loc['scheme'], loc['host'], loc['port'] )
-    return "%s:%s"%(loc['host'], loc['port'] )
+      return "%s://%s"%(scheme, ret)
+    return ret
 
 passthrough_server = "/smart_passthrough"
 
