@@ -20,7 +20,7 @@ function __SMART_extract_origin(url) {
 SMART_CONTAINER = Class.extend({
 
     init: function(SMART_HELPER) {
-	    this.debug = true;
+	    this.debug = false;
 	    this.SMART_HELPER = SMART_HELPER;
 	    this.activities = {};
 	},
