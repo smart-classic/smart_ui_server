@@ -9,10 +9,12 @@
     <!-- development or production -->
     <script type="text/javascript" src="/static/steal/steal.js?steal[app]=smart_ui_server&steal[env]=development"></script>
     <script type="text/javascript">
+{% block global_vars %}
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
       var SMART_API_SERVER = "{{SMART_API_SERVER}}"
       var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
       var FULLNAME = "{{ FULLNAME }}";
+{% endblock %}
     </script>
     <title>{% block title %}SMArt EMR{% endblock %}</title>
   </head>
@@ -20,22 +22,28 @@
     <div id="header">
       <div id="header_logo">SMArt EMR</div>
       <div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
+
+      {% block header_username %}
+
       <div id='header_name'>
         <span id='header_username'>{{FULLNAME}}</span>
         &middot;
         <a href="{% url ui.views.logout %}">Logout</a>
       </div>
+      {% endblock %}
     </div>
     <div id='bigbody'>
       <div id="app_selector">
         <div id="app_selector_hairline_top"></div>
           <ul id="app_selector_inner">
+      {% block patient_list %}
             <li class="patient_list">
               <a href="#patient_list_req">
                 <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/patientsearch.png" />
                 Patient List
               </a>
             </li>
+      {% endblock %}
           </ul>
           <div id="app_selector_hairline_bottom"></div>
           <div id="record_owned_options">
