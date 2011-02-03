@@ -83,7 +83,7 @@ li img { height: 32px; width: 32px; }
 #header { position: fixed; top: 5px; left: 0px; padding-left: 10px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; }
 #header_logo { width: 20%; float: left; color: #666; font-size: 18px; font-weight: 200; }
 #working_with { width: 50%; float: left; color: #004488; font-size: 18px; text-align: center;}
-#header_name { width: 28%; float: left; text-align: right;}
+#header_name { width: 30%; float: left; text-align: right; margin-left: -15px;} /* eat the header's left padding + 5px */
 #header_username { font-size: .9em; } /* to match the logout link */
 #app_selector { position: absolute; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
 #app_selector_hairline_top { width: 100px; margin: 0 20px 0 20px; border-bottom: 1px solid #ddd; }
@@ -107,6 +107,8 @@ li img { height: 32px; width: 32px; }
   vertical-align: top;
   overflow-y: auto;
   overflow-x: hidden;
+  border-left: 1px dotted #ddd;
+  padding-left: 15px;
 }
 #app_content { overflow-x: hidden; overflow-y: auto; }
 #CloseApp { position:absolute; top:0; right:0; z-index: 1; padding-right: .3em; }
