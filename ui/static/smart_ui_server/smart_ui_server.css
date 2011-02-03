@@ -108,7 +108,7 @@ li img { height: 32px; width: 32px; }
   overflow-y: auto;
   overflow-x: hidden;
   border-left: 1px dotted #ddd;
-  padding-left: 15px;
+// makes scrollbar disappear!  padding-left: 15px;
 }
 #app_content { overflow-x: hidden; overflow-y: auto; }
 #CloseApp { position:absolute; top:0; right:0; z-index: 1; padding-right: .3em; }
