@@ -60,7 +60,7 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
 
 		var loading_div = $("#loading_div");
 		if (loading_div.length == 0) {
-		    loading_div = $('<div class="activity_iframe" id="loading_div" width="90%" height="90%"> Loading... </div>');
+		    loading_div = $('<div class="activity_iframe" style="margin: 0px; border: 0px; padding: 9px;" id="loading_div" width="90%" height="90%"><img src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif"> </div>');
 		    $('#main_canvas').append(loading_div);
 		}
 		OpenAjax.hub.publish("request_visible_element",  loading_div);
@@ -95,8 +95,10 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         			  	  var frame_id = "app_content_iframe_"+randomUUID();
         			  	  $('#main_canvas').append('<iframe src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
         			  	  var frame = $("#"+frame_id);
+					  frame.load(function(){
+						 OpenAjax.hub.publish("request_visible_element",  frame);
+					      });
         			  	  $(window).resize();
-        			  	  OpenAjax.hub.publish("request_visible_element",  frame);
         				  callback( frame[0]);
     			      },
     			error: function(data) {
