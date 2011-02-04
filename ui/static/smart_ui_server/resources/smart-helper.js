@@ -1,5 +1,14 @@
 SMART_HELPER  = {};
 
+SMART_HELPER.handle_height_changed = function(activity, newSize) { 
+    var i = $(activity.iframe);
+    i.height(newSize.height);
+    i.data("requested_height", newSize.height);
+    console.log("enforcing ehight " + newSize.height);
+    $(window).resize();
+};
+
+
 SMART_HELPER.handle_record_info = function(activity, callback) { 
     callback( {
     	'user' : {
@@ -58,12 +67,7 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         	activity.resolved_activity = resolved_activity;
 
 
-		var loading_div = $("#loading_div");
-		if (loading_div.length == 0) {
-		    loading_div = $('<div class="activity_iframe" style="margin: 0px; border: 0px; padding: 8px;" id="loading_div" width="90%" height="90%"><img src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif"> </div>');
-		    $('#main_canvas').append(loading_div);
-		}
-		OpenAjax.hub.publish("request_visible_element",  loading_div);
+		OpenAjax.hub.publish("request_visible_element",  $("#loading_div"));
 
         	$.ajax({
               		url: "/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
@@ -94,7 +98,9 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         			  	  RecordController.APP_ID = resolved_activity.app;
         			  	  var frame_id = "app_content_iframe_"+randomUUID();
         			  	  $('#main_canvas').append('<iframe src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
+					  
         			  	  var frame = $("#"+frame_id);
+					  frame.hide();
 					  frame.load(function(){
 						 OpenAjax.hub.publish("request_visible_element",  frame);
 					      });

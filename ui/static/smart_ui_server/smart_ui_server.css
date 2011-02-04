@@ -28,15 +28,13 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
 body{font:15px/1.6 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
 
 /*** General ***/
-html { height: 100%; overflow-x: hidden; overflow-y: hidden; }
+html { }
 body {
-  height: 100%;
   background: #f6f6f6;
   color: #555;
   font-family: "Helvetica Neue", Calibri, Helvetica, Tahoma, Verdana, sans-serif;
   font-weight: 400;
   text-rendering: optimizelegibility;
-  height: 100%;
 }
 
 /* override reset font face for these elements. make this the same as body font-family */
@@ -80,12 +78,12 @@ h5 { font-size: 14px; margin: 9px  0 0   0; font-weight: 700; color: #555; text-
 li img { height: 32px; width: 32px; }
 
 /** Main layout **/
-#header { position: fixed; top: 5px; left: 0px; padding-left: 10px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; }
+#header {  background: #f6f6f6;  position: fixed; top: 0px; left: 0px; padding-left: 10px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; }
 #header_logo { width: 20%; float: left; color: #666; font-size: 18px; font-weight: 200; }
 #working_with { width: 50%; float: left; color: #004488; font-size: 18px; text-align: center;}
 #header_name { width: 30%; float: left; text-align: right; margin-left: -15px;} /* eat the header's left padding + 5px */
 #header_username { font-size: .9em; } /* to match the logout link */
-#app_selector { position: absolute; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
+#app_selector { position: fixed; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
 #app_selector_hairline_top { width: 100px; margin: 0 20px 0 20px; border-bottom: 1px solid #ddd; }
 #app_selector_hairline_bottom { width: 100px; margin: 16px 20px 0 20px; border-top: 1px solid #ddd; }
 /* this hides the jquery ui tabs generated panels */
@@ -98,15 +96,12 @@ li img { height: 32px; width: 32px; }
 /* use padding on app icons for spacing */
 #app_selector li img { position: relative; top: 9px; padding: 0px 12px 0px 0px; }
 #manage_apps_list { margin-top: 5px !important; }
-#bigbody { position: relative; width: 100%; height: 100%; }
+#bigbody { }
 #main_canvas {
-  width: 100%;
   position: absolute;
-  top: 50px;
+  top: 30px;
   left: 200px;
   vertical-align: top;
-  overflow-y: auto;
-  overflow-x: hidden;
   border-left: 1px dotted #ddd;
 // makes scrollbar disappear!  padding-left: 15px;
 }
@@ -134,6 +129,13 @@ ul.search_results { margin: 0px; padding: 0px; }
 li.record { cursor:pointer; }
 li.record:hover { color: #0088cc; }
 /*.fullScreen { position:absolute; top:0; left:0; width:100%; height: 100%; }*/
+
+#loading_div {
+margin: 0px; 
+border: 0px; 
+padding: 8px;
+}
+
 
 /** generic classes **/
 .greyed_out { opacity: 0.3; }
@@ -171,4 +173,3 @@ table.light tbody td:first-child { border-left:none; }
 table.light tbody td:last-child { border-right:none; }
 tr.odd { background: #fff; }
 tr.unread { font-weight: bold; }
-

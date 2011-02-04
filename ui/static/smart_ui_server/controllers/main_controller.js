@@ -28,49 +28,32 @@ load: function(params) {
 }, 
 
 make_visible: function(element) {
-	$(".activity_iframe:visible").each(function(pos, f) {
-			  f = $(f);
-			  f.hide();
-		  }
-	    );
-		
-	    $("#app_content").hide();
-	    $("#app_content_iframe").hide();
+    $(".activity_iframe:visible").hide();
+    $("#app_content").hide();
+    $("#app_content_iframe").hide();
 
-	    element.show();
-	    element.css("border", "0px");
-
-		$(window).resize();
+    element.show();
+    element.css("border", "0px");
 },
 
 finish_initialization: function(params) {
 	OpenAjax.hub.publish("maincontroller.initialized");
 	
   $(window).resize(function() {
-  	var $elt =$(".activity_iframe:visible");
-  	if ($elt.length == 0)
-  		$elt = $("#app_content");
+	var w=$("html").width()-$('#app_selector').width();
+	$("#main_canvas").css("width", w-20); 
 
-  	$(".activity_iframe").each(function(pos,f) {
-	  			  f = $(f);
-	  			  f.hide();
-	  	    });
-  	
-  	var h=$("#bigbody").height()- $('#header').height(),
-  	    w=$("#bigbody").width()-$('#app_selector').width();
-  	
-  	$(".activity_iframe").each(function(pos, f) {
-			  f = $(f);
-	  			  f.css("height", h);
-	  			  f.css("width", w);
-	    });
-	    
-	    $("#app_content").css("height",h);
-	    $("#app_content").css("width", w); 
-	    $("#main_canvas").css("height", h); 
-	    $("#main_canvas").css("width", w); 
+  	var $elt =$("IFRAME.activity_iframe:visible");
+	if ($elt.length == 0) return;
 
-      $elt.show();    		
+	$elt.hide();
+  	var h=$(document).height()- $('#header').height();
+	var minh = $elt.data("requested_height");
+	h2 = Math.max(h, minh);
+  	$elt.css("width", w-1).css("height", h2);  	
+	$elt.show();
+	console.log("held to minh: " + minh+","+h);
+	
   });
   
   $(window).resize();  
