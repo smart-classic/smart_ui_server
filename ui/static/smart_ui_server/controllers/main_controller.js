@@ -34,6 +34,7 @@ make_visible: function(element) {
 
     element.show();
     element.css("border", "0px");
+    $(window).resize();
 },
 
 finish_initialization: function(params) {
