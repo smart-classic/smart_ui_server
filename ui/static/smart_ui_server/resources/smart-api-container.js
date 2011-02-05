@@ -68,8 +68,8 @@ SMART_CONTAINER = Class.extend({
 			_this.receive_api_call(activity, p, t.complete);
 		});
 
-		activity.channel.bind("height_changed", function(t, p) {
-			_this.SMART_HELPER.handle_height_changed(activity, p);
+		activity.channel.bind("adjust_size", function(t, p) {
+			_this.SMART_HELPER.handle_adjust_size(activity, p);
   	        });
 
 		activity.channel.bind("start_activity", function(t, p) {

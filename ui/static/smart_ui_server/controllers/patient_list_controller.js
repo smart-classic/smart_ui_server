@@ -46,6 +46,7 @@ index: function(params) {
 		  _this.results_element.hide();
 		  _this.results_element.html(_this.view("results", {records: records}));
 		  _this.results_element.fadeIn(160);
+		  $(window).resize();
 	  });
 
 },

@@ -89,9 +89,21 @@ li img { height: 32px; width: 32px; }
 #header_username { font-size: .9em; } /* to match the logout link */
 #app_selector { position: fixed; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
 
+#main_canvas {
+  position: absolute;
+  top: 30px;
+  left: 200px;
+  vertical-align: top;
+  border-left: 1px dotted #ddd;
+// makes scrollbar disappear!  padding-left: 15px;
+}
+
 @media screen and (max-width: 700px) { 
   #header, #footer, #app_selector {position: absolute;}
+  #header {padding-left: 0px;}
   body {position: relative;}
+  #app_selector {width: 150px;}
+  #main_canvas {left: 155px;}
 }
 
 
@@ -108,14 +120,7 @@ li img { height: 32px; width: 32px; }
 #app_selector li img { position: relative; top: 9px; padding: 0px 12px 0px 0px; }
 #manage_apps_list { margin-top: 5px !important; }
 #bigbody { }
-#main_canvas {
-  position: absolute;
-  top: 30px;
-  left: 200px;
-  vertical-align: top;
-  border-left: 1px dotted #ddd;
-// makes scrollbar disappear!  padding-left: 15px;
-}
+
 #app_content {  }
 #CloseApp { position:absolute; top:0; right:0; z-index: 1; padding-right: .3em; }
 
@@ -126,7 +131,7 @@ li img { height: 32px; width: 32px; }
 UL.manage_apps { list-style: none; }
 .manage_apps P { padding: 0px; margin-bottom: 0.4em; }
 .manage_apps .app_tab_img {float: left;}
-#patient_search_results { display: none;}
+#patient_list_results { display: none;}
 #patient_search_sparql {margin-top: 2em; display: none;}
 #patient_selected_header { margin-bottom: 2em; }
 .results_header { font-size: 20px; }
@@ -135,9 +140,9 @@ UL.manage_apps { list-style: none; }
 
 /** extras **/
 .inputHintOverlay { color: #999; font-size: 12px; }
-.activity_iframe { }
-ul.search_results { margin: 0px; padding: 0px; }
-li.record { cursor:pointer; }
+.activity_iframe {border: 0px;}
+ul.search_results { margin: 0px; padding: 0px;  }
+li.record { cursor:pointer; list-style-type: none;}
 li.record:hover { color: #0088cc; }
 /*.fullScreen { position:absolute; top:0; left:0; width:100%; height: 100%; }*/
 

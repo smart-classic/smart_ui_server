@@ -41,19 +41,21 @@ finish_initialization: function(params) {
 	OpenAjax.hub.publish("maincontroller.initialized");
 	
   $(window).resize(function() {
-	var w=$("html").width()-$('#app_selector').width();
-	$("#main_canvas").css("width", w-20); 
+	  
+	  var w = $("html").width() -  $("#main_canvas").get(0).offsetLeft -   $("#main_canvas").get(0).clientLeft;
+	  $("#main_canvas").width(w); 
 
-  	var $elt =$("IFRAME.activity_iframe:visible");
-	if ($elt.length == 0) return;
+	  var $elt =$("IFRAME.activity_iframe:visible");
+	  if ($elt.length == 0) return;
 
 	$elt.hide();
   	var h=$(document).height()- $('#header').height();
-	var minh = $elt.data("requested_height");
-	h2 = Math.max(h, minh);
-  	$elt.css("width", w-1).css("height", h2);  	
+	
+	var minSize = $.extend({width: 0, height: 0}, $elt.data("need_size"));
+	h2 = Math.max(h, minSize.height);
+	w2 = Math.max(w, minSize.width);
+	$elt.width(w2).height(h2);
 	$elt.show();
-	console.log("held to minh: " + minh+","+h);
 	
   });
   

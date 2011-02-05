@@ -1,10 +1,8 @@
 SMART_HELPER  = {};
 
-SMART_HELPER.handle_height_changed = function(activity, newSize) { 
+SMART_HELPER.handle_adjust_size = function(activity, newSize) { 
     var i = $(activity.iframe);
-    i.height(newSize.height);
-    i.data("requested_height", newSize.height);
-    console.log("enforcing ehight " + newSize.height);
+    i.data("need_size", newSize);
     $(window).resize();
 };
 
@@ -97,14 +95,18 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         			  	  startURL = interpolate_url_template(resolved_activity.url, interpolation_args);
         			  	  RecordController.APP_ID = resolved_activity.app;
         			  	  var frame_id = "app_content_iframe_"+randomUUID();
-        			  	  $('#main_canvas').append('<iframe src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
+        			  	  $('#main_canvas').append('<iframe SEAMLESS src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
 					  
         			  	  var frame = $("#"+frame_id);
 					  frame.hide();
 					  frame.load(function(){
 						 OpenAjax.hub.publish("request_visible_element",  frame);
+						 var w=$("html").width()-$('#app_selector').get(0).clientWidth-10;
+						 var h=$("html").height()- $('#header').height()-10;
+						 frame.width(w);
+						 frame.height(h);
+
 					      });
-        			  	  $(window).resize();
         				  callback( frame[0]);
     			      },
     			error: function(data) {
