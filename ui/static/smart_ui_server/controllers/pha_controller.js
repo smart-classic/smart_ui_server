@@ -113,7 +113,7 @@ _add_app: function(params) {
 
 "history.app_req.index subscribe" : function(called, data) {
 	var app_id = data.id;
-    location.hash = "app&id="+app_id;
+	location.hash = "app&id="+app_id;
 
 	if (PHAController.phas && PHAController.phas.length > 0) {
 	    var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
@@ -132,6 +132,10 @@ launch_app: function(pha) {
 	if (RecordController.RECORD_ID === undefined) {
 		alert("Please choose a patient before running an app.");
 	}
+
+
+	$("#app_selector_inner li a").removeClass("selected_app");
+	$("#app_selector_inner li a[href='#app_req&id="+pha.safeid()+"']").addClass("selected_app");
 	
 	var already_running = [];
 	$.each(SMART.activities,

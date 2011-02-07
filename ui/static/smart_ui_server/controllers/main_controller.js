@@ -39,28 +39,45 @@ make_visible: function(element) {
 
 finish_initialization: function(params) {
 	OpenAjax.hub.publish("maincontroller.initialized");
-	
-  $(window).resize(function() {
+	// TOOD: REfactor into height then width, so scrollbar logic can play out	
+	$(window).resize($.preserveScrollbars(function() {
+
+		    var w = $("html").width() -  $("#main_canvas").get(0).offsetLeft -   $("#main_canvas").get(0).clientLeft;
+		    
+		    $("#main_canvas").hide(); 
+		    var h=$(document).height()- $('#header').height();
+		    $("#main_canvas").show();
+
+
+		    // Main canvas now has width, height equal to available non-scrolling screen real estate.
+ 
+		    var $elt =$("IFRAME.activity_iframe:visible");
+		    if ($elt.length == 0) {
+			$("#main_canvas").width(w); 
+			$("#main_canvas").height(h);	      
+			return;
+		    }
 	  
-	  var w = $("html").width() -  $("#main_canvas").get(0).offsetLeft -   $("#main_canvas").get(0).clientLeft;
-	  $("#main_canvas").width(w); 
+	  
+		    var minSize = $.extend({width: 0, height: 0}, $elt.data("need_size"));
+		    h2 = Math.max(h, minSize.height);
+		    
+		    if (h2 > $(document).height()) // there will be v-scrolling
+			{
+			    w -= $.getScrollbarWidth();
+			}
+		    
+		    w2 = Math.max(w, minSize.width);
+		    
+		    if (w2 !== $elt.data("old_w") || h2 !== $elt.data("old_h")) {
+			$("#main_canvas").width(w2).height(h2); 
+			$elt.width(w2).height(h2).data("old_w", w2).data("old_h", h2);
+		    }
 
-	  var $elt =$("IFRAME.activity_iframe:visible");
-	  if ($elt.length == 0) return;
-
-	$elt.hide();
-  	var h=$(document).height()- $('#header').height();
+		}));
 	
-	var minSize = $.extend({width: 0, height: 0}, $elt.data("need_size"));
-	h2 = Math.max(h, minSize.height);
-	w2 = Math.max(w, minSize.width);
-	$elt.width(w2).height(h2);
-	$elt.show();
+	$(window).resize();  
 	
-  });
-  
-  $(window).resize();  
-  
 }
 
 });

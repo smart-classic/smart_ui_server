@@ -99,14 +99,21 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
 					  
         			  	  var frame = $("#"+frame_id);
 					  frame.hide();
-					  frame.load(function(){
-						 OpenAjax.hub.publish("request_visible_element",  frame);
-						 var w=$("html").width()-$('#app_selector').get(0).clientWidth-10;
-						 var h=$("html").height()- $('#header').height()-10;
-						 frame.width(w);
-						 frame.height(h);
 
-					      });
+					  var frame_load = function(){
+					      frame.data("loaded", true);
+						 OpenAjax.hub.publish("request_visible_element",  frame);
+					      };
+
+					  frame.load(frame_load);
+					  setTimeout(function(){
+						  if (frame.data("loaded") !== true){ 
+						      frame_load();
+						      $("#main_canvas").prepend("<div class='activity_iframe'><b>SMArt app loading error</b>.  Could not load: " + startURL+'</div>');
+						  }
+					      },10000);
+					  
+
         				  callback( frame[0]);
     			      },
     			error: function(data) {

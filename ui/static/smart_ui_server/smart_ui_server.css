@@ -136,7 +136,7 @@ UL.manage_apps { list-style: none; }
 #patient_selected_header { margin-bottom: 2em; }
 .results_header { font-size: 20px; }
 .results_sub_header { font-size: 18px; }
-
+#app_selector .selected_app {font-weight: bold; color: #004488;}
 
 /** extras **/
 .inputHintOverlay { color: #999; font-size: 12px; }
