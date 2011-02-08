@@ -152,7 +152,7 @@ launch_app: function(pha) {
 	if (already_running.length > 0) {
 		SMART.foreground_activity(already_running[0].uuid);
 		RecordController.APP_ID = already_running[0].resolved_activity.app;
-		OpenAjax.hub.publish("request_visible_element", $(already_running[0].iframe));
+		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
 		return;
 	}
 		

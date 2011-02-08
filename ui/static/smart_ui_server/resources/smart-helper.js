@@ -3,7 +3,7 @@ SMART_HELPER  = {};
 SMART_HELPER.handle_adjust_size = function(activity, newSize) { 
     var i = $(activity.iframe);
     i.data("need_size", newSize);
-    $(window).resize();
+    OpenAjax.hub.publish("request_grow_app", i);
 };
 
 
@@ -95,14 +95,15 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         			  	  startURL = interpolate_url_template(resolved_activity.url, interpolation_args);
         			  	  RecordController.APP_ID = resolved_activity.app;
         			  	  var frame_id = "app_content_iframe_"+randomUUID();
-        			  	  $('#main_canvas').append('<iframe SEAMLESS src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
+        			  	  $('#app_content_iframe_holder').append('<iframe SEAMLESS src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
 					  
         			  	  var frame = $("#"+frame_id);
-					  frame.hide();
+					  OpenAjax.hub.publish("request_grow_app", frame);
+					  OpenAjax.hub.publish("request_visible_element",  $("#loading_div"));
 
 					  var frame_load = function(){
 					      frame.data("loaded", true);
-						 OpenAjax.hub.publish("request_visible_element",  frame);
+						 OpenAjax.hub.publish("request_grow_app",  frame);
 					      };
 
 					  frame.load(frame_load);

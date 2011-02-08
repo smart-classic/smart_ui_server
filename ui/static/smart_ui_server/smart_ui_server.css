@@ -121,7 +121,7 @@ li img { height: 32px; width: 32px; }
 #manage_apps_list { margin-top: 5px !important; }
 #bigbody { }
 
-#app_content {  }
+#app_content_iframe_holder {width: 90%; height: 90%; overflow: hidden;  }
 #CloseApp { position:absolute; top:0; right:0; z-index: 1; padding-right: .3em; }
 
 #copyright { font-size: .85em; color: #aaa;}
