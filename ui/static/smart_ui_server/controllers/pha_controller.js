@@ -132,7 +132,7 @@ _add_app: function(params) {
 {
     if (new_context === undefined)
 	new_context = "#patient_list_req";
-    $("#app_selector_inner li a").removeClass("selected_app");
+    $("#app_selector li a").removeClass("selected_app");
     $("#app_selector li a[href='"+new_context+"']").addClass("selected_app");
 },
 

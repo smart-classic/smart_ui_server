@@ -127,7 +127,7 @@ li img { height: 32px; width: 32px; }
 
 
 /** views **/
-UL.manage_apps { list-style: none; }
+UL.manage_apps li { list-style: none; }
 .manage_apps P { padding: 0px; margin-bottom: 0.4em; }
 .manage_apps .app_tab_img {float: left;}
 #patient_list_results { display: none;}
