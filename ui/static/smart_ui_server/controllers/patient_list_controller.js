@@ -69,6 +69,6 @@ patient_selected: function(name) {
 	  var record_id = el.closest(".record").model().record_id;
 	  OpenAjax.hub.publish("patient_record.selected", record_id);
 	  this.patient_selected(name);
-},
+}
 
 });
