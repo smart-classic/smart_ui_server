@@ -32,10 +32,9 @@ index: function(params) {
     var _this = this;
     RecordController.APP_ID = null;
     this.element.html(this.view("index"));
-        
     this.results_element = $('#patient_list_results');    
     OpenAjax.hub.publish("request_visible_element", $('#app_content'));
-    
+    OpenAjax.hub.publish("pha.exit_app_context", "#patient_list_req");            
 
 	  Record.search({sparql : this.sparql_base}, function(records) {
   	    $("#patient_list_loading").text("");
@@ -58,12 +57,15 @@ patient_selected: function(name) {
     sm.remove();
     sm = $(this.view("patient_selected", {name: name}));
     sm.hide();
+    $("#header").flash("white", 200);
+
     this.element.prepend(sm);
     sm.fadeIn(160);
+
 },
 
 ".record click": function(el) {
-	  var name = $.trim($('div', el).text());
+	  var name = $.trim($('div:first', el).text());
 	  var record_id = el.closest(".record").model().record_id;
 	  OpenAjax.hub.publish("patient_record.selected", record_id);
 	  this.patient_selected(name);

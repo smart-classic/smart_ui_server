@@ -90,11 +90,11 @@ li img { height: 32px; width: 32px; }
 #app_selector { position: fixed; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
 
 #main_canvas {
-  position: absolute;
-  top: 30px;
-  left: 200px;
+  float: left;
   vertical-align: top;
   border-left: 1px dotted #ddd;
+  margin-left: 210px;
+  margin-top: 30px;
 // makes scrollbar disappear!  padding-left: 15px;
 }
 
@@ -119,9 +119,8 @@ li img { height: 32px; width: 32px; }
 /* use padding on app icons for spacing */
 #app_selector li img { position: relative; top: 9px; padding: 0px 12px 0px 0px; }
 #manage_apps_list { margin-top: 5px !important; }
-#bigbody { }
 
-#app_content_iframe_holder {width: 90%; height: 90%; overflow: hidden;  }
+#app_content_iframe_holder {border: 0px; margin: 0px; padding: 0px; }
 #CloseApp { position:absolute; top:0; right:0; z-index: 1; padding-right: .3em; }
 
 #copyright { font-size: .85em; color: #aaa;}
@@ -140,9 +139,9 @@ UL.manage_apps { list-style: none; }
 
 /** extras **/
 .inputHintOverlay { color: #999; font-size: 12px; }
-.activity_iframe {border: 0px;}
+.activity_iframe {border: 0px; display: block;}
 ul.search_results { margin: 0px; padding: 0px;  }
-li.record { cursor:pointer; list-style-type: none;}
+li.record { cursor:pointer; list-style-type: none;  margin-bottom: .3em;}
 li.record:hover { color: #0088cc; }
 /*.fullScreen { position:absolute; top:0; left:0; width:100%; height: 100%; }*/
 
@@ -156,8 +155,9 @@ padding: 8px;
 /** generic classes **/
 .greyed_out { opacity: 0.3; }
 /*.record_id { font-size: .6em;  font-family: "courier new", fixed; }*/
+
 /* break this usage up into a "details" div, with semantic markup for each element type */
-span.dob { font-size: 70%; position: relative; top: -.4em; }
+div.dob, div.gender, div.zip{ font-size: 12px; position: relative; top: -.4em; line-height: 1.3em;}
 
 /*** tables ***/
 /* a "light" table style */

@@ -32,13 +32,12 @@
       </div>
       {% endblock %}
     </div>
-    <div id='bigbody'>
       <div id="app_selector">
         <div id="app_selector_hairline_top"></div>
           <ul id="app_selector_inner">
       {% block patient_list %}
             <li class="patient_list">
-              <a href="#patient_list_req">
+              <a href="#patient_list_req" class="selected_app">
                 <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/patientsearch.png" />
                 Patient List
               </a>
@@ -63,11 +62,6 @@
 	  <div class="activity_iframe" id="loading_div"><img src="http://sample-apps.smartplatforms.org/framework/smart/images/ajax-loader.gif"> </div>
         </div>
         
-        <!-- used for jquery tools overlay -->
-        <div class="overlay" id="overlay"><div class="wrap"></div></div>
-        
-        <div id="CloseApp" style="display: none"><span id="CloseAppID">app-id-here</span> [<a href="#">Close</a>]</div>
-    </div> <!-- end big body -->
         {% include 'ui/footer.html' %}
   </body>
 </html>

@@ -10,9 +10,9 @@
 	<div>
 	<%= record.demographics.firstname%> <%= record.demographics.lastname%>
 	</div>
-	<span class='dob'>Gender: <%= record.demographics.gender %></span><br>
-	<span class='dob'>DOB: <%= record.demographics.dob %></span><br>
-	<span class='dob'>Zip Code: <%= record.demographics.zipcode %></span><br>
+	<div class='gender'>Gender: <%= record.demographics.gender %></div>
+	<div class='dob'>DOB: <%= record.demographics.dob %></div>
+	<div class='zip'>Zip Code: <%= record.demographics.zipcode %></div>
 	</li>
 <% } %>
 </ul>  

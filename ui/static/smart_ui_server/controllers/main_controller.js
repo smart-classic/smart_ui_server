@@ -42,11 +42,11 @@ make_visible: function(element) {
     $("iframe", cont).hide();
     iframe.show();
 
-    this.grow_to_required_size(cont);
+    this.grow_to_required_size();
 }, 
 	
 
-grow_to_required_size: function(element) {
+grow_to_required_size: function() {
     var element = $("#app_content_iframe_holder");
     var iframe = $("iframe:visible", element);
 
@@ -54,25 +54,12 @@ grow_to_required_size: function(element) {
     var w = this.available_width;
     var h = this.available_height;
     
-    // 2. Figure out if our element has any miniumum requirements
-    var minSize = $.extend({width: 0, height: 0}, iframe.data("need_size"));
-
-    // 3. Compute our element's size based on requirements + available space
-    h2 = Math.max(h, minSize.height);
-
-    if (h2 > this.available_height) // there will be v-scrolling
-	{
-	    w -= $.getScrollbarWidth();
-	}
-    w2 = Math.max(w, minSize.width);
-
-    
-    if (w2 !== iframe.data("old_w") || h2 !== iframe.data("old_h")) {
-	console.log("growing app and div to total: " + w2+","+h2);
-	element.width(w2).height(h2);
+    if (w !== iframe.data("old_w") || h !== iframe.data("old_h")) {
+	console.log("growing app and div to total: " + w+","+h);
+	element.width(w).height(h);
 	console.log(element);
 
-	iframe.width(w2).height(h2).data("old_w", w2).data("old_h", h2);
+	iframe.width(w).height(h).data("old_w", w).data("old_h", h);
 	console.log(iframe);
     }
     
@@ -82,26 +69,20 @@ finish_initialization: function(params) {
     var _this = this;
 	OpenAjax.hub.publish("maincontroller.initialized");
 	// TOOD: REfactor into height then width, so scrollbar logic can play out	
-	$(window).resize($.preserveScrollbars(function() {
-		    
-		    var avail_w = $("html").width() -  $("#main_canvas").get(0).offsetLeft -   $("#main_canvas").get(0).clientLeft;		    
-		    
-		    $("#main_canvas").hide(); 
-		    var avail_h=$(document).height()- $('#header').height();
-		    $("#main_canvas").show();
-		    
-		    _this.available_width = avail_w;
-		    _this.available_height = avail_h;
-
+	$(window).resize(function() {
+		
+		var avail_w = $(window).width() -  $("#main_canvas").get(0).offsetLeft -   $("#main_canvas").get(0).clientLeft;
+		var avail_h = $(window).height() -  $("#main_canvas").get(0).offsetTop -   $("#main_canvas").get(0).clientTop;  
+		_this.available_width = avail_w;
+		_this.available_height = avail_h;
 		    
 		    // If there was an app open, let it know.
 		    var iframe =$("IFRAME.activity_iframe:visible");
 		    if (iframe.length > 0) {
 			console.log("growing app for size " + avail_w+","+avail_h);
 			_this.grow_to_required_size();
-
 		    }
-		}));
+		});
 	
 	$(window).resize();  
 	

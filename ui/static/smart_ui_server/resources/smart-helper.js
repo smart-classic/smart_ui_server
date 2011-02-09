@@ -1,12 +1,5 @@
 SMART_HELPER  = {};
 
-SMART_HELPER.handle_adjust_size = function(activity, newSize) { 
-    var i = $(activity.iframe);
-    i.data("need_size", newSize);
-    OpenAjax.hub.publish("request_grow_app", i);
-};
-
-
 SMART_HELPER.handle_record_info = function(activity, callback) { 
     callback( {
     	'user' : {

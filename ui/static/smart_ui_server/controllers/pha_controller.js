@@ -55,6 +55,7 @@ init: function(params){
 		}));
 
 		OpenAjax.hub.publish("request_visible_element", $('#app_content'));
+		OpenAjax.hub.publish("pha.exit_app_context", "#manage_apps_req");
 
     	var _this = this;
         $(".manage_apps BUTTON").click(function() {
@@ -127,6 +128,13 @@ _add_app: function(params) {
     this.launch_app(app);
 }, 
 
+'pha.exit_app_context subscribe': function(topic, new_context) 
+{
+    if (new_context === undefined)
+	new_context = "#patient_list_req";
+    $("#app_selector_inner li a").removeClass("selected_app");
+    $("#app_selector li a[href='"+new_context+"']").addClass("selected_app");
+},
 
 launch_app: function(pha) {	 
 	if (RecordController.RECORD_ID === undefined) {
@@ -134,8 +142,8 @@ launch_app: function(pha) {
 	}
 
 
-	$("#app_selector_inner li a").removeClass("selected_app");
-	$("#app_selector_inner li a[href='#app_req&id="+pha.safeid()+"']").addClass("selected_app");
+	$("#app_selector li a").removeClass("selected_app");
+	$("#app_selector li a[href='#app_req&id="+pha.safeid()+"']").addClass("selected_app");
 	
 	var already_running = [];
 	$.each(SMART.activities,

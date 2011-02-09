@@ -22,16 +22,9 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 
   after_record_obtained: function(record) {
 	  RecordController.CURRENT_RECORD = record;
-    // $("#select_patient_warning").html("&nbsp;patient: <strong>"+record.label+"</strong>");
  	  this.current_patient_label.text(record.label);   
+	  OpenAjax.hub.publish("pha.exit_app_context");
 	  SMART.context_changed();
-	  
-      // If there was an app open on the old record, open it automatically
-		// on the new one.
-      if (RecordController.APP_ID) {
-    		var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
-        	OpenAjax.hub.publish("pha.launch", app);
-      }
   },
   
   _load_record: function() {

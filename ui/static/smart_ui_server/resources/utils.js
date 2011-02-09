@@ -102,23 +102,3 @@ jQuery.fn.flash = function( color, duration )
     };
 })(jQuery);
 
-(function($){
-    $.preserveScrollbars = function(fn) {
-
-	return function() {
-	    var scrollPos = {
-		left: $(window).scrollLeft(),
-		top: $(window).scrollTop()
-	    };
-	    
-	    fn.apply(this, arguments);
-
-	    $(window).scrollLeft(scrollPos.left);
-	    $(window).scrollTop(scrollPos.top);
-	}
-
-	
-	  
-
-    };
-})(jQuery);
