@@ -55,12 +55,12 @@ grow_to_required_size: function() {
     var h = this.available_height;
     
     if (w !== iframe.data("old_w") || h !== iframe.data("old_h")) {
-	console.log("growing app and div to total: " + w+","+h);
+	//	console.log("growing app and div to total: " + w+","+h);
 	element.width(w).height(h);
-	console.log(element);
+	//	console.log(element);
 
 	iframe.width(w).height(h).data("old_w", w).data("old_h", h);
-	console.log(iframe);
+	//	console.log(iframe);
     }
     
 },
@@ -79,7 +79,7 @@ finish_initialization: function(params) {
 		    // If there was an app open, let it know.
 		    var iframe =$("IFRAME.activity_iframe:visible");
 		    if (iframe.length > 0) {
-			console.log("growing app for size " + avail_w+","+avail_h);
+			//			console.log("growing app for size " + avail_w+","+avail_h);
 			_this.grow_to_required_size();
 		    }
 		});
