@@ -57,10 +57,10 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 
 'history.prev_pt_req.index subscribe': function(topic) {
     location.hash = "prev_pt";
-
     var prev = null;
     var answer = null;
-    $.each(RecordController.RECENT_RECORDS, function(k,v) {
+    $.each(RecordController.records, function(k,v) {
+	k = v.record_id;
 	if (prev !== null && k == RecordController.CURRENT_RECORD.record_id)
 	    {
 	    answer = prev;
@@ -80,8 +80,8 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
     var first = null;
     var answer = null;
 
-    $.each(RecordController.RECENT_RECORDS, function(k,v) {
-	    
+    $.each(RecordController.records, function(k,v) {
+	    k = v.record_id;
 	    if (answer === "next")
 	    {
 		answer = k;
