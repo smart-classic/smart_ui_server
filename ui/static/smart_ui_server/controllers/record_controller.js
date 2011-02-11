@@ -24,7 +24,7 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 
 	  RecordController.CURRENT_RECORD = record;
  	  this.current_patient_label.html("<a id='prev_pt' href='#prev_pt_req'>previous patient&lt</a>"+
-					  "<span id='pt_label'>"+record.label+"</span"+
+					  "<span id='pt_label'>"+record.label+"</span>"+
 					  "<a id='next_pt' href='#next_pt_req'>&gt; next patient</a>");
 
 	  OpenAjax.hub.publish("pha.exit_app_context");
