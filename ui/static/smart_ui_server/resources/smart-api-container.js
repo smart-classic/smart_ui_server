@@ -54,6 +54,8 @@ SMART_CONTAINER = Class.extend({
 	    activity.ready = true;
 		message.activity_id = activity.uuid;
 		message.ready_data = activity.ready_data;
+	        message.iframe_width = $(activity.iframe).width();
+   	        message.iframe_height = $(activity.iframe).height();
 		callback(message);
 		activity.channel.destroy();
 		
