@@ -21,10 +21,22 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 	}, 
 
   after_record_obtained: function(record) {
+
 	  RecordController.CURRENT_RECORD = record;
- 	  this.current_patient_label.text(record.label);   
+ 	  this.current_patient_label.html("<a id='prev_pt' href='#prev_pt_req'>previous patient &lt;</a>"+
+					  "<span id='pt_label'>"+record.label+"</span>"+
+					  "<a id='next_pt' href='#next_pt_req'>&gt; next patient</a>");
+
 	  OpenAjax.hub.publish("pha.exit_app_context");
 	  SMART.context_changed();
+
+	  // If there was an app open on the old record, open it automatically
+	  // on the new one.
+	  if (RecordController.APP_ID) {
+	      var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
+	      OpenAjax.hub.publish("pha.launch", app);
+	  }
+
   },
   
   _load_record: function() {
@@ -40,5 +52,55 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 		  this.after_record_obtained(already_obtained);
       else
     	  Record.get(record_id,this.callback(after_record_obtained));
-  }	
+    },
+
+
+'history.prev_pt_req.index subscribe': function(topic) {
+    location.hash = "prev_pt";
+    var prev = null;
+    var answer = null;
+    $.each(RecordController.records, function(k,v) {
+	k = v.record_id;
+	if (prev !== null && k == RecordController.CURRENT_RECORD.record_id)
+	    {
+	    answer = prev;
+	    return false;
+	    }
+	prev = k;
+    });
+
+    var r = this.RECENT_RECORDS[(answer || prev)];
+    this.after_record_obtained(r);
+    PatientListController.patient_selected(r.label);
+},
+
+'history.next_pt_req.index subscribe': function(topic) {
+    location.hash = "next_pt";
+
+    var first = null;
+    var answer = null;
+
+    $.each(RecordController.records, function(k,v) {
+	    k = v.record_id;
+	    if (answer === "next")
+	    {
+		answer = k;
+		return false;
+	    }
+	    if (k == RecordController.CURRENT_RECORD.record_id)
+	    {
+		answer = "next";
+	    }
+
+	if (first === null)
+	    first = k;
+
+    });
+
+    var r = this.RECENT_RECORDS[(answer || first)];
+    this.after_record_obtained(r);
+    PatientListController.patient_selected(r.label);
+}
+
+ 
 });

@@ -36,19 +36,37 @@ index: function(params) {
     OpenAjax.hub.publish("request_visible_element", $('#app_content'));
     OpenAjax.hub.publish("pha.exit_app_context", "#patient_list_req");            
 
-	  Record.search({sparql : this.sparql_base}, function(records) {
-  	    $("#patient_list_loading").text("");
-  	      
-		  for (var i=0; i < records.length; i++)
-			  RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
-  	      
-		  _this.results_element.hide();
-		  _this.results_element.html(_this.view("results", {records: records}));
-		  _this.results_element.fadeIn(160);
-	  });
+    if (RecordController.CURRENT_RECORD === undefined)
+	{
+	    Record.search({sparql : this.sparql_base},  this.callback(this.process_list));
+	    return;
+	}
+    this.display_list();
 
 },
+    
+process_list: function(records) {
+    
+    records.sort(function(a,b) {return a.label[0].charCodeAt(0) - b.label[0].charCodeAt(0)});
+    
+    for (var i=0; i < records.length; i++)
+	RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
+    RecordController.records = records;
 
+    this.display_list();
+    
+    $(".record:first", this.element).click();
+},
+
+display_list: function() {  	      
+    $("#patient_list_loading").text("");
+    
+    this.results_element.hide();
+    this.results_element.html(this.view("results", {records: RecordController.records}));
+    this.results_element.fadeIn(160);
+    if ( RecordController.CURRENT_RECORD !== undefined)
+	this.patient_selected(RecordController.CURRENT_RECORD.label);
+},
 
 
 patient_selected: function(name) {
