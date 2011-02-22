@@ -96,7 +96,7 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 	    first = k;
 
     });
-
+    if (answer === "next") answer = null;
     var r = this.RECENT_RECORDS[(answer || first)];
     this.after_record_obtained(r);
     PatientListController.patient_selected(r.label);
