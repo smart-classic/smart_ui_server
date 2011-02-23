@@ -46,8 +46,7 @@ index: function(params) {
 },
     
 process_list: function(records) {
-    
-    records.sort(function(a,b) {return a.label[0].charCodeAt(0) - b.label[0].charCodeAt(0)});
+    records.sort(function(a,b) { if (a.label > b.label) return 1; if (a.label < b.label) return -1; return 0;});
     
     for (var i=0; i < records.length; i++)
 	RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
