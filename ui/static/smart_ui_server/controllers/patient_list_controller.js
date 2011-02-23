@@ -82,10 +82,64 @@ patient_selected: function(name) {
 },
 
 ".record click": function(el) {
-	  var name = $.trim($('div:first', el).text());
+	  var name = $.trim($('span.pt_name', el).text());
 	  var record_id = el.closest(".record").model().record_id;
 	  OpenAjax.hub.publish("patient_record.selected", record_id);
 	  this.patient_selected(name);
 }
 
 });
+
+
+var sample_patient_descriptions = {
+"1032702" : {"tags": "medications,problems",  "oneliner": "history of GERD"},
+"1081332" : {"tags": "medications,problems",  "oneliner": "history of otitis media"},
+"1098667" : {"tags": "medications,problems",  "oneliner": "history of colonic polyps, migraine, hypercholesterolemia"},
+"1134281" : {"tags": "labs,medications,problems",  "oneliner": " history of otitis media, sinusitis."},
+"1137192" : {"tags": "allergies,labs,medications,problems",  "oneliner": "history of benign prostitic hyperplasia, migraine, depression"},
+"1157764" : {"tags": "labs,medications,problems",  "oneliner": "history of breast cancer, Crohn's disease, open angle glaucoma"},
+"1186747" : {"tags": "medications,problems",  "oneliner": "history of ADHD, asthma"},
+"1213208" : {"tags": "problems",  "oneliner": "history of hypertension, GERD, acute cellulitis"},
+"1272431" : {"tags": "labs,problems",  "oneliner": "65yo male with history of prostate cancer, renal cancer, hyperlipidemia"},
+"1288992" : {"tags": "allergies,labs,medications,problems",  "oneliner": "history of dementia, hypertension"},
+"1291938" : {"tags": "problems",  "oneliner": "78yo female with history of breast cancer, hyperlipidemia"},
+"1482713" : {"tags": "medications,problems",  "oneliner": "history of eczema, otitis media, speech disturbance"},
+"1520204" : {"tags": "labs,problems",  "oneliner": "history of COPD, osteoarthritis, hypertension, hyperlipidemia"},
+"1540505" : {"tags": "labs,problems",  "oneliner": "45yo female with history of Type 2 diabetes, hypertension, GERD."},
+"1551992" : {"tags": "allergies,labs,problems",  "oneliner": "63yo female with history of hypertension, osteoarthritis, COPD, gout"},
+"1557780" : {"tags": "labs,medications,problems",  "oneliner": "history of hypertension, pulmonary emphysema, chronic bronchitis, GERD"},
+"1577780" : {"tags": "labs,medications,problems",  "oneliner": "history of Type 2 diabetes, asthma, hypertension"},
+"1614502" : {"tags": "medications,problems",  "oneliner": "history of otitis media"},
+"1627321" : {"tags": "labs,problems",  "oneliner": "history of Type 2 diabetes, morbid obesity, gout, hypertension"},
+"1642068" : {"tags": "labs,medications,problems",  "oneliner": "history of osteoarthritis, hypertension, pernicious anemia"},
+"1685497" : {"tags": "allergies,medications,problems",  "oneliner": "history of Type 2 diabetes, hypertension, hyperlipidemia, obesity"},
+"1768562" : {"tags": "labs,medications,problems",  "oneliner": "71yo male with history of cardiomyopathy, CHF, atrial fibrillation, COPD, depression"},
+"1796238" : {"tags": "labs,medications,problems",  "oneliner": "50yo male with history of Type 2 diabetes, hypertension, chronic bronchitis"},
+"1869612" : {"tags": "labs,medications,problems",  "oneliner": "60yo male with history of chronic hepatitis C, Type 2 diabetes"},
+"1951076" : {"tags": "labs,problems",  "oneliner": "history of depression, migraine, seizure, anorexia"},
+"2004454" : {"tags": "labs,problems",  "oneliner": "4yo male with history of otitis media, URI"},
+"2042917" : {"tags": "labs,problems",  "oneliner": "history of hypertension, asthma, cocaine abuse"},
+"2080416" : {"tags": "medications,problems",  "oneliner": "history of otitis media, cough"},
+"2081539" : {"tags": "labs,problems",  "oneliner": "83yo female with history of atrial fibrillation, hypertension, Type 2 diabetes"},
+"2113340" : {"tags": "labs,medications,problems",  "oneliner": "49yo female with history of Type 2 diabetes, hyperlipidemia, acute myocardial infarction"},
+"2169591" : {"tags": "allergies,labs,medications,problems",  "oneliner": "history of hypothyroidism, HSV, hyperlipidemia"},
+"2347217" : {"tags": "labs,problems",  "oneliner": "62yo male with history of hypertension, hypercholesterolemiaj"},
+"2354220" : {"tags": "labs,medications,problems",  "oneliner": "history of COPD, uterine leiomyoma, anemia"},
+"2502813" : {"tags": "labs,medications,problems",  "oneliner": "history of hypertension, COPD, stress incontinence"},
+"613876" : {"tags": "problems",  "oneliner": "history of hypothyroidism"},
+"621799" : {"tags": "allergies,labs,problems",  "oneliner": "history of myocardial infarction, congestive heart failure, hyperlipidemia"},
+"629528" : {"tags": "labs,medications,problems",  "oneliner": "30yo female with history of CIN grade 1, HPV, depression"},
+"640264" : {"tags": "problems",  "oneliner": "history of hypertension, hemorrhoids, irregular periods"},
+"644201" : {"tags": "medications,problems",  "oneliner": "history of hypertension, hyperlipidemia, osteoporosis"},
+"665677" : {"tags": "labs,medications,problems",  "oneliner": "history of Type 2 diabetes, renal carcinoma, hypertension"},
+"724111" : {"tags": "problems",  "oneliner": "20yo female with history of hyperlipidemia, depression, sinusitis"},
+"731673" : {"tags": "medications,problems",  "oneliner": "62yo female with history of hypertension, anxiety, vertigo, UTI"},
+"736230" : {"tags": "labs,medications,problems",  "oneliner": "history of hypothyroidism"},
+"765583" : {"tags": "labs,medications,problems",  "oneliner": "history of breast cancer"},
+"767980" : {"tags": "labs,medications,problems",  "oneliner": "57 year old male with history of Type 2 diabetes, peptic ulcer, hypertension, hypercholesterolemia"},
+"880378" : {"tags": "medications,problems",  "oneliner": "11yo female with history of otitis media, sinusitis, URI"},
+"897185" : {"tags": "allergies,problems",  "oneliner": "history of hyperlipidemia, acute bronchitis, head injury"},
+"935270" : {"tags": "medications,problems",  "oneliner": "history of coronary arteriosclerosis, hypertension, hyperlipidemia"},
+"967332" : {"tags": "labs,medications,problems",  "oneliner": "History of hypertension, asthma, sleep apnea"},
+"981968" : {"tags": "medications,problems",  "oneliner": "history of asthma, GERD, gout"}
+}

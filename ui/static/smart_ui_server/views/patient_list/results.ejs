@@ -7,9 +7,29 @@
 <% for (var i = 0; i < records.length; i++) { %>
 <% var record = records[i]; %>
 	<li class='record' <%= record%>>
-	<div>
-	<%= record.demographics.firstname%> <%= record.demographics.lastname%>
+	<div class='pt_name'>
+	<span class='pt_name'><%= record.demographics.firstname%> <%= record.demographics.lastname%></span>
+
 	</div>
+
+	<% 
+	   var sample_data = sample_patient_descriptions[record.record_id];
+	   if (sample_data !== undefined) {	
+	   %>
+	 <%}%>
+
+
+	<% if (sample_data !== undefined) { %>
+	   <div class='oneliner'>Data: <%
+  	        var tags = sample_data.tags.split(",");
+	        for (var j = 0; j < tags.length; j++) { %>
+			<span class='record_tag'><%=tags[j]%></span>
+	      <%}%>
+             </div>
+
+	  <div class='oneliner'>Summary:<em><%= sample_data.oneliner%></em></div>
+	<%}%>
+
 	<div class='gender'>Gender: <%= record.demographics.gender %></div>
 	<div class='dob'>DOB: <%= record.demographics.dob %></div>
 	<div class='zip'>Zip Code: <%= record.demographics.zipcode %></div>
