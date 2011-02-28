@@ -159,7 +159,10 @@ padding: 8px;
 /*.record_id { font-size: .6em;  font-family: "courier new", fixed; }*/
 
 /* break this usage up into a "details" div, with semantic markup for each element type */
-div.dob, div.gender, div.zip{ font-size: 12px; position: relative; top: -.4em; line-height: 1.3em;}
+div.pt_name, div.dob, div.gender, div.zip, div.oneliner{ font-size: 12px; position: relative; top: -.4em; line-height: 1.3em;}
+div.pt_name { margin-top: 1.3em;  } 
+span.oneliner {}
+span.record_tag {background: #ccc; font-size: 10px; padding-left: 2px; padding-right: 2px; padding-top: 1px; margin-right: 2px;   }
 
 /*** tables ***/
 /* a "light" table style */
