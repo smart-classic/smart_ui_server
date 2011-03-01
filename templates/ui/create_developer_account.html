@@ -38,8 +38,12 @@
   <body style="text-align: center;">
     <div style="text-align: left; width: 550px; margin-left: auto; margin-right: auto; margin-top: 100px;">
       <form id="form" method="post" action="">
+        <div  style="text-align: center; margin-left: -0px;">
+            <span id="logo">
+              <img src="/static/smart_ui_server/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
+            </span>
+
         <div style="font-size: 24px">
-            SMArt EMR: Create Developer Account
           {% if error %}
             <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 18px;">
               {{error}}
@@ -49,6 +53,9 @@
 
         <br clear="both"/>
         <table style="font-size:18px">
+        <tr>
+          <td colspan="2" style="text-align: center; font-size: 1.8em; font-weight: bold; ">Create Developer Account</td>
+	</tr>
           <tr>
             <td>First name:</td>
             <td><input AUTOFOCUS type="text" style="font-size: 18px;" id="given_name" name="given_name" tabindex="1"/></td>

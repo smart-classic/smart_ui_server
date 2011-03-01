@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="apple-touch-icon" href="/static/resources/images/smart-ipad-icon.png"/>
-    <link rel="apple-touch-startup-image" href="/static/resources/images/smart-ipad-icon.png"/>
+    <link rel="apple-touch-icon" href="/static/smart_ui_server/resources/images/smart-ipad-icon.png"/>
+    <link rel="apple-touch-startup-image" href="/static/smart_ui_server/resources/images/smart-ipad-icon.png"/>
 
     {% if branding %}
       {% include branding.header_template %}
@@ -26,7 +26,10 @@
   </head>
   <body>
     <div id="header">
-      <div id="header_logo">SMArt EMR</div>
+      <div id="header_logo">
+            <span id="logo">
+              <img src="/static/smart_ui_server/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
+            </span></div>
       <div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
 
       {% block header_username %}
@@ -44,7 +47,7 @@
       {% block patient_list %}
             <li class="patient_list">
               <a href="#patient_list_req" class="selected_app">
-                <img class="app_tab_img" height="16px" width="16px" src="/static/resources/images/app_icons_32/patientsearch.png" />
+                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_ui_server/resources/images/app_icons_32/patientsearch.png" />
                 Patient List
               </a>
             </li>
@@ -55,7 +58,7 @@
             <ul id="manage_apps_list">
               <li>
                 <a id="manage_apps_link" href="#manage_apps_req">
-                 <img class="app_tab_img_small" height="16px" width="16px" src="/static/resources/images/icons_24/edit_add.png" />
+                 <img class="app_tab_img_small" height="16px" width="16px" src="/static/smart_ui_server/resources/images/icons_24/edit_add.png" />
                  <span>Manage Apps</span>
                 </a>
               </li>

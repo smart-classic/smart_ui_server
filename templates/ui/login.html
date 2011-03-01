@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
     <meta name="apple-mobile-web-app-capable" content="yes" /> 
     <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
-    <link rel="apple-touch-icon" href="/static/resources/images/smart-ipad-icon.png"/> 
-    <link rel="apple-touch-startup-image" href="/static/resources/images/smart-ipad-icon.png"/> 
+    <link rel="apple-touch-icon" href="/static/smart_ui_server/resources/images/smart-ipad-icon.png"/> 
+    <link rel="apple-touch-startup-image" href="/static/smart_ui_server/resources/images/smart-ipad-icon.png"/> 
 
     <title> Reference SMArt EMR: Login</title>
     <link type="text/css" href="/static/smart_ui_server/smart_ui_server.css" rel="Stylesheet" />
@@ -39,24 +39,24 @@
     </script>
   </head>
   <body style="text-align: center;">
-    <div style="text-align: left; width: 430px; margin-left: auto; margin-right: auto; margin-top: 100px;">
+    <div style="text-align: left; width: 400px; margin-left: auto; margin-right: auto; margin-top: 100px;">
       <form id="form" method="post" action="/login">
-        <div>
-          <div style="text-align: center; margin-left: -50px;">
-            <span id="logo" style="font-size: 2em;">
-              <img src="/static/resources/images/badges/SMArt-Logo.png" style="margin-bottom: -17px;" alt='SMArt'/>
-              EMR Login
+        <div  style="text-align: center; margin-left: -0px;">
+            <span id="logo">
+              <img src="/static/smart_ui_server/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
             </span>
-          </div>
+
           {% if error %}
             <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px;">
               {{error}}
             </div>
           {% endif %}
-        </div>
 
         <br clear="both"/>
-        <table>
+        <table style="width: 100%;">
+        <tr>
+          <td colspan="2" style="text-align: center; font-size: 1.8em; font-weight: bold; ">EMR Login</td>
+	</tr>
         <tr>
           <td>
             <span style="font-size: 22px;">Email:</span>
@@ -85,7 +85,7 @@
           </td>
         </tr>
         </table>
-
+	</div>
         <div style="margin-top: 1em;">
           <div><a href="/create_developer_account">Create Developer Account</a></div>
           <div><a href="/reset_password_request">Forgot Password</a></div>
