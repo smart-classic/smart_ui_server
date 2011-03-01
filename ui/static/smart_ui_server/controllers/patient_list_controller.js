@@ -46,7 +46,21 @@ index: function(params) {
 },
     
 process_list: function(records) {
-    records.sort(function(a,b) { if (a.label > b.label) return 1; if (a.label < b.label) return -1; return 0;});
+    records.sort(function(a,b) { 
+	    var ret  = 0;
+	    if (a.label > b.label) ret = 1; 
+	    if (a.label < b.label) ret = -1; 
+
+	    if (sample_patient_descriptions[a.record_id] === undefined &&
+		sample_patient_descriptions[b.record_id] !== undefined)
+		ret = 1;
+
+	    if (sample_patient_descriptions[b.record_id] === undefined &&
+		sample_patient_descriptions[a.record_id] !== undefined)
+		ret = -1;
+
+	    return ret;
+	});
     
     for (var i=0; i < records.length; i++)
 	RecordController.RECENT_RECORDS[records[i].record_id] = records[i];
@@ -82,9 +96,9 @@ patient_selected: function(name) {
 },
 
 ".record click": function(el) {
-	  var name = $.trim($('span.pt_name', el).text());
 	  var record_id = el.closest(".record").model().record_id;
 	  OpenAjax.hub.publish("patient_record.selected", record_id);
+	  var name = $.trim($('span.pt_name', el).text());
 	  this.patient_selected(name);
 }
 
