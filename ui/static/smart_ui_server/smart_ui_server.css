@@ -87,7 +87,7 @@ li img { height: 32px; width: 32px; }
 
 #header_logo { width: 20%; float: left; color: #666; font-size: 18px; font-weight: 200; }
 #working_with { width: 50%; float: left; color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap;}
-#header_name {  float: right; text-align: right; margin-right: 1.5em; margin-top: 3px; } /* eat the header's left padding + 5px */
+#header_name {  float: right; text-align: right; margin-right: 1.5em; margin-top: 3px; white-space: nowrap; } /* eat the header's left padding + 5px */
 #header_username { font-size: .9em; } /* to match the logout link */
 #app_selector { position: fixed; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px;}
 
