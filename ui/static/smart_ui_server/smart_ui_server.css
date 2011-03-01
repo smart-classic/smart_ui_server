@@ -136,7 +136,7 @@ UL.manage_apps li { list-style: none; }
 #patient_search_sparql {margin-top: 2em; display: none;}
 #patient_selected_header { margin-bottom: 2em; }
 .results_header { font-size: 20px; }
-.results_sub_header { font-size: 18px; }
+.results_sub_header { font-size: 18px; font-weight: bold; }
 #app_selector .selected_app {font-weight: bold; color: #004488;}
 
 /** extras **/
