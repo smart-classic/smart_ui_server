@@ -35,7 +35,7 @@
           }
           return true;
         });
-      })
+      });
     </script>
   </head>
   <body style="text-align: center;">
@@ -90,8 +90,15 @@
           <div><a href="/create_developer_account">Create Developer Account</a></div>
           <div><a href="/reset_password_request">Forgot Password</a></div>
         </div>
+
       </form>
+
     </div>
+        <div style="margin-top: 1em; font-size: 80%;">
+	  The SMArt EMR is works with: 
+	    <span style="font-weight: bold; font-size: 100%;">Chrome 8+ Firefox 3.6+, IE8+, Safari 5+</span>
+        </div>
+
     {% if branding %}
       {% include branding.footer_template %}
     {% else %}
