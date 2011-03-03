@@ -32,7 +32,7 @@ SMART_CONTAINER = Class.extend({
     },
 
     context_changed: function() {
-    	$.each(this.activities, function(aid, a){
+    	jQuery.each(this.activities, function(aid, a){
     		var c = a.channel;
     		if (c)  {
         	    c.call({method: "activitydestroy", success: function(){}});
@@ -54,8 +54,8 @@ SMART_CONTAINER = Class.extend({
 	    activity.ready = true;
 		message.activity_id = activity.uuid;
 		message.ready_data = activity.ready_data;
-	        message.iframe_width = $(activity.iframe).width();
-   	        message.iframe_height = $(activity.iframe).height();
+	        message.iframe_width = jQuery(activity.iframe).width();
+   	        message.iframe_height = jQuery(activity.iframe).height();
 		callback(message);
 		activity.channel.destroy();
 		
@@ -172,7 +172,7 @@ SMART_CONTAINER = Class.extend({
 	this.SMART_HELPER.handle_start_activity(
 			new_activity, 
 			function(iframe) {
-			    var origin  = __SMART_extract_origin($(iframe).attr('src'));
+			    var origin  = __SMART_extract_origin(jQuery(iframe).attr('src'));
 			    new_activity.origin = origin;
 			    new_activity.iframe = iframe;
 		    	new_activity.channel  = Channel.build({window: iframe.contentWindow, origin: origin, scope: "not_ready", debugOutput: _this.debug});							    
@@ -192,7 +192,7 @@ SMART_CONTAINER = Class.extend({
     },
     
     clear_unbound_channels: function() {
-	    $.each(this.activities, function(aid, activity) {
+	    jQuery.each(this.activities, function(aid, activity) {
 	    	if (activity.ready === false && activity.channel !== undefined)
 	    	{	
 	    		activity.channel.destroy();
