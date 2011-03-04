@@ -82,8 +82,10 @@ li img { height: 32px; width: 32px; }
 
 #footer { position: fixed; bottom: 0px; width: 190px; }
 
-#pt_label { margin-left: 2em; margin-right: 2em;}
-#prev_pt, #prev_pt {}
+/* #pt_label { margin-left: 2em; margin-right: 2em;}*/
+#prev_pt {padding-left: 2em; padding-right: 1em; }
+#next_pt {padding-left: 1em; padding-right: 2em;}
+#next_pt:hover,#prev_pt:hover {text-decoration: none; font-weight: bold; border-bottom: 0px;}
 #logo { padding-top: .8em; display: inline-block;}
 #header_logo { width: 210px; float: left;  color: #666; font-size: 18px; font-weight: 200; z-index: 2;background: #F6F6F6; text-align: center;}
 #working_with { width: 50%; float: left; color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap;}
