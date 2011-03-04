@@ -109,8 +109,8 @@ li img { height: 32px; width: 32px; }
 }
 
 
-#app_selector_hairline_top { width: 100px; margin: 0 20px 0 20px; border-bottom: 1px solid #ddd; }
-#app_selector_hairline_bottom { width: 100px; margin: 16px 20px 0 20px; border-top: 1px solid #ddd; }
+#app_selector_hairline_top { width: 120px; margin: 0 35px; border-bottom: 1px solid #ddd; }
+#app_selector_hairline_bottom { width: 120px; margin: 16px 35px 0 35px; border-top: 1px solid #ddd; }
 /* this hides the jquery ui tabs generated panels */
 #app_selector .ui-tabs-panel { display: none; }
 #app_selector ul { margin: 0px; }
