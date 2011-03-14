@@ -41,51 +41,17 @@ make_visible: function(element) {
     this.make_visible(cont);
     $("iframe", cont).hide();
     iframe.show();
-
-    this.grow_to_required_size();
 }, 
 	
 
 grow_to_required_size: function() {
-    var element = $("#app_content_iframe_holder");
-    var iframe = $("iframe:visible", element);
-
-    // 1. Figure out how much space there is on the screen
-    var w = this.available_width;
-    var h = this.available_height;
-    
-    if (w !== iframe.data("old_w") || h !== iframe.data("old_h")) {
-	//	console.log("growing app and div to total: " + w+","+h);
-	element.width(w).height(h);
-	//	console.log(element);
-
-	iframe.width(w).height(h).data("old_w", w).data("old_h", h);
-	//	console.log(iframe);
-    }
     
 },
 
 finish_initialization: function(params) {
     var _this = this;
 	OpenAjax.hub.publish("maincontroller.initialized");
-	// TOOD: REfactor into height then width, so scrollbar logic can play out	
-	$(window).resize(function() {
-		
-		var avail_w = $(window).width() -  $("#main_canvas").get(0).offsetLeft -   $("#main_canvas").get(0).clientLeft;
-		var avail_h = $(window).height() -  $("#main_canvas").get(0).offsetTop -   $("#main_canvas").get(0).clientTop;  
-		_this.available_width = avail_w;
-		_this.available_height = avail_h;
-		    
-		    // If there was an app open, let it know.
-		    var iframe =$("IFRAME.activity_iframe:visible");
-		    if (iframe.length > 0) {
-			//			console.log("growing app for size " + avail_w+","+avail_h);
-			_this.grow_to_required_size();
-		    }
-		});
-	
-	$(window).resize();  
-	
+	// TOOD: REfactor into height then width, so scrollbar logic can play out		
 }
 
 });

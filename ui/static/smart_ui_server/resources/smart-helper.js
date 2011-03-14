@@ -88,7 +88,7 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         			  	  startURL = interpolate_url_template(resolved_activity.url, interpolation_args);
         			  	  RecordController.APP_ID = resolved_activity.app;
         			  	  var frame_id = "app_content_iframe_"+randomUUID();
-        			  	  $('#app_content_iframe_holder').append('<iframe SEAMLESS src="'+startURL+'" class="activity_iframe" id="'+frame_id+'" width="90%" height="90%"> </iframe>');
+        			  	  $('#app_content_iframe_holder').append('<iframe SEAMLESS src="'+startURL+'" class="activity_iframe" id="'+frame_id+'"> </iframe>');
 					  
         			  	  var frame = $("#"+frame_id);
 					  OpenAjax.hub.publish("request_grow_app", frame);
