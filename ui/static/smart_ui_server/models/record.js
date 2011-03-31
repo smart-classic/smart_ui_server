@@ -5,6 +5,9 @@
 Record= $.Model.extend('smart_ui_server.Models.Record',
 /* @Static */
 { 
+    attributes : { 
+	record_id : 'string'
+    },
 	search: function(sparql, callback) {
 		var base_url = '/records/search/xml';
 		$.getXML(base_url, sparql,  function(record_list) {
