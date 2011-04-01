@@ -25,9 +25,11 @@ index: function(params) {
 	    var ack = $.grep(alerts, function(a) {return (a.acknowledged_by != null)});
 	    var unack = $.grep(alerts, function(a) {return (a.acknowledged_by == null)});
 	    _this.element.html(_this.view("index", {alerts: unack, already: ack}));
+
     });
 
     OpenAjax.hub.publish("request_visible_element", $('#app_content'));
+    RecordController.PAGE = this;
     OpenAjax.hub.publish("pha.exit_app_context", "#alert_list_req");
 },
     

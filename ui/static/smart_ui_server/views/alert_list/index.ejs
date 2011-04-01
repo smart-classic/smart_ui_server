@@ -1,37 +1,54 @@
 <span></span>
 <div class="alert_header">New:</div> 
-<ul >
+<table class="alert_table">
+<% if (alerts.length == 0) { %> 
+<thead> <tr>  <th>None</th> </tr></thead>
+<% } else { %>
+<thead>   <tr><th>Time</th><th>Alert</th><th>App</th><th>Acknowledge</th></tr></thead>
+<% } %>
+<tbody>
 <% for (var i = 0; i < alerts.length; i++) { %>
 <% 
    var alert = alerts[i];
     %>
 
-	<li class='alert' <%= alert%>>
-	<%= alert.time.substring(0,10)%> <i><%= alert.notes%></i>
+	<tr class='alert' <%= alert%>>
+	<td class='alert_time'>
+	<%= alert.time.substring(0,10)%>
+	</td><td>
+	 <i><%= alert.notes%></i>
+	 </td><td>
+	 <%=alert.triggering_app.split("@")[0]%>
+	 </td><td>
 	<input type=checkbox class="alert_acknowledge"/>
-	</li>
+	</td></tr>
 <% } %>
-
-<% if (alerts.length == 0) { %> 
-   <li>None</li>
-<% } %>
+</tbody>
 
 
-</ul>  
-
+</table>  
+	  
 <div class="alert_header">Acknowledged:</div>
-<ul>
+<table class="alert_table">
+<% if (already.length == 0) { %> 
+<thead> <tr>  <th>None</th> </tr></thead>
+<% } else { %>
+<thead>   <tr><th>Time</th><th>Alert</th><th>App</th></tr></thead>
+<% } %>
+<tbody>
 <% for (var i = 0; i < already.length; i++) { %>
 <% 
    var alert = already[i];
     %>
    
-	<li class='alert' <%= alert%>>
-	<%= alert.time.substring(0,10)%> <i><%= alert.notes%></i>
-	</li>
+	<tr class='alert' <%= alert%>>
+	<td class='alert_time'>
+	<%= alert.time.substring(0,10)%>
+	</td><td>	
+	 <i><%= alert.notes%></i>
+	 </td><td>
+	 <%=alert.triggering_app.split("@")[0]%>
+	</td></tr>
 <% } %>
-<% if (already.length == 0) { %> 
-   <li>None</li>
-<% } %>
-
-</ul>
+</tbody>
+</table>

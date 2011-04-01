@@ -35,6 +35,8 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Record',
 	  if (RecordController.APP_ID) {
 	      var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
 	      OpenAjax.hub.publish("pha.launch", app);
+	  } else if (RecordController.PAGE) {
+	      RecordController.PAGE.index();
 	  }
 
   },

@@ -50,6 +50,10 @@ p {
 
 .alert_header {font-weight: bold;}
 
+TABLE.alert_table tbody  tr:nth-child(odd) {background: white;}
+TABLE.alert_table thead tr {background: #ccc;}
+.alert_time {white-space: nowrap;}
+
 /* better font stack for true italics */
 i { font-family: "Lucida Sans Unicode", "Lucida Sans", Calibri, "Lucida Grande", "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif; }
 
@@ -80,7 +84,7 @@ h5 { font-size: 14px; margin: 9px  0 0   0; font-weight: 700; color: #555; text-
 li img { height: 32px; width: 32px; }
 
 /** Main layout **/
-#header {  background: #f6f6f6;  position: fixed; top: 0px; left: 0px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; }
+#header {  background: #f6f6f6;  position: fixed; top: 0px; left: 0px; width: 100%; height: 30px; z-index: 1; border-bottom: 1px solid #ddd; z-index: 10;}
 
 #footer { position: fixed; bottom: 0px; width: 190px; }
 
@@ -89,9 +93,9 @@ li img { height: 32px; width: 32px; }
 #next_pt {padding-left: 1em; padding-right: 2em;}
 #next_pt:hover,#prev_pt:hover {text-decoration: none; font-weight: bold; border-bottom: 0px;}
 #logo { padding-top: .8em; display: inline-block;}
-#header_logo { width: 210px; position: absolute; top: 0px; left: 0px;  color: #666; font-size: 18px; font-weight: 200; z-index: 2; background: #F6F6F6; text-align: center;}
-#working_with { width: 100%;  color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap; z-index: 3;}
-#header_name {  position: absolute; top: 0px; right: 0px; text-align: right; margin-right: 1.5em; margin-top: 3px; white-space: nowrap; z-index: 3;} /* eat the header's left padding + 5px */
+#header_logo { width: 210px; position: absolute; top: 0px; left: 0px;  color: #666; font-size: 18px; font-weight: 200;  background: #F6F6F6; text-align: center;}
+#working_with { width: 100%;  color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap; }
+#header_name {  position: absolute; top: 0px; right: 0px; text-align: right; margin-right: 1.5em; margin-top: 3px; white-space: nowrap; } /* eat the header's left padding + 5px */
 #header_username { font-size: .9em; } /* to match the logout link */
 #app_selector { position: fixed; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px; z-index: 10;}
 

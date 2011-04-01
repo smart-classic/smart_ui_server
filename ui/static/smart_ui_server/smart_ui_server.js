@@ -17,7 +17,7 @@ steal.plugins(
 		   "class",
 		   "jschannel",
 		   "smart-api-container",
-		   "smart-helper"
+	   "smart-helper"
 		  )                        // 3rd party script's (like jQueryUI), in resources folder
 
     .models("account", "activity", "pha", "record","alert")                           // loads files in models folder 
