@@ -1,0 +1,37 @@
+<span></span>
+<div class="alert_header">New:</div> 
+<ul >
+<% for (var i = 0; i < alerts.length; i++) { %>
+<% 
+   var alert = alerts[i];
+    %>
+
+	<li class='alert' <%= alert%>>
+	<%= alert.time.substring(0,10)%> <i><%= alert.notes%></i>
+	<input type=checkbox class="alert_acknowledge"/>
+	</li>
+<% } %>
+
+<% if (alerts.length == 0) { %> 
+   <li>None</li>
+<% } %>
+
+
+</ul>  
+
+<div class="alert_header">Acknowledged:</div>
+<ul>
+<% for (var i = 0; i < already.length; i++) { %>
+<% 
+   var alert = already[i];
+    %>
+   
+	<li class='alert' <%= alert%>>
+	<%= alert.time.substring(0,10)%> <i><%= alert.notes%></i>
+	</li>
+<% } %>
+<% if (already.length == 0) { %> 
+   <li>None</li>
+<% } %>
+
+</ul>

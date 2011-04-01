@@ -48,6 +48,8 @@ p {
   letter-spacing: -0.1px;
 }
 
+.alert_header {font-weight: bold;}
+
 /* better font stack for true italics */
 i { font-family: "Lucida Sans Unicode", "Lucida Sans", Calibri, "Lucida Grande", "Helvetica Neue", Helvetica, Tahoma, Verdana, sans-serif; }
 

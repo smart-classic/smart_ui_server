@@ -20,9 +20,9 @@ steal.plugins(
 		   "smart-helper"
 		  )                        // 3rd party script's (like jQueryUI), in resources folder
 
-.models("account", "activity", "pha", "record")                           // loads files in models folder 
+    .models("account", "activity", "pha", "record","alert")                           // loads files in models folder 
 
-.controllers("main","proxy_main", "patient_list", "pha", "record")                      // loads files in controllers folder
+    .controllers("main","proxy_main", "patient_list", "pha", "record", "alert_list")                      // loads files in controllers folder
 
 .views()                            // adds views to be added to build
 

@@ -19,6 +19,7 @@ load: function(params) {
       PatientListController = new smart_ui_server.Controllers.PatientList($("#app_content"));
     
     PHAController = new smart_ui_server.Controllers.PHA($("#app_content"));
+    AlertListController = new smart_ui_server.Controllers.AlertList($("#app_content"));
     	
     this.finish_initialization();
 },
