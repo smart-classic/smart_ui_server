@@ -32,6 +32,7 @@ index: function(params) {
     this.element.html(this.view("index"));
     this.results_element = $('#patient_list_results');    
     OpenAjax.hub.publish("request_visible_element", $('#app_content'));
+    RecordController.PAGE = this;
     OpenAjax.hub.publish("pha.exit_app_context", "#patient_list_req");            
 
     if (RecordController.CURRENT_RECORD === undefined)

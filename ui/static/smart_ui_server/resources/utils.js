@@ -10,6 +10,21 @@
 var xotree = new XML.ObjTree();
 xotree.attr_prefix = '@';
 
+jQuery.postXML = function(url, data, callback) {
+	if (arguments.length == 2)
+	{
+		callback = data;
+		data = null;
+	}
+	
+	url = '/indivoapi'+url;
+
+    jQuery.post(url, data, function(data) {
+      callback(xotree.parseXML(data));
+    }, "text");
+    
+};
+
 jQuery.getXML = function(url,data, callback) {
 	if (arguments.length == 2)
 	{
