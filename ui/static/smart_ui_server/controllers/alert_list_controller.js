@@ -29,6 +29,7 @@ index: function(params) {
     });
 
     OpenAjax.hub.publish("request_visible_element", $('#app_content'));
+    RecordController.APP_ID = null;
     RecordController.PAGE = this;
     OpenAjax.hub.publish("pha.exit_app_context", "#alert_list_req");
 },
