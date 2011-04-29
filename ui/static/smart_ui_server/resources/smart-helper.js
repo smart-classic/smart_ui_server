@@ -1,5 +1,6 @@
 SMART_HELPER  = {};
 
+// calls back with appropriate context:  user, record, and credentials.
 SMART_HELPER.handle_record_info = function(activity, callback) { 
     callback( {
     	'user' : {
@@ -18,6 +19,8 @@ SMART_HELPER.handle_record_info = function(activity, callback) {
 	});
 };
 
+// calls back wtih the response to an API call.  
+// (implemented as passthrough to a back-end REST server)
 SMART_HELPER.handle_api = function(activity, message, callback) {
     var params = {'smart_oauth_token': activity.session_tokens.connect_token};
 	
@@ -44,11 +47,21 @@ SMART_HELPER.handle_api = function(activity, message, callback) {
 	});
 };
 
+// Brings an already-running activity back to the screen
 SMART_HELPER.handle_resume_activity = function(activity, callback) {
 	OpenAjax.hub.publish("request_visible_element",  $(activity.iframe));
 	callback();
 };
 
+/* Begins a new activity based on the input "activity" variable,
+   which provides activity.name and activity.app
+   Pseudocode:
+    1.  Resolve the activity name + app to an URL
+    2.  Requset OAuth credentials for the new activity (Ajax call to /accounts/apps/records/launch)
+    3.  Store these OAuth credentials in activity.session_tokens
+    4.  Open an IFRAME to the activity's URL.
+    5.  Display the IFRAME
+*/
 SMART_HELPER.handle_start_activity = function(activity, callback) {
     	var account_id_enc = encodeURIComponent(ACCOUNT_ID);
     	var record_id_enc = encodeURIComponent(RecordController.CURRENT_RECORD.record_id);
