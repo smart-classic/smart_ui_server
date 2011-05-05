@@ -20,7 +20,7 @@ Activity = $.Model.extend('smart_ui_server.Models.Activity',
 	    	self.description = activity_info.Activity.description;
 	    	self.consumer_key = activity_info.Activity.consumer_key;
 	    	self.secret= activity_info.Activity.secret;
-	    	self.callback();
+	    	self.callback(self);
 	    };
 	    
 	    var act_url = '/activity/' + this.name+ (this.app_id !== null? '/app/'+this.app_id : "")

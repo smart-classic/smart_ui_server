@@ -33,14 +33,14 @@ SMART_CONTAINER = Class.extend({
 
     context_changed: function() {
     	jQuery.each(this.activities, function(aid, a){
-    		var c = a.channel;
-    		if (c)  {
-        	    c.call({method: "activitydestroy", success: function(){}});
-    			c.destroy();
-    		}
+    	    var c = a.channel;
+    	    if (c)  {
+        	c.call({method: "activitydestroy", success: function(){}});
+    		c.destroy();
+    	    }
     	});
-
-	    this.activities = {};	    
+	
+	this.activities = {};	    
     },
 
     receive_api_call: function(activity, message, callback) {
@@ -157,7 +157,6 @@ SMART_CONTAINER = Class.extend({
     		activity.callbacks[uuid] = callback;
     	}
 
-    	this.clear_unbound_channels();
     	
     	var new_activity = this.activities[uuid]= {
     		uuid: uuid,
@@ -175,6 +174,9 @@ SMART_CONTAINER = Class.extend({
 			    var origin  = __SMART_extract_origin(jQuery(iframe).attr('src'));
 			    new_activity.origin = origin;
 			    new_activity.iframe = iframe;
+
+    			_this.clear_unbound_channels();
+
 		    	new_activity.channel  = Channel.build({window: iframe.contentWindow, origin: origin, scope: "not_ready", debugOutput: _this.debug});							    
 
 		    	// Make sure we've received context var before letting the app call "ready" 
