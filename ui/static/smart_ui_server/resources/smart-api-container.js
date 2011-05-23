@@ -12,7 +12,7 @@ var __SMART_URL_PATTERN = /^(https?:\/\/[^/]+)/;
 function __SMART_extract_origin(url) {
     var match = url.match(__SMART_URL_PATTERN);
     if (match)
-	return match[1];
+	return match[1].toLowerCase();
     else
 	return null;
 }
