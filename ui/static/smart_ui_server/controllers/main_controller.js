@@ -22,7 +22,24 @@ load: function(params) {
     AlertListController = new smart_ui_server.Controllers.AlertList($("#app_content"));
     	
     this.finish_initialization();
+
 },
+
+'phas_loaded subscribe': function(topic) {
+   if (typeof(INITIAL_APP) !== "undefined") {
+	app = $.grep(PHAController.phas, function(pha) {return (pha.id === INITIAL_APP);})[0];
+
+       $("#main_canvas").css({
+	   "padding-left": "0",
+	   "padding-top": "0",
+	   "z-index":"10",
+	   "background": "white"
+       });
+
+	PHAController.launch_app(app);
+
+    }
+}, 
 
 'request_visible_element subscribe': function(topic, element) {
     this.make_visible(element);
@@ -45,9 +62,6 @@ make_visible: function(element) {
 }, 
 	
 
-grow_to_required_size: function() {
-    
-},
 
 finish_initialization: function(params) {
     var _this = this;

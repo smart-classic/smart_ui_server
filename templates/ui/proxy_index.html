@@ -6,6 +6,9 @@
       var FULLNAME = "{{ FULLNAME }}";
       var PROXIED_RECORD_ID = "{{ PROXIED_RECORD_ID  }}";
       var PROXIED_RECORD_NAME = "{{ PROXIED_RECORD_NAME  }}";
+    {% if INITIAL_APP != ""%}
+      var INITIAL_APP = "{{ INITIAL_APP  }}";
+    {% endif %}
 {% endblock %}
 
 {% block header_username %}{% endblock %}

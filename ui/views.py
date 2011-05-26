@@ -63,6 +63,7 @@ def proxy_index(request):
 
    record_id = request.GET['record_id']
    record_name = request.GET.get('record_name', "Proxied Patient")
+   initial_app= request.GET.get('initial_app', "")
    api.call("POST", "/records/create/proxied", options={'data': {'record_id':record_id, 
                                                                  'record_name':record_name}})
 
@@ -75,6 +76,7 @@ def proxy_index(request):
             'FULLNAME': "Proxy User",
             'PROXIED_RECORD_ID' : record_id,
             'PROXIED_RECORD_NAME': record_name,
+            'INITIAL_APP': initial_app,
             'SMART_PASSTHROUGH_SERVER': passthrough_server })
 
    

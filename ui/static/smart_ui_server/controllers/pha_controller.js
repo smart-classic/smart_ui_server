@@ -40,6 +40,8 @@ init: function(params){
         	_this.enabled_phas = enabled_phas;
         	_this.disabled_phas = disabled_phas;    	
         	_this.draw_phas();
+	        OpenAjax.hub.publish("phas_loaded");
+
         });        
     });
 },
