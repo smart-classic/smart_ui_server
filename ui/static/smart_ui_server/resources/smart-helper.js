@@ -87,6 +87,7 @@ SMART_HELPER.handle_start_activity = function(activity, callback) {
         .pipe(create_iframe)
 	.pipe(function(new_iframe){
 	    callback(new_iframe);
+	    return $.Deferred().promise();
 	});    
 };
 
