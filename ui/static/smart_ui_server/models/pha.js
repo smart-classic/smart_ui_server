@@ -53,12 +53,15 @@ PHA= $.Model.extend('smart_ui_server.Models.PHA',
 	},
 	
 	compare: function(a,b){
-		if (a.id < b.id)
-			return -1;
-		else if (a.id===b.id)
-			return 0;
-		else
-			return 1;
+	    a = a.data.name.toLowerCase();
+	    b = b.data.name.toLowerCase();
+	    
+	    if (a < b)
+		return -1;
+	    else if (a===b)
+		return 0;
+	    else
+		return 1;
 	},
 	
 	manipulate: function(method, account_email, app_email, callback) {
