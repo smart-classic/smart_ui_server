@@ -1,28 +1,18 @@
-steal.plugins(	
-	'jquery/controller',			// a widget factory
-	'jquery/controller/subscribe',  // subscribe to OpenAjax.hub
-	'jquery/controller/history',  // subscribe to history
-	'jquery/view/ejs',				// client side templates
-	'jquery/model',					// Ajax wrappers
-	'jquery/dom/fixture',			// simulated Ajax requests
-	'jquery/dom/form_params')		// form data helper
-	
-.css('smart_ui_server')  // loads styles
+steal.plugins('smart_common')	
+    .css('smart_ui_server')  // loads styles
+    .resources()
 
-.resources("ObjTree",
-		   "xml2json",
-		   "utils",
-		   "jquery.inputHintOverlay",
-		   "jquery.form",
-		   "class",
-		   "jschannel",
-		   "smart-api-container",
-	   "smart-helper"
-		  )                        // 3rd party script's (like jQueryUI), in resources folder
+    .models("../../smart_common/models/account", 
+	    "../../smart_common/models/activity", 
+	    "../../smart_common/models/pha", 
+	    "../../smart_common/models/record",
+	    "../../smart_common/models/alert")
 
-    .models("account", "activity", "pha", "record","alert")                           // loads files in models folder 
-
-    .controllers("main","proxy_main", "patient_list", "pha", "record", "alert_list")                      // loads files in controllers folder
+    .controllers("main", "proxy_main",
+		 "../../smart_common/controllers/patient_list", 
+		 "../../smart_common/controllers/pha", 
+		 "../../smart_common/controllers/record", 
+		 "../../smart_common/controllers/alert_list") 
 
 .views()                            // adds views to be added to build
 

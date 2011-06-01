@@ -1,0 +1,57 @@
+{% extends "ui/index.html" %}
+{% block title %}SMART App Showcase{% endblock %}
+
+    {% block scripts %}
+    <!-- development or production -->
+    <script type="text/javascript" src="/static/steal/steal.js?steal[app]=showcase&steal[env]=development"></script>
+    {% endblock %}
+
+{% block global_vars %}
+      var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
+      var FULLNAME = "Showcase Viewer";
+      var SMART_API_SERVER = "{{SMART_API_SERVER}}"
+      var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
+    {% if INITIAL_APP %}
+      var INITIAL_APP = "{{ INITIAL_APP  }}";
+    {% endif %}
+
+{% endblock %}
+
+{% block body %}
+<body>
+
+<div id='non-footer'>
+  <div id='header'>
+    <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px; height: 40px;" alt='SMART logo'/>
+   <span class="message">Browse the SMART App Showcase</span>
+
+   
+   <button id='back-to-showcase'>< Back to showcase</button>
+   <select id='patient-list'></select>
+  </div>
+
+  <div id='showcase-content'>
+    <div id='app_content_iframe_holder' class='iframe_holder'></div>
+    <div id='appnav'> 
+    </div>
+  </div>
+
+</div> <!-- end non-footer-->
+
+  <div id='footer'>
+      <a href="http://chip.org">CHIP</a> 
+        &middot;
+      <a href="http://hms.harvard.edu">HMS</a> 
+        &middot;
+    <span id="copyright">&copy; 2011</span> 
+
+
+  </div>
+
+  <div id='hidden_things' style='display: none;'>
+  <div id='app_content'></div>
+
+  </div>
+
+</body>
+{% endblock %}

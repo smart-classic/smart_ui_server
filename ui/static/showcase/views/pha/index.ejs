@@ -1,0 +1,17 @@
+<div id='app_accordion'> 
+  <% for (var p = 0; p < phas.length; p++) {
+        var pha = phas[p];
+        if (!pha.enabled) continue;
+  %>
+
+	<h3>
+	  <img height="32px" class="app_tab_img" src="<%=pha.data.iconURL%>" />
+  	 <a><%=pha.data.name%></a>
+
+        </h3>
+	<div class="manage_apps"  <%=pha%>>
+	<button class="launch" type="button"> See it in action!</button><br>
+	<%=pha.data.description%>
+	</div>
+<%}%>
+</div>

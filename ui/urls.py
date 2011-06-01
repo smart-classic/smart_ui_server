@@ -9,6 +9,7 @@ urlpatterns = patterns(
     # testing
     (r'^$', index),
     (r'^proxy_index$', proxy_index),
+    (r'^showcase$', showcase_index),
     # auth
     (r'^login$', login),
     (r'^logout$', logout),

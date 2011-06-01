@@ -79,6 +79,21 @@ def proxy_index(request):
             'INITIAL_APP': initial_app,
             'SMART_PASSTHROUGH_SERVER': passthrough_server })
 
+
+def showcase_index(request):
+   api = get_api()
+
+   initial_app= request.GET.get('initial_app', "")
+
+   ret = tokens_get_from_server(request, settings.PROXY_USER, settings.PROXY_PASSWORD)
+   if not ret:
+     return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})
+
+   return utils.render_template('ui/showcase',
+          { 'ACCOUNT_ID': settings.PROXY_USER,
+            'INITIAL_APP': initial_app,
+            'SMART_PASSTHROUGH_SERVER': passthrough_server })
+
    
 def index(request):
   if tokens_p(request):

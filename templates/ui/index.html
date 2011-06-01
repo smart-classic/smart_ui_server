@@ -4,16 +4,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="apple-touch-icon" href="/static/smart_ui_server/resources/images/smart-ipad-icon.png"/>
-    <link rel="apple-touch-startup-image" href="/static/smart_ui_server/resources/images/smart-ipad-icon.png"/>
+    <link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
+    <link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
 
     {% if branding %}
       {% include branding.header_template %}
     {% else %} 
       {% include 'ui/header.html' %}
     {% endif %}
+
+    {% block head_material %}{% endblock %}
+
+    {% block scripts %}
     <!-- development or production -->
     <script type="text/javascript" src="/static/steal/steal.js?steal[app]=smart_ui_server&steal[env]=development"></script>
+    {% endblock %}
     <script type="text/javascript">
 {% block global_vars %}
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
@@ -24,16 +29,17 @@
     </script>
     <title>{% block title %}SMArt EMR{% endblock %}</title>
   </head>
+{% block body %}
   <body>
     <div id="header">
       <div id="header_logo">
             <span id="logo">
-              <img src="/static/smart_ui_server/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
+              <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
             </span></div>
       <div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
 
       {% block header_username %}
-
+.
       <div id='header_name'>
         <span id='header_username'>{{FULLNAME}}</span>
         &middot;
@@ -47,7 +53,7 @@
       {% block patient_list %}
             <li class="patient_list">
               <a href="#patient_list_req" class="selected_app">
-                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_ui_server/resources/images/app_icons_32/patientsearch.png" />
+                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_common/resources/images/app_icons_32/patientsearch.png" />
                 Patient List
               </a>
             </li>
@@ -56,7 +62,7 @@
       {% block alert_list %}
             <li class="alert_list">
               <a href="#alert_list_req" >
-                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_ui_server/resources/images/app_icons_32/alert.png" />
+                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_common/resources/images/app_icons_32/alert.png" />
                 Alerts
               </a>
             </li>
@@ -67,7 +73,7 @@
             <ul id="manage_apps_list">
               <li>
                 <a id="manage_apps_link" href="#manage_apps_req">
-                 <img class="app_tab_img_small" height="16px" width="16px" src="/static/smart_ui_server/resources/images/icons_24/edit_add.png" />
+                 <img class="app_tab_img_small" height="16px" width="16px" src="/static/smart_common/resources/images/icons_24/edit_add.png" />
                  <span>Manage Apps</span>
                 </a>
               </li>
@@ -82,4 +88,5 @@
         
         {% include 'ui/footer.html' %}
   </body>
+{% endblock %}
 </html>

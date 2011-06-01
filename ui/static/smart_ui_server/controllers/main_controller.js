@@ -13,13 +13,13 @@ load: function(params) {
     ACCOUNT = Account.from_email(ACCOUNT_ID); // init the account via model
     SMART = new SMART_CONTAINER(SMART_HELPER);
 
-    RecordController = new smart_ui_server.Controllers.Record($("#app_content"));
+    RecordController = new smart_common.Controllers.Record($("#app_content"));
 
     if (typeof(PROXIED_RECORD_ID) == "undefined") 
-      PatientListController = new smart_ui_server.Controllers.PatientList($("#app_content"));
+      PatientListController = new smart_common.Controllers.PatientList($("#app_content"));
     
-    PHAController = new smart_ui_server.Controllers.PHA($("#app_content"));
-    AlertListController = new smart_ui_server.Controllers.AlertList($("#app_content"));
+    PHAController = new smart_common.Controllers.PHA($("#app_content"));
+    AlertListController = new smart_common.Controllers.AlertList($("#app_content"));
     	
     this.finish_initialization();
 
