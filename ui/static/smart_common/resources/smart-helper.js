@@ -173,6 +173,7 @@ var create_iframe = function(activity) {
 
     var frame_load = function(){
 	frame.data("loaded", true);
+	$("#loading_div").hide();
     };
     
     frame.load(frame_load);
