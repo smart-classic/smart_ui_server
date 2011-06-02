@@ -68,15 +68,16 @@ init: function(params){
 
 'button.launch click': function(button) {
     var app = button.closest(".manage_apps").model();
-    this.launch_app(app);
     $('.iframe_holder', this).html("");
     $('.iframe_holder', this).show();
+    this.launch_app(app);
 },
 
 launch_app: function(pha) {	 
-	if (RecordController.RECORD_ID === undefined) {
-		alert("Please choose a patient before running an app.");
-	}
+    $("iframe").fadeOut("fast");
+    if (RecordController.RECORD_ID === undefined) {
+	alert("Please choose a patient before running an app.");
+    }
 
 
 	$("#app_selector li a").removeClass("selected_app");
