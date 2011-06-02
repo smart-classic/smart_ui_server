@@ -75,7 +75,10 @@ finish_initialization: function(params) {
 		var avail_h = $(window).height() -  $("#main_canvas").get(0).offsetTop -   $("#main_canvas").get(0).clientTop;  
 		_this.available_width = avail_w;
 		_this.available_height = avail_h;
-		    
+		if ($("#app_selector_inner").css("overflow-y")==="auto")
+		    $("#app_selector").height(avail_h - 180);
+		else
+		    $("#app_selector").css("height", "");
 		    // If there was an app open, let it know.
 		    var iframe =$("IFRAME.activity_iframe:visible");
 		    if (iframe.length > 0) {
