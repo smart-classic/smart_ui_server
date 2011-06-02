@@ -75,6 +75,8 @@ init: function(params){
 
 launch_app: function(pha) {	 
     $("iframe").fadeOut("fast");
+    $("#loading_div").fadeIn("fast");
+
     if (RecordController.RECORD_ID === undefined) {
 	alert("Please choose a patient before running an app.");
     }
