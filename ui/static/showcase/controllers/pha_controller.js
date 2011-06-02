@@ -115,7 +115,7 @@ draw_phas :function() {
 				    message: this.labels
 				}));
     
-    $( "#app_accordion" ).accordion({collapsible: true, autoHeight: false}).accordion("activate", false);
+    $( "#app_accordion" ).accordion({collapsible: true, autoHeight: false, active: false});
     OpenAjax.hub.publish("request_visible_element", this.element);
 }
 
