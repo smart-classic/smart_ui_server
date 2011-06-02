@@ -24,10 +24,10 @@ init: function(params){
 	    
         	$.each(phas, function(i,pha) {
         		if ($.inArray(pha.id, enabled_pha_ids) == -1) {
-        			disabled_phas.push(pha);
+			    pha.enabled = false;
         		}
         		else {
-        			enabled_phas.push(pha);
+			    pha.enabled = true;
         		}
         	});
 
