@@ -23,9 +23,14 @@ init: function(params){
         PHA.get_all(function(phas) {
 	    
         	$.each(phas, function(i,pha) {
-  		    pha.enabled = true;
-
+        		if ($.inArray(pha.id, enabled_pha_ids) == -1) {
+        			disabled_phas.push(pha);
+        		}
+        		else {
+        			enabled_phas.push(pha);
+        		}
         	});
+
 	    phas.sort(PHA.compare);
         	_this.phas = phas;
         	_this.draw_phas();
