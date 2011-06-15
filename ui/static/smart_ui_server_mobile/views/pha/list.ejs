@@ -1,0 +1,22 @@
+<ul data-role="listview">
+<% for (var i = 0; i < phas.length; i++) { %>
+<% var pha = phas[i]; %>
+
+      <li class="pha" <%= pha%>>
+       <a href="#">
+         <img class="ui-li-icon" style="width: 20px; height: 20px;" src="<%=pha.data.iconURL %>">
+         <%= pha.data.name%>
+       </a>	 
+      </li>
+
+<% } %>
+         <li ></li>
+      <li >
+       <a href="#page_app_management">
+         <img class="ui-li-icon" style="width: 20px; height: 20px;" src="/static/smart_ui_server/resources/images/icons_24/edit_add.png">
+         Manage Apps
+       </a>	 
+      </li>
+
+
+</ul>  

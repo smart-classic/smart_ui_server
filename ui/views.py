@@ -58,6 +58,7 @@ def tokens_get_from_server(request, username, password):
   
   return True
 
+
 def proxy_index(request):
    api = get_api()
 
@@ -94,8 +95,15 @@ def showcase_index(request):
             'INITIAL_APP': initial_app,
             'SMART_PASSTHROUGH_SERVER': passthrough_server })
 
+
+def mobile_index(request, template='ui/mobile_index'):
+  print "MOBILE INDEX"
+  return index(request,  template)
+
    
-def index(request):
+def index(request, template='ui/index'):
+  print "INDEX", template
+
   if tokens_p(request):
     # get the realname here. we already have it in the js account model
     try:
@@ -105,7 +113,7 @@ def index(request):
         e = ET.fromstring(ret.response['response_data'])
         
         fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
-        return utils.render_template('ui/index',
+        return utils.render_template(template,
           { 'ACCOUNT_ID': account_id,
             'FULLNAME': fullname,
             'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
@@ -207,7 +215,10 @@ def api_server(include_scheme = True):
 
 passthrough_server = "/smart_passthrough"
 
-def login(request, info=""):
+def mobile_login(request, info="", template='ui/mobile_login'):
+  return login(request, info, template)
+  
+def login(request, info="", template=LOGIN_PAGE):
   """
   clear tokens in session, show a login form, get tokens from indivo_server, then redirect to index
   FIXME: make note that account will be disabled after 3 failed logins!!!
@@ -230,7 +241,7 @@ def login(request, info=""):
     if (return_url.strip()==""): return_url='/'
     template_data = {FORM_RETURN_URL: return_url}
 
-    return utils.render_template(LOGIN_PAGE, 
+    return utils.render_template(template, 
                                  template_data
                                  )
   
@@ -242,7 +253,7 @@ def login(request, info=""):
       password = request.POST[FORM_PASSWORD]
     else:
       # Also checked initially in js
-      return utils.render_template(LOGIN_PAGE, {'error': errors['missing'], FORM_RETURN_URL: return_url})
+      return utils.render_template(template, {'error': errors['missing'], FORM_RETURN_URL: return_url})
   else:
     utils.log('error: bad http request method in login. redirecting to /')
     return HttpResponseRedirect('/')

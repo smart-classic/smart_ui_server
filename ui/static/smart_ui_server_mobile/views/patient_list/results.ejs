@@ -1,0 +1,17 @@
+<% if (records.length == 0) { %> No patients found. <% } %>
+
+<ul data-role="listview">
+<% for (var i = 0; i < records.length; i++) { %>
+<% var record = records[i]; %>
+	<li class='record' <%= record%>>   
+	<a href="">
+	<div>
+	<%= record.demographics.firstname%> <%= record.demographics.lastname%>
+	</div>
+	<div class='gender'>Gender: <%= record.demographics.gender %></div>
+	<div class='dob'>DOB: <%= record.demographics.dob %></div>
+	<div class='zip'>Zip Code: <%= record.demographics.zipcode %></div>
+	</a>
+	</li>
+<% } %>
+</ul>  

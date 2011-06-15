@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0;"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
+    <link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
+    
+    {% if branding %}
+      {% include branding.header_template %}
+    {% else %} 
+      {% include 'ui/header.html' %}
+    {% endif %}
+    <!-- development or production -->
+    <script type="text/javascript" src="/static/steal/steal.js?steal[app]=smart_ui_server_mobile&steal[env]=development"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.css" />
+
+    <script src="http://code.jquery.com/mobile/latest/jquery.mobile.min.js"></script>
+
+
+    <script type="text/javascript">
+{% block global_vars %}
+      var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
+      var SMART_API_SERVER = "{{SMART_API_SERVER}}"
+      var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
+      var FULLNAME = "{{ FULLNAME }}";
+{% endblock %}
+
+    </script>
+    <title>{% block title %}SMArt EMR{% endblock %}</title>
+  </head>
+  <body>
+
+<div data-role="page" id='page_pt_selection'>
+
+  <div data-role="header" id='header_pt_selection' data-position="inline" >
+
+    <h1>SMART EMR</h1>
+  </div><!-- /header -->
+
+  <div data-role="content" id="content_pt_selection">
+  </div><!-- /content -->
+
+  <div data-role="footer">
+    <h4><a href="http://chip.org">CHIP</a> <a href="http://hms.harvard.edu">HMS</a> &copy;2011</h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<div data-role="page" id='page_app_management'>
+  <div data-role="header" id='header_app_management'>
+    <h1>Manage Apps</h1>
+  </div><!-- /header -->
+
+  <div data-role="content" id="content_app_management">
+
+  </div><!-- /content -->
+
+  <div data-role="footer">
+    <h4><a href="http://chip.org">CHIP</a> <a href="http://hms.harvard.edu">HMS</a> &copy;2011</h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+
+
+<div data-role="page" id='page_app_selection'>
+  <div data-role="header" id='header_app_selection'>
+    <h1>Apps</h1>
+  </div><!-- /header -->
+
+  <div data-role="content" id="content_app_selection">
+
+  </div><!-- /content -->
+
+  <div data-role="footer">
+    <h4><a href="http://chip.org">CHIP</a> <a href="http://hms.harvard.edu">HMS</a> &copy;2011</h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<div data-role="page" id='page_app'>
+  <div data-role="header" id='header_app'>
+    <h1>Your App</h1>
+  </div><!-- /header -->
+  <div data-role="content" id="content_app" style="padding: 0px;">
+  </div><!-- /content -->
+
+  <div data-role="footer">
+    <h4><a href="http://chip.org">CHIP</a> <a href="http://hms.harvard.edu">HMS</a> &copy;2011</h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+  </body>
+</html>

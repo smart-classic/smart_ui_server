@@ -1,0 +1,24 @@
+<h2>Enabled Apps:</h2>
+These apps can access any record you open with them.
+
+<% for (var p = 0; p < phas.length; p++) { %>
+  <% var pha = phas[p],
+         id = pha.safeid(),
+         onselected = ($.inArray(pha, enabled_phas) !== -1) ? "checked='CHECKED'":"",
+         offselected = (onselected==="")?"checked='CHECKED'":"";
+%>
+
+  <div class="app_management" data-role="fieldcontain" <%=pha%>>
+  <fieldset data-role="controlgroup" data-type="horizontal"> 
+
+  <legend><%= pha.data.name %></legend>
+
+  <input  type="radio" name="<%=id%>" id="app_choice_enabled_<%=id%>" value="enabled" <%=onselected%> /> 
+  		  <label for="app_choice_enabled_<%=id%>">Enabled</label> 
+
+  <input type="radio" name="<%=id%>" id="app_choice_disabled_<%=id%>" value="disabled" <%=offselected%> /> 
+  		  <label for="app_choice_disabled_<%=id%>">Disabled</label> 
+
+  </fieldset>
+  </div> 
+<% } %>
