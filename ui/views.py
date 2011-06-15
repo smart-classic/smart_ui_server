@@ -125,15 +125,15 @@ def launch_app(request, account_id, pha_email, record_id):
 
     launchxml = ET.fromstring(launchdata)
 
-    token_str =     launchxml.findtext("SMArtConnectToken")
-    secret =     launchxml.findtext("SMArtConnectSecret")  
+    token_str =     launchxml.findtext("ConnectToken")
+    secret =     launchxml.findtext("ConnectSecret")  
 
     token = oauth.OAuthToken(token= token_str, 
                              secret =secret)
 
     request.session[token_str] = token
 
-    launchxml.remove(launchxml.find("SMArtConnectSecret"))
+    launchxml.remove(launchxml.find("ConnectSecret"))
     return HttpResponse(ET.tostring(launchxml))
 
 

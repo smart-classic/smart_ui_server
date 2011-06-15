@@ -14,7 +14,9 @@ SMART_HELPER.handle_record_info = function(activity, callback) {
 	    'credentials': {
 	    	'token': activity.session_tokens.rest_token,
 	    	'secret': activity.session_tokens.rest_secret,
-	    	'oauth_cookie':  activity.session_tokens.oauth_cookie
+		'consumer_token': activity.resolved_activity.app,
+	    	'oauth_cookie':  activity.session_tokens.oauth_cookie,
+		'api_base': activity.session_tokens.api_base
 	    },
         'browser_environment': 'desktop'
 	});
@@ -130,11 +132,11 @@ var get_tokens = function(activity) {
 		    d.AccessToken.App["@id"];
 		
 		activity.session_tokens = {
-        	    connect_token:d.AccessToken.SMArtConnectToken, 
-		    connect_secret: d.AccessToken.SMArtConnectSecret,
-		    api_base: d.AccessToken.SMArtContainerAPIBase,
+        	    connect_token:d.AccessToken.ConnectToken, 
+		    connect_secret: d.AccessToken.ConnectSecret,
+		    api_base: d.AccessToken.APIBase,
 		    rest_token:d.AccessToken.RESTToken, 
-		    rest_secret: d.AccessToken.RESTToken,
+		    rest_secret: d.AccessToken.RESTSecret,
         	    oauth_cookie: d.AccessToken.OAuthCookie
 		}; 
 		
