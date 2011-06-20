@@ -9,7 +9,7 @@ jQuery.Controller.extend('smart_ui_server_mobile.Controllers.Main',
 /* @Prototype */
 {
 	
-load: function(params) {      
+"{window} load": function(params) {      
     ACCOUNT = Account.from_email(ACCOUNT_ID); // init the account via model
     SMART = new SMART_CONTAINER(SMART_HELPER);
 

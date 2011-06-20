@@ -1,5 +1,6 @@
 steal.plugins(	
 	'jquery/controller',			// a widget factory
+	'jquery/controller/view',  // subscribe to OpenAjax.hub
 	'jquery/controller/subscribe',  // subscribe to OpenAjax.hub
 	'jquery/controller/history',  // subscribe to history
 	'jquery/view/ejs',				// client side templates
@@ -17,7 +18,6 @@ steal.plugins(
 	   "smart-api-container",
 	   "smart-helper"
 	  )
-    .models("account", "activity", "pha", "record","alert")
 .views()                            // adds views to be added to build
 
 
