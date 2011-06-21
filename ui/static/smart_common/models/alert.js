@@ -16,7 +16,7 @@ Alert = $.Model.extend('smart_common.Models.Alert',
 		 } catch (e) {return;}
 		 callback($.map(lst, function(el) {
 			     if (el === undefined) return null;
-			     return new smart_ui_server.Models.Alert(
+			     return new Alert(
                                   {alert_id: el['@id'], 
 				   notes : el['notes'],
 				   time: el['time'],
