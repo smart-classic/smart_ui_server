@@ -4,3 +4,6 @@
 [submodule "ui/static/steal"]
 	path = ui/static/steal
 	url = https://github.com/jupiterjs/steal.git
+[submodule "ui/static/jquery"]
+	path = ui/static/jquery
+	url = https://github.com/jupiterjs/jquerymx.git
