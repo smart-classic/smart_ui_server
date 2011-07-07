@@ -13,7 +13,7 @@ jQuery.Controller.extend('smart_ui_server.Controllers.ProxyMain',
     if (typeof(PROXIED_RECORD_ID) === "undefined")
 	return;
 
-      var proxied_record = new smart_ui_server.Models.Record({
+      var proxied_record = new Record({
           record_id: PROXIED_RECORD_ID,
           label: PROXIED_RECORD_NAME,
           demographics: {}
