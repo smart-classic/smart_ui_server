@@ -148,11 +148,11 @@ launch_app: function(pha) {
 	$("#app_selector li a[href='#app_req&id="+pha.safeid()+"']").addClass("selected_app");
 	
 	var already_running = [];
-	$.each(SMART.activities,
+	$.each(SMART.running_apps,
 	       function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
 
 	var about_to_background= [];
-	$.each(SMART.activities,
+	$.each(SMART.running_apps,
 	       function(aid, a){if ( a.app == RecordController.APP_ID) about_to_background.push(a);});
 
 	if (about_to_background.length > 0) {
@@ -166,7 +166,7 @@ launch_app: function(pha) {
 		return;
 	}
 		
-	SMART.start_activity("main", pha.id);
+	SMART.launch_app("main", pha.id);
 },
 
 draw_phas :function() {

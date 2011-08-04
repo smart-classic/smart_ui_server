@@ -28,7 +28,7 @@ jQuery.Controller.extend('smart_common.Controllers.Record',
 					  "<a id='next_pt' href='#next_pt_req' title='Next Patient Record'>&gt;</a>");
 
 	  OpenAjax.hub.publish("pha.exit_app_context");
-	  SMART.context_changed();
+	  SMART.set_context();
 
 	  // If there was an app open on the old record, open it automatically
 	  // on the new one.

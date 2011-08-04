@@ -1,4 +1,5 @@
 SMART_HELPER  = {};
+SMART_HELPER.handle_context_changed = function(){};
 
 // calls back with appropriate context:  user, record, and credentials.
 SMART_HELPER.handle_record_info = function(activity, callback) { 

@@ -1,6 +1,5 @@
 /*
- * The SMArt container side of the API
- *
+ * The SMART container side of the API
  * Josh Mandel
  * Ben Adida
  */
@@ -17,193 +16,225 @@ function __SMART_extract_origin(url) {
 	return null;
 }
 
-SMART_CONTAINER = Class.extend({
+SMART_CONTAINER = function(SMART_HELPER) {
 
-    init: function(SMART_HELPER) {
-	    this.debug = false;
-	    this.SMART_HELPER = SMART_HELPER;
-	    this.activities = {};
-	},
+    this.debug = false;
+    this.SMART_HELPER = SMART_HELPER;
+    this.running_apps = {};
+    this.running_apps.callbacks = {};
+    var sc = this;
 
+    var context = null;
 
-    callback: function(f, params) {
-	    var _this = this;
-	    return function() {return f.apply(_this, arguments);};
-    },
+    this.set_context = function(new_context) {
+	context = new_context;
 
-    context_changed: function() {
-    	jQuery.each(this.activities, function(aid, a){
+    	jQuery.each(this.running_apps, function(aid, a){
     	    var c = a.channel;
     	    if (c)  {
-        	c.call({method: "activitydestroy", success: function(){}});
+        	c.call({method: "app_instancedestroy", success: function(){}});
     		c.destroy();
     	    }
     	});
 	
-	this.activities = {};	    
-    },
+	this.running_apps = {};	    
 
-    receive_api_call: function(activity, message, callback) {
-	    this.SMART_HELPER.handle_api(activity, message, function(r){callback({contentType: "xml",  data: r})});	    
-    },
 
-    receive_ready: function(activity, callback) {	    
-	    var _this = this;
+	SMART_HELPER.handle_context_changed(new_context);
+    };
 
-	    var message = activity.context;
-	    activity.ready = true;
-		message.activity_id = activity.uuid;
-		message.ready_data = activity.ready_data;
-	        message.iframe_width = jQuery(activity.iframe).width();
-   	        message.iframe_height = jQuery(activity.iframe).height();
-		callback(message);
-		activity.channel.destroy();
-		
-		activity.channel  = Channel.build(
-	          {window: activity.iframe.contentWindow, 
-	           origin: activity.origin, 
-	           scope: activity.uuid, 
-	           debugOutput: _this.debug});
-		
-		activity.channel.bind("api_call", function(t, p) {
-			t.delayReturn(true);
-			_this.receive_api_call(activity, p, t.complete);
-		});
+    this.get_context = function() {
+	return context;
+    }
 
-		activity.channel.bind("adjust_size", function(t, p) {
-			_this.SMART_HELPER.handle_adjust_size(activity, p);
-  	        });
+    var procureChannel = function(event){
+	var app_instance = null;
+	if (event.data !== "procure_channel") return;
 
-		activity.channel.bind("start_activity", function(t, p) {
-			t.delayReturn(true);
-			_this.receive_start_activity_message(activity, p, t.complete);
-		});
+	$.each(sc.running_apps, function(aid, a) {
+	    if (a.iframe && a.iframe.contentWindow === event.source)
+		app_instance = a;
+	});
+	
+	if (app_instance) { // TODO:  replace contents with sc.bindChannel();
+	    app_instance.channel && app_instance.channel.destroy();
+	    
+	    app_instance.channel  = Channel.build(
+	        {window: app_instance.iframe.contentWindow, 
+	         origin: app_instance.origin, 
+	         scope: app_instance.uuid, 
+	         debugOutput: sc.debug});
+	    
+	    app_instance.channel.bind("api_call", function(t, p) {
+		t.delayReturn(true);
+		sc.receive_api_call(app_instance, p, t.complete); // TODO pass app instance by uuid
+	    });
 
-		activity.channel.bind("end_activity", function(t, p) {
-			t.delayReturn(true);
-			_this.receive_end_activity_message(activity,p);
-		});
+	    app_instance.channel.bind("ready", function(t, p) {
+		t.delayReturn(true);
+		sc.receive_ready(app_instance.uuid, t.complete);
+	    });
 
-		activity.channel.bind("restart_activity", function(t, p) {
-			t.delayReturn(true);
-			_this.receive_restart_activity_message(activity,t.complete);
-		});
-    },
+	    app_instance.channel.bind("adjust_size", function(t, p) {
+		sc.SMART_HELPER.handle_adjust_size(app_instance, p);
+  	    });
 
-    foreground_activity: function(activity_id){
-    	var activity = this.activities[activity_id];
-	if (activity.channel !== undefined)
-	    activity.channel.call({method: "activityforeground", success: function(){}});
-    },
+	    app_instance.channel.bind("start_app_instance", function(t, p) {
+		t.delayReturn(true);
+		sc.receive_start_app_instance_message(app_instance, p, t.complete);
+	    });
 
-    background_activity: function(activity_id){
-    	var activity = this.activities[activity_id];
-	if (activity.channel !== undefined)
-	    activity.channel.call({method: "activitybackground", success: function(){}});
-    },
-    
-    start_activity: function(activity_name, app){
-    	var message = {
-			   name: activity_name,
-			   app: app
-			   };
+	    app_instance.channel.bind("end_app_instance", function(t, p) {
+		t.delayReturn(true);
+		sc.receive_end_app_instance_message(app_instance,p);
+	    });
+
+	    app_instance.channel.bind("restart_app_instance", function(t, p) {
+		t.delayReturn(true);
+		sc.receive_restart_app_instance_message(app_instance,t.complete);
+	    });
+
+	    event.source.postMessage("app_instance_uuid="+app_instance.uuid, app_instance.origin);
+	}
+    };
+
+    if (window.addEventListener) window.addEventListener('message', procureChannel, false);
+    else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
+
+    this.receive_api_call = function(app_instance_uuid, message, callback) {
+	/* //TODO:  uncomment this after passing context with every call
+
+	var call_context = message.context;
+
+	if (typeof call_context.user !== typeof context.user)
+	    throw "User context doesn't match API call context";
+
+	if (call_context.user && (call_context.user.id !== context.user.id))
+	    throw "User context doesn't match API call context";
+
+	if (typeof call_context.record !== typeof context.record)
+	    throw "Record context doesn't match API call context";
+
+	if (call_context.record && (call_context.record.id !== context.record.id))
+	    throw "Record context doesn't match API call context";
+
+	var call_params = message.call_params;
+	*/
+	this.SMART_HELPER.handle_api(app_instance_uuid, 
+				     message, 
+				     function(r){callback({contentType: "xml",  data: r})});	    
+    };
+
+    this.receive_ready = function(app_instance_uuid, callback) {	    
+	var _this = this;
+	var app_instance = this.running_apps[app_instance_uuid];
+	var message = app_instance.context;	// TODO:  clean this structure.
+	message.app_instance_id = app_instance_uuid;
+	message.ready_data = app_instance.ready_data;
+
+	callback(message);
+    };
+
+/*
+    this.foreground_app_instance= function(app_instance_id){
+    	var app_instance = this.running_apps[app_instance_id];
+	if (app_instance.channel !== undefined)
+	    app_instance.channel.call({method: "app_instanceforeground", success: function(){}});
+    };
+
+    this.background_app_instance = function(app_instance_id){
+    	var app_instance = this.running_apps[app_instance_id];
+	if (app_instance.channel !== undefined)
+	    app_instance.channel.call({method: "app_instancebackground", success: function(){}});
+    };
+  */
+  
+    this.launch_app = function(activity_name, app_id){
+    	var app_description = {
+	    name: activity_name,
+	    app: app_id
+	};
     	
-    	this.receive_start_activity_message(null, message);
-    },
+    	this.receive_launch_app(null, app_description);
+    };
     
-
-    end_activity: function(activity_id){
-    	var activity = this.activities[activity_id];
-    	this.receive_end_activity_message(activity, {response: null});
+/*
+    end_app_instance: function(app_instance_id){
+    	var app_instance = this.running_apps[app_instance_id];
+    	this.receive_end_app_instance_message(app_instance, {response: null});
     },
 
-    receive_restart_activity_message: function(activity, callback) {
-	    var _this = this;
+    receive_restart_app_instance_message: function(app_instance, callback) {
+	var _this = this;
+
     	callback(true);
-    	activity.channel.destroy();
+    	app_instance.channel.destroy();
 	
     	this.clear_unbound_channels();
     	
-	    activity.channel  = Channel.build({window: activity.iframe.contentWindow, 
-	    								   origin: activity.origin, 
-	    								   scope: "not_ready", 
-	    								   debugOutput: _this.debug});
-
-	    activity.channel.bind("ready", function(t, p) {
-		    t.delayReturn(true);
-		    _this.receive_ready(activity, t.complete);
-	      	});
+	
     },
 
     
-    receive_end_activity_message: function(activity, message) {
-    	var caller = activity.caller;
+    receive_end_app_instance_message: function(app_instance, message) {
+    	var caller = app_instance.caller;
     	var response = message.response;    	
 	
     	if (caller === undefined) return;
 
-    	this.SMART_HELPER.handle_resume_activity(
+    	this.SMART_HELPER.handle_resume_app_instance(
 						 caller, 
 						 function() {
-							 caller.callbacks[activity.uuid]({contentType: "xml", data: response});
+							 caller.callbacks[app_instance.uuid]({contentType: "xml", data: response});
 						 });
     },
-
-    receive_start_activity_message: function(activity, message, callback) {
+*/
+     this.receive_launch_app = function(launched_by, app_description, input_data, callback) {
     	var uuid = randomUUID();
-    	if (activity !== null) {
-    		if (activity.callbacks === undefined)
-    			activity.callbacks = {};
-    		activity.callbacks[uuid] = callback;
+    	if (launched_by !== null) {
+    		running_apps.callbacks[uuid] = callback;
     	}
 
     	
-    	var new_activity = this.activities[uuid]= {
-    		uuid: uuid,
-    		caller: activity,
-			name: message.name,
-			app: message.app,
-			ready_data: message.ready_data,
-			ready: false
-		};
+    	var new_app_instance = this.running_apps[uuid]= {
+    	    uuid: uuid,
+    	    caller: launched_by,
+	    name: app_description.name, //TODO:  call these activity_name and app_id
+	    app: app_description.app,
+	    ready_data: input_data,
+	    ready: false
+	};
     	
-	var _this = this;
 	this.SMART_HELPER.handle_start_activity(
-			new_activity, 
-			function(iframe) {
-			    var origin  = __SMART_extract_origin(jQuery(iframe).attr('src'));
-			    new_activity.origin = origin;
-			    new_activity.iframe = iframe;
-
-    			_this.clear_unbound_channels();
-
-		    	new_activity.channel  = Channel.build({window: iframe.contentWindow, origin: origin, scope: "not_ready", debugOutput: _this.debug});							    
-
-		    	// Make sure we've received context var before letting the app call "ready" 
-		    	// to avoid a race condition.  (We could, alternatively, poll on  context 
-		    	// when "ready" is called.)
-			    _this.SMART_HELPER.handle_record_info(new_activity, function(context) {
-			    	new_activity.context = context;
-
-			    	new_activity.channel.bind("ready", function(t, p) {
-					    t.delayReturn(true);
-					    _this.receive_ready(new_activity, t.complete);
-				      	});
-			    });
+	    new_app_instance, 
+	    function(iframe) {
+		var origin  = __SMART_extract_origin(jQuery(iframe).attr('src'));
+		new_app_instance.origin = origin;
+		new_app_instance.iframe = iframe;
+		
+    		sc.clear_unbound_channels();
+		
+		// Make sure we've received context var before letting the app call "ready" 
+		// to avoid a race condition.  (We could, alternatively, poll on  context 
+		// when "ready" is called.)
+		sc.SMART_HELPER.handle_record_info(new_app_instance, function(context) {
+		    new_app_instance.context = context;
+		    sc.receive_ready(new_app_instance.uuid)
 		});
-    },
+	    });
+     };
     
-    clear_unbound_channels: function() {
-	    jQuery.each(this.activities, function(aid, activity) {
-	    	if (activity.ready === false && activity.channel !== undefined)
+    this.clear_unbound_channels = function() {
+	    jQuery.each(this.running_apps, function(aid, app_instance) {
+	    	if (app_instance.ready === false && app_instance.channel !== undefined)
 	    	{	
-	    		activity.channel.destroy();
-	    		activity.channel = undefined;
+	    		app_instance.channel.destroy();
+	    		app_instance.channel = undefined;
 	    	}
 	    });
-    }
+    };
 
- });
+};
 
 function randomUUID() {
 	var s = [], itoh = '0123456789ABCDEF';
