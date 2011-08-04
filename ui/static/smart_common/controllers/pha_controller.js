@@ -149,24 +149,24 @@ launch_app: function(pha) {
 	
 	var already_running = [];
 	$.each(SMART.running_apps,
-	       function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
+	       function(aid, a){if ( a.manifest.id === pha.id) already_running.push(a);});
 
 	var about_to_background= [];
 	$.each(SMART.running_apps,
 	       function(aid, a){if ( a.app == RecordController.APP_ID) about_to_background.push(a);});
 
 	if (about_to_background.length > 0) {
-		SMART.background_activity(about_to_background[0].uuid);
+		SMART.notify_app_backgrounded(about_to_background[0].uuid);
 	}
 	
 	if (already_running.length > 0) {
-		SMART.foreground_activity(already_running[0].uuid);
-		RecordController.APP_ID = already_running[0].resolved_activity.app;
+		SMART.notify_app_foregrounded(already_running[0].uuid);
+		RecordController.APP_ID = already_running[0].manifest.id;
 		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
 		return;
 	}
 		
-	SMART.launch_app("main", pha.id);
+    SMART.launch_app(pha.id, get_context());
 },
 
 draw_phas :function() {

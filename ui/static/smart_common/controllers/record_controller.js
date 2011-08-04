@@ -27,17 +27,19 @@ jQuery.Controller.extend('smart_common.Controllers.Record',
 					  "<span id='pt_label'>"+record.label+"</span>"+
 					  "<a id='next_pt' href='#next_pt_req' title='Next Patient Record'>&gt;</a>");
 
-	  OpenAjax.hub.publish("pha.exit_app_context");
-	  SMART.set_context();
+	  SMART.context_changed();
 
 	  // If there was an app open on the old record, open it automatically
 	  // on the new one.
 	  if (RecordController.APP_ID) {
 	      var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
+
 	      OpenAjax.hub.publish("pha.launch", app);
 	  } else if (RecordController.PAGE) {
 	      RecordController.PAGE.index();
 	  }
+      else
+	  OpenAjax.hub.publish("pha.exit_app_context");
 
   },
   

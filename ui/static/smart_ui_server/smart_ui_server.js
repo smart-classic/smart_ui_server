@@ -4,6 +4,7 @@ steal.plugins('smart_common')
 
     .models("../../smart_common/models/account", 
 	    "../../smart_common/models/activity", 
+	    "../../smart_common/models/app_manifest", 
 	    "../../smart_common/models/pha", 
 	    "../../smart_common/models/record",
 	    "../../smart_common/models/alert")

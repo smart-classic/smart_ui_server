@@ -4,6 +4,8 @@
  * Ben Adida
  */
 
+(function(window) {
+
 // simple pattern to match URLs with http or https
 var __SMART_URL_PATTERN = /^(https?:\/\/[^/]+)/;
 
@@ -16,224 +18,232 @@ function __SMART_extract_origin(url) {
 	return null;
 }
 
-SMART_CONTAINER = function(SMART_HELPER) {
 
-    this.debug = false;
-    this.SMART_HELPER = SMART_HELPER;
-    this.running_apps = {};
-    this.running_apps.callbacks = {};
+window.SMART_CONTAINER = function(SMART_HELPER) {
+    
     var sc = this;
+    sc.debug = false;
+    sc.SMART_HELPER = SMART_HELPER;
+    sc.running_apps = {};
+    sc.running_apps.callbacks = {};
 
-    var context = null;
-
-    this.set_context = function(new_context) {
-	context = new_context;
-
-    	jQuery.each(this.running_apps, function(aid, a){
-    	    var c = a.channel;
-    	    if (c)  {
-        	c.call({method: "app_instancedestroy", success: function(){}});
-    		c.destroy();
-    	    }
-    	});
+    var generate_ready_message = function(app_instance, callback) {	    
+	var message = { context: app_instance.context,
+			credentials: app_instance.credentials,
+			uuid: app_instance.uuid,
+			ready_data: app_instance.ready_data
+		      };
 	
-	this.running_apps = {};	    
-
-
-	SMART_HELPER.handle_context_changed(new_context);
+	return message;
     };
 
-    this.get_context = function() {
-	return context;
-    }
+    var get_manifest_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	SMART_HELPER.get_manifest(app_instance, function(r) {
+	    app_instance.manifest = r;
+	    dfd.resolve(app_instance);
+	});
+	return dfd.promise();
+    };
+    
+    var get_credentials_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	SMART_HELPER.get_credentials(app_instance, function(r) {
+	    app_instance.credentials = r;
+	    dfd.resolve(app_instance)
+	});
+	return dfd.promise();
+    };
+
+    var get_iframe_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	SMART_HELPER.get_iframe(app_instance, function(r) {
+	    app_instance.iframe = r;
+	    dfd.resolve(app_instance)
+	});
+	return dfd.promise();
+    };
+
+
+    var receive_api_call = function(app_instance, call_info, callback) {
+	sc.SMART_HELPER.handle_api(app_instance, 
+				     call_info, 
+				     function(r){
+					 callback({
+					     contentType: "text",  
+					     data: r})
+				     });	    
+    };
+
+    var bind_emr_frame_app_channel = function(app_instance) {
+	    app_instance.channel.bind("api_call_delegated", function(t, p) {
+		t.delayReturn(true);
+		var on_behalf_of = sc.running_apps[p.originating_app_uuid];
+		var call_info = p.call_info;
+		
+		receive_api_call(on_behalf_of, call_info, t.complete); 
+	    });
+
+	    app_instance.channel.bind("launch_app", function(t, p) {
+		t.delayReturn(true);
+
+		var new_app_instance = p;
+
+		get_manifest_wrapper(new_app_instance)
+		    .pipe(get_credentials_wrapper)
+		    .pipe(function() {
+			var uuid = new_app_instance.uuid;
+			console.log(sc.running_apps);
+
+			if (sc.running_apps[uuid])
+			    throw "Can't launch app that's already launched: " + uuid;
+			sc.running_apps[uuid] = new_app_instance;
+			
+			t.complete(new_app_instance);
+		    });
+	    });
+    };
+
+    var bind_ui_app_channel = function(app_instance) {
+	    app_instance.channel.bind("call_app_and_wait", function(t, p) {
+		t.delayReturn(true);
+		receive_call_app_and_wait(app_instance, p, t.complete);
+	    });
+    };
+
+    var bind_app_channel = function(app_instance) {
+
+	app_instance.channel.bind("api_call", function(t, p) {
+	    t.delayReturn(true);
+	    receive_api_call(app_instance, p, t.complete);
+	});
+	
+    };
+
+    // Once an app launches, discover which iframe it belongs to,
+    // and create a new jschannel bound to that iframe.
+    // If necessary, bind functions to the channel according to app type.
+    var bind_new_channel = function(app_instance) {
+	
+	app_instance.channel && app_instance.channel.destroy();
+	
+	app_instance.channel  = Channel.build({
+	    window: app_instance.iframe.contentWindow, 
+	    origin: app_instance.origin, 
+	    scope: app_instance.uuid, 
+	    debugOutput: sc.debug
+	});
+	
+	bind_app_channel(app_instance);
+	
+	if (app_instance.manifest.mode == "ui")// "emr_frame") // TODO:  rever this to emrframe.
+	    bind_emr_frame_app_channel(app_instance);
+	
+	if (app_instance.manifest.mode == "ui")
+	    bind_ui_app_channel(app_instance);
+
+	var ready_data = generate_ready_message(app_instance);
+
+	app_instance.channel.notify({
+		method: "ready",
+		params: ready_data
+	});
+
+    };
 
     var procureChannel = function(event){
 	var app_instance = null;
-	if (event.data !== "procure_channel") return;
+	if (event.data !== '"procure_channel"') return;
 
 	$.each(sc.running_apps, function(aid, a) {
 	    if (a.iframe && a.iframe.contentWindow === event.source)
 		app_instance = a;
 	});
 	
-	if (app_instance) { // TODO:  replace contents with sc.bindChannel();
-	    app_instance.channel && app_instance.channel.destroy();
-	    
-	    app_instance.channel  = Channel.build(
-	        {window: app_instance.iframe.contentWindow, 
-	         origin: app_instance.origin, 
-	         scope: app_instance.uuid, 
-	         debugOutput: sc.debug});
-	    
-	    app_instance.channel.bind("api_call", function(t, p) {
-		t.delayReturn(true);
-		sc.receive_api_call(app_instance, p, t.complete); // TODO pass app instance by uuid
-	    });
-
-	    app_instance.channel.bind("ready", function(t, p) {
-		t.delayReturn(true);
-		sc.receive_ready(app_instance.uuid, t.complete);
-	    });
-
-	    app_instance.channel.bind("adjust_size", function(t, p) {
-		sc.SMART_HELPER.handle_adjust_size(app_instance, p);
-  	    });
-
-	    app_instance.channel.bind("start_app_instance", function(t, p) {
-		t.delayReturn(true);
-		sc.receive_start_app_instance_message(app_instance, p, t.complete);
-	    });
-
-	    app_instance.channel.bind("end_app_instance", function(t, p) {
-		t.delayReturn(true);
-		sc.receive_end_app_instance_message(app_instance,p);
-	    });
-
-	    app_instance.channel.bind("restart_app_instance", function(t, p) {
-		t.delayReturn(true);
-		sc.receive_restart_app_instance_message(app_instance,t.complete);
-	    });
-
-	    event.source.postMessage("app_instance_uuid="+app_instance.uuid, app_instance.origin);
+	if (app_instance) {
+	    bind_new_channel(app_instance);
+	    event.source.postMessage('"app_instance_uuid='+app_instance.uuid+'"', app_instance.origin);
 	}
     };
 
     if (window.addEventListener) window.addEventListener('message', procureChannel, false);
     else if(window.attachEvent) window.attachEvent('onmessage', procureChannel);
 
-    this.receive_api_call = function(app_instance_uuid, message, callback) {
-	/* //TODO:  uncomment this after passing context with every call
+    sc.context_changed = function() {
+    	jQuery.each(sc.running_apps, function(aid, a){
+    	    var c = a.channel;
+    	    if (c)  {
+		console.log(aid);
+        	c.notify({method: "destroy"});
+    		c.destroy();
+    	    }
+	    if (a.iframe)
+	    {
+		$(a.iframe).remove();
+	    }
+    	});
+	
+	sc.running_apps = {};	    
 
-	var call_context = message.context;
-
-	if (typeof call_context.user !== typeof context.user)
-	    throw "User context doesn't match API call context";
-
-	if (call_context.user && (call_context.user.id !== context.user.id))
-	    throw "User context doesn't match API call context";
-
-	if (typeof call_context.record !== typeof context.record)
-	    throw "Record context doesn't match API call context";
-
-	if (call_context.record && (call_context.record.id !== context.record.id))
-	    throw "Record context doesn't match API call context";
-
-	var call_params = message.call_params;
-	*/
-	this.SMART_HELPER.handle_api(app_instance_uuid, 
-				     message, 
-				     function(r){callback({contentType: "xml",  data: r})});	    
+	if (typeof SMART_HELPER.handle_context_changed == "function")
+	    SMART_HELPER.handle_context_changed();
     };
 
-    this.receive_ready = function(app_instance_uuid, callback) {	    
-	var _this = this;
-	var app_instance = this.running_apps[app_instance_uuid];
-	var message = app_instance.context;	// TODO:  clean this structure.
-	message.app_instance_id = app_instance_uuid;
-	message.ready_data = app_instance.ready_data;
-
-	callback(message);
-    };
-
-/*
-    this.foreground_app_instance= function(app_instance_id){
-    	var app_instance = this.running_apps[app_instance_id];
+    sc.notify_app_foregrounded= function(app_instance_id){
+    	var app_instance = sc.running_apps[app_instance_id];
 	if (app_instance.channel !== undefined)
-	    app_instance.channel.call({method: "app_instanceforeground", success: function(){}});
+	    app_instance.channel.notify({method: "foreground"});
     };
 
-    this.background_app_instance = function(app_instance_id){
-    	var app_instance = this.running_apps[app_instance_id];
+    sc.notify_app_backgrounded = function(app_instance_id){
+    	var app_instance = sc.running_apps[app_instance_id];
 	if (app_instance.channel !== undefined)
-	    app_instance.channel.call({method: "app_instancebackground", success: function(){}});
+	    app_instance.channel.notify({method: "background"});
     };
-  */
+
+
+    sc.notify_app_destroyed = function(app_instance_id){
+    	var app_instance = sc.running_apps[app_instance_id];
+	if (app_instance.channel !== undefined)
+	    app_instance.channel.notify({method: "destroy"});
+    };
   
-    this.launch_app = function(activity_name, app_id){
-    	var app_description = {
-	    name: activity_name,
-	    app: app_id
+    sc.launch_app = function(app_descriptor, context, called_by, input_data) {
+
+	if (typeof app_descriptor !== "string") {
+	    throw "Expected an app descriptor string!";
+	}
+	
+	var uuid = randomUUID();
+	var app_instance = sc.running_apps[uuid] = {
+	    uuid: uuid,
+	    descriptor: app_descriptor,
+	    context: context
 	};
-    	
-    	this.receive_launch_app(null, app_description);
-    };
-    
-/*
-    end_app_instance: function(app_instance_id){
-    	var app_instance = this.running_apps[app_instance_id];
-    	this.receive_end_app_instance_message(app_instance, {response: null});
-    },
 
-    receive_restart_app_instance_message: function(app_instance, callback) {
-	var _this = this;
-
-    	callback(true);
-    	app_instance.channel.destroy();
-	
-    	this.clear_unbound_channels();
-    	
-	
-    },
-
-    
-    receive_end_app_instance_message: function(app_instance, message) {
-    	var caller = app_instance.caller;
-    	var response = message.response;    	
-	
-    	if (caller === undefined) return;
-
-    	this.SMART_HELPER.handle_resume_app_instance(
-						 caller, 
-						 function() {
-							 caller.callbacks[app_instance.uuid]({contentType: "xml", data: response});
-						 });
-    },
+/* TODO: add this to a call_app handler
+    	if (called_by) {
+    	    running_apps.callbacks[uuid] = callback;
+	    app_instance.called_by = called_by;
+	    app_instance.ready_data = input_data;
+    	}  
 */
-     this.receive_launch_app = function(launched_by, app_description, input_data, callback) {
-    	var uuid = randomUUID();
-    	if (launched_by !== null) {
-    		running_apps.callbacks[uuid] = callback;
-    	}
 
-    	
-    	var new_app_instance = this.running_apps[uuid]= {
-    	    uuid: uuid,
-    	    caller: launched_by,
-	    name: app_description.name, //TODO:  call these activity_name and app_id
-	    app: app_description.app,
-	    ready_data: input_data,
-	    ready: false
-	};
-    	
-	this.SMART_HELPER.handle_start_activity(
-	    new_app_instance, 
-	    function(iframe) {
-		var origin  = __SMART_extract_origin(jQuery(iframe).attr('src'));
-		new_app_instance.origin = origin;
-		new_app_instance.iframe = iframe;
-		
-    		sc.clear_unbound_channels();
-		
-		// Make sure we've received context var before letting the app call "ready" 
-		// to avoid a race condition.  (We could, alternatively, poll on  context 
-		// when "ready" is called.)
-		sc.SMART_HELPER.handle_record_info(new_app_instance, function(context) {
-		    new_app_instance.context = context;
-		    sc.receive_ready(new_app_instance.uuid)
-		});
-	    });
-     };
-    
-    this.clear_unbound_channels = function() {
-	    jQuery.each(this.running_apps, function(aid, app_instance) {
-	    	if (app_instance.ready === false && app_instance.channel !== undefined)
-	    	{	
-	    		app_instance.channel.destroy();
-	    		app_instance.channel = undefined;
-	    	}
-	    });
-    };
+	if (typeof SMART_HELPER.on_app_launch_begin == "function")
+	    SMART_HELPER.on_app_launch_begin(app_instance);	
 
+	get_manifest_wrapper(app_instance)
+	    .pipe(get_credentials_wrapper)
+	    .pipe(get_iframe_wrapper)
+	    .pipe(function() {
+		var launch_url = app_instance.manifest.activities.main;
+		launch_url += "?"+app_instance.credentials.oauth_header;
+		app_instance.origin = __SMART_extract_origin(launch_url);
+		app_instance.iframe.src = launch_url;
+		if (typeof SMART_HELPER.on_app_launch_complete == "function")
+		    SMART_HELPER.on_app_launch_complete(app_instance);
+	    });	
+    };    
 };
 
 function randomUUID() {
@@ -253,3 +263,5 @@ function randomUUID() {
 	s[8] = s[13] = s[18] = s[23] = '-';
 	return s.join('');
 };
+
+})(window);
