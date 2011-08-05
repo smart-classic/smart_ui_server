@@ -35,6 +35,7 @@ SMART_HELPER.get_credentials = function (app_instance, callback){
 		
 		var credentials = {
         	    connect_token:d.AccessToken.ConnectToken, 
+        	    connect_secret:d.AccessToken.ConnectSecret, 
 		    api_base: d.AccessToken.APIBase,
 		    rest_token:d.AccessToken.RESTToken, 
 		    rest_secret: d.AccessToken.RESTSecret,
@@ -80,7 +81,10 @@ var get_context = function() {
 // calls back wtih the response to an API call.  
 // (implemented as passthrough to a back-end REST server)
 SMART_HELPER.handle_api = function(app_instance, message, callback) {
-    var params = {'smart_oauth_token': app_instance.credentials.connect_token};
+    var params = {
+	'smart_connect_token': app_instance.credentials.connect_token,
+	'smart_connect_secret': app_instance.credentials.connect_secret
+    };
 	
     var params_array = [];
     for (var k in params) { 

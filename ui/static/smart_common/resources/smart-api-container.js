@@ -35,7 +35,6 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
     	jQuery.each(sc.running_apps, function(aid, a){
     	    var c = a.channel;
     	    if (c)  {
-		console.log(aid);
         	c.notify({method: "destroy"});
     		c.destroy();
     	    }
@@ -70,7 +69,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	    app_instance.channel.notify({method: "destroy"});
     };
   
-    sc.launch_app = function(app_descriptor, context, called_by, input_data) {
+    sc.launch_app = function(app_descriptor, context) {
 
 	if (typeof app_descriptor !== "string") {
 	    throw "Expected an app descriptor string!";
@@ -91,10 +90,8 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
     	}  
 	*/
 
-	if (typeof SMART_HELPER.on_app_launch_begin == "function")
-	    SMART_HELPER.on_app_launch_begin(app_instance);	
-
-	get_manifest_wrapper(app_instance)
+	begin_launch_wrapper(app_instance)
+	    .pipe(get_manifest_wrapper)
 	    .pipe(get_credentials_wrapper)
 	    .pipe(get_iframe_wrapper)
 	    .pipe(function() {
@@ -102,9 +99,9 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 		launch_url += "?"+app_instance.credentials.oauth_header;
 		app_instance.origin = __SMART_extract_origin(launch_url);
 		app_instance.iframe.src = launch_url;
-		if (typeof SMART_HELPER.on_app_launch_complete == "function")
-		    SMART_HELPER.on_app_launch_complete(app_instance);
-	    });	
+		return app_instance;
+	    })
+	    .pipe(complete_launch_wrapper);	
     };    
 
 
@@ -123,6 +120,33 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	
 	return message;
     };
+
+
+    var begin_launch_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	if (typeof SMART_HELPER.on_app_launch_begin == "function")
+	{
+	    SMART_HELPER.on_app_launch_begin(app_instance, function(r){
+		dfd.resolve(app_instance);
+	    });
+	}
+	else dfd.resolve(app_instance);
+
+	return dfd.promise();
+    };
+
+    var complete_launch_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	if (typeof SMART_HELPER.on_app_launch_complete == "function")
+	    SMART_HELPER.on_app_launch_complete(app_instance, function(r){
+		dfd.resolve(app_instance);
+	    });
+	else dfd.resolve(app_instance);
+
+	return dfd.promise();
+    };
+
+
 
     var get_manifest_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
@@ -153,7 +177,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 
 
     var receive_api_call = function(app_instance, call_info, callback) {
-	sc.SMART_HELPER.handle_api(app_instance, 
+	SMART_HELPER.handle_api(app_instance, 
 				     call_info, 
 				     function(r){
 					 callback({
@@ -213,14 +237,15 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 
     var bind_emr_frame_app_channel = function(app_instance) {
 	    app_instance.channel.bind("api_call_delegated", function(t, p) {
-		t.delayReturn(true);
-		var on_behalf_of = sc.running_apps[p.originating_app_uuid];
-		var call_info = p.call_info;
 		
+		t.delayReturn(true);
+		var on_behalf_of = p.app_instance;
+		var call_info = p.call_info;
+
 		receive_api_call(on_behalf_of, call_info, t.complete); 
 	    });
 
-	    app_instance.channel.bind("launch_app", function(t, p) {
+	    app_instance.channel.bind("launch_app_delegated", function(t, p) {
 		t.delayReturn(true);
 
 		var new_app_instance = p;
@@ -229,12 +254,6 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 		    .pipe(get_credentials_wrapper)
 		    .pipe(function() {
 			var uuid = new_app_instance.uuid;
-			console.log(sc.running_apps);
-
-			if (sc.running_apps[uuid])
-			    throw "Can't launch app that's already launched: " + uuid;
-			sc.running_apps[uuid] = new_app_instance;
-			
 			t.complete(new_app_instance);
 		    });
 	    });

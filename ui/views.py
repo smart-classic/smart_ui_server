@@ -132,18 +132,10 @@ def launch_app(request, account_id, pha_email, record_id):
           account_id, pha_email, record_id))
 
     launchxml = ET.fromstring(launchdata)
-
     token_str =     launchxml.findtext("ConnectToken")
     secret =     launchxml.findtext("ConnectSecret")  
 
-    token = oauth.OAuthToken(token= token_str, 
-                             secret =secret)
-
-    request.session[token_str] = token
-    print "Generated session for smartconnect", token_str
-    print request.session.keys(), len(request.session.keys())
-    launchxml.remove(launchxml.find("ConnectSecret"))
-    return HttpResponse(ET.tostring(launchxml))
+    return HttpResponse(launchdata)
 
 
 def smart_passthrough(request):
@@ -165,10 +157,12 @@ def smart_passthrough(request):
                                    data_content_type=content_type)  
 
   c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
-  token_str =  c['smart_oauth_token']
-  print "Signing request with ", token_str
-  print request.session
-  token = request.session[token_str]
+  token_str =  c['smart_connect_token']
+  secret =  c['smart_connect_secret']
+
+  token = oauth.OAuthToken(token= token_str, 
+                           secret =secret)
+
   consumer = oauth.OAuthConsumer(consumer_key = settings.CONSUMER_KEY, 
                                  secret = settings.CONSUMER_SECRET)
   
@@ -176,7 +170,7 @@ def smart_passthrough(request):
                                      token, 
                                      http_request)
   
-  oauth_request.sign()        
+  oauth_request.sign()
 
   headers = oauth_request.to_header(with_content_type=True)
   api = api_server(include_scheme=False)
