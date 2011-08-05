@@ -100,7 +100,10 @@ SMART_HELPER.handle_api = function(app_instance, message, callback) {
 	type: message.method,
 	success: callback,
 	error: function(data) {
-	    alert("error");
+	    alert("error handling API");
+	    console.log(app_instance);
+	    console.log(message);
+	    console.log(data);
 	}
     });
 };
