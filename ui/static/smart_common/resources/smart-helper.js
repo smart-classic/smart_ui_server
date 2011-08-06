@@ -1,18 +1,19 @@
-SMART_HELPER  = {};
-SMART_HELPER.handle_context_changed = function(){};
+SMART = new SMART_CONNECT_HOST();
 
-SMART_HELPER.on_app_launch_complete = function(app_instance) {
+SMART.handle_context_changed = function(){};
+
+SMART.on_app_launch_complete = function(app_instance) {
     RecordController.APP_ID = app_instance.manifest.id;
 };
 
-SMART_HELPER.get_manifest = function (app_instance, callback){
+SMART.get_manifest = function (app_instance, callback){
     new AppManifest({
 	descriptor: app_instance.descriptor,
 	callback: callback
     });
 };
 
-SMART_HELPER.get_credentials = function (app_instance, callback){
+SMART.get_credentials = function (app_instance, callback){
 
     var app_email_enc = encodeURIComponent(app_instance.manifest.id);
     var account_id_enc = encodeURIComponent(app_instance.context.user.id);
@@ -51,7 +52,7 @@ SMART_HELPER.get_credentials = function (app_instance, callback){
 	});
 };
 
-SMART_HELPER.get_iframe = function (app_instance, callback){
+SMART.get_iframe = function (app_instance, callback){
     var frame_id = "app_content_iframe_"+app_instance.uuid;
 
     $('#app_content_iframe_holder').append(
@@ -80,7 +81,7 @@ var get_context = function() {
 
 // calls back wtih the response to an API call.  
 // (implemented as passthrough to a back-end REST server)
-SMART_HELPER.handle_api = function(app_instance, message, callback) {
+SMART.handle_api = function(app_instance, message, callback) {
     var params = {
 	'smart_connect_token': app_instance.credentials.connect_token,
 	'smart_connect_secret': app_instance.credentials.connect_secret

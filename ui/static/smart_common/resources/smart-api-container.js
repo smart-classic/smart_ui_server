@@ -1,5 +1,5 @@
 /*
- * The SMART container side of the API
+ * SMART Connect Host:  container side of the SMART Connect API
  * Josh Mandel
  * Ben Adida
  */
@@ -19,7 +19,7 @@ function __SMART_extract_origin(url) {
 }
 
 
-window.SMART_CONTAINER = function(SMART_HELPER) {
+window.SMART_CONNECT_HOST = function() {
     
     var sc = this;
 
@@ -30,6 +30,37 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
     sc.debug = false;
     sc.running_apps = {};
     sc.running_apps.callbacks = {};
+
+    sc.handle_context_changed = function() { };
+    sc.on_app_launch_begin =    function(a,callback){ callback(); };
+    sc.on_app_launch_complete = function(a,callback) { callback(); };
+
+    sc.on_app_launch_delegated_begin =    function(a,callback){ callback(); };
+    sc.on_app_launch_delegated_complete = function(a,callback) { callback(); };
+
+    sc.get_manifest = function() {
+	var err = "Must override SMART_CONNECT_HOST.get_manifest";
+	console.log(err);
+	throw err;
+    };
+
+    sc.get_credentials = function() {
+	var err = "Must override SMART_CONNECT_HOST.get_credentials";
+	console.log(err);
+	throw err;
+    };
+
+    sc.get_iframe = function() {
+	var err = "Must override SMART_CONNECT_HOST.get_iframe";
+	console.log(err);
+	throw err;
+    };
+
+    sc.get_iframe = function() {
+	var err = "Must override SMART_CONNECT_HOST.handle_api";
+	console.log(err);
+	throw err;
+    };
 
     sc.context_changed = function() {
     	jQuery.each(sc.running_apps, function(aid, a){
@@ -46,8 +77,6 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	
 	sc.running_apps = {};	    
 
-	if (typeof SMART_HELPER.handle_context_changed == "function")
-	    SMART_HELPER.handle_context_changed();
     };
 
     sc.notify_app_foregrounded= function(app_instance_id){
@@ -69,7 +98,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	    app_instance.channel.notify({method: "destroy"});
     };
   
-    sc.launch_app = function(app_descriptor, context) {
+    sc.launch_app = function(app_descriptor, context, options) {
 
 	if (typeof app_descriptor !== "string") {
 	    throw "Expected an app descriptor string!";
@@ -79,16 +108,9 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	var app_instance = sc.running_apps[uuid] = {
 	    uuid: uuid,
 	    descriptor: app_descriptor,
-	    context: context
+	    context: context,
+	    options: options
 	};
-
-	/* TODO: add this to a call_app handler
-    	if (called_by) {
-    	    running_apps.callbacks[uuid] = callback;
-	    app_instance.called_by = called_by;
-	    app_instance.ready_data = input_data;
-    	}  
-	*/
 
 	begin_launch_wrapper(app_instance)
 	    .pipe(get_manifest_wrapper)
@@ -96,7 +118,12 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	    .pipe(get_iframe_wrapper)
 	    .pipe(function() {
 		var launch_url = app_instance.manifest.activities.main;
-		launch_url += "?"+app_instance.credentials.oauth_header;
+		var base_url =  app_instance.manifest.base_url;
+		launch_url = launch_url.replace("{base_url}", base_url);
+
+		launch_url += "?oauth_header="+
+		    encodeURIComponent(app_instance.credentials.oauth_header);
+
 		app_instance.origin = __SMART_extract_origin(launch_url);
 		app_instance.iframe.src = launch_url;
 		return app_instance;
@@ -115,6 +142,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	    context: app_instance.context,
 	    credentials: app_instance.credentials,
 	    uuid: app_instance.uuid,
+	    manifest: app_instance.manifest,
 	    ready_data: app_instance.ready_data
 	};
 	
@@ -124,33 +152,42 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 
     var begin_launch_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
-	if (typeof SMART_HELPER.on_app_launch_begin == "function")
-	{
-	    SMART_HELPER.on_app_launch_begin(app_instance, function(r){
-		dfd.resolve(app_instance);
-	    });
-	}
-	else dfd.resolve(app_instance);
-
+	sc.on_app_launch_begin(app_instance, function(r){
+	    dfd.resolve(app_instance);
+	});
+	
 	return dfd.promise();
     };
 
     var complete_launch_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
-	if (typeof SMART_HELPER.on_app_launch_complete == "function")
-	    SMART_HELPER.on_app_launch_complete(app_instance, function(r){
-		dfd.resolve(app_instance);
-	    });
-	else dfd.resolve(app_instance);
+	sc.on_app_launch_complete(app_instance, function(r){
+	    dfd.resolve(app_instance);
+	});
+	return dfd.promise();
+    };
 
+    var begin_launch_delegated_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	sc.on_app_launch_delegated_begin(app_instance, function(r){
+	    dfd.resolve(app_instance);
+	});
+	
+	return dfd.promise();
+    };
+
+    var complete_launch_delegated_wrapper = function(app_instance) {
+	var dfd = $.Deferred();
+	sc.on_app_launch_delegated_complete(app_instance, function(r){
+	    dfd.resolve(app_instance);
+	});
 	return dfd.promise();
     };
 
 
-
     var get_manifest_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
-	SMART_HELPER.get_manifest(app_instance, function(r) {
+	sc.get_manifest(app_instance, function(r) {
 	    app_instance.manifest = r;
 	    dfd.resolve(app_instance);
 	});
@@ -159,7 +196,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
     
     var get_credentials_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
-	SMART_HELPER.get_credentials(app_instance, function(r) {
+	sc.get_credentials(app_instance, function(r) {
 	    app_instance.credentials = r;
 	    dfd.resolve(app_instance)
 	});
@@ -168,7 +205,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 
     var get_iframe_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
-	SMART_HELPER.get_iframe(app_instance, function(r) {
+	sc.get_iframe(app_instance, function(r) {
 	    app_instance.iframe = r;
 	    dfd.resolve(app_instance)
 	});
@@ -177,7 +214,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 
 
     var receive_api_call = function(app_instance, call_info, callback) {
-	SMART_HELPER.handle_api(app_instance, 
+	sc.handle_api(app_instance, 
 				     call_info, 
 				     function(r){
 					 callback({
@@ -220,7 +257,7 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 	
 	bind_app_channel(app_instance);
 	
-	if (app_instance.manifest.mode == "ui")// "emr_frame") // TODO: revert this to emrframe.
+	if (app_instance.manifest.mode == "frame_ui")
 	    bind_emr_frame_app_channel(app_instance);
 	
 	if (app_instance.manifest.mode == "ui")
@@ -250,12 +287,15 @@ window.SMART_CONTAINER = function(SMART_HELPER) {
 
 		var new_app_instance = p;
 
-		get_manifest_wrapper(new_app_instance)
+		begin_launch_delegated_wrapper(new_app_instance)
+		    .pipe(get_manifest_wrapper)
 		    .pipe(get_credentials_wrapper)
 		    .pipe(function() {
 			var uuid = new_app_instance.uuid;
 			t.complete(new_app_instance);
-		    });
+			return new_app_instance;
+		    })
+		    .pipe(complete_launch_delegated_wrapper);	
 	    });
     };
 

@@ -11,7 +11,6 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Main',
 	
  "{window} load": function(params) {
     ACCOUNT = Account.from_email(ACCOUNT_ID); // init the account via model
-    SMART = new SMART_CONTAINER(SMART_HELPER);
 
     RecordController = new smart_common.Controllers.Record($("#app_content"));
 
