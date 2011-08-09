@@ -165,8 +165,15 @@ launch_app: function(pha) {
 		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
 		return;
 	}
+
+    new AppManifest({
+	descriptor: pha.id,
+	callback: function(manifest) {
+	    SMART.launch_app(manifest, get_context());
+	}
+    });
+
 		
-    SMART.launch_app(pha.id, get_context());
 },
 
 draw_phas :function() {

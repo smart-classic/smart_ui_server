@@ -98,22 +98,21 @@ window.SMART_CONNECT_HOST = function() {
 	    app_instance.channel.notify({method: "destroy"});
     };
   
-    sc.launch_app = function(app_descriptor, context, options) {
+    sc.launch_app = function(manifest, context, options) {
 
-	if (typeof app_descriptor !== "string") {
-	    throw "Expected an app descriptor string!";
+	if (typeof manifest !== "object" || typeof manifest.id !== "string") {
+	    throw "Expected an app manifest!";
 	}
 	
 	var uuid = randomUUID();
 	var app_instance = sc.running_apps[uuid] = {
 	    uuid: uuid,
-	    descriptor: app_descriptor,
+	    manifest: manifest,
 	    context: context,
 	    options: options
 	};
 
 	begin_launch_wrapper(app_instance)
-	    .pipe(get_manifest_wrapper)
 	    .pipe(get_credentials_wrapper)
 	    .pipe(get_iframe_wrapper)
 	    .pipe(function() {
@@ -184,16 +183,6 @@ window.SMART_CONNECT_HOST = function() {
 	return dfd.promise();
     };
 
-
-    var get_manifest_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
-	sc.get_manifest(app_instance, function(r) {
-	    app_instance.manifest = r;
-	    dfd.resolve(app_instance);
-	});
-	return dfd.promise();
-    };
-    
     var get_credentials_wrapper = function(app_instance) {
 	var dfd = $.Deferred();
 	sc.get_credentials(app_instance, function(r) {
@@ -288,7 +277,6 @@ window.SMART_CONNECT_HOST = function() {
 		var new_app_instance = p;
 
 		begin_launch_delegated_wrapper(new_app_instance)
-		    .pipe(get_manifest_wrapper)
 		    .pipe(get_credentials_wrapper)
 		    .pipe(function() {
 			var uuid = new_app_instance.uuid;
