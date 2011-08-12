@@ -72,14 +72,20 @@ def proxy_index(request):
    if not ret:
      return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})
 
-   return utils.render_template('ui/proxy_index',
-          { 'ACCOUNT_ID': settings.PROXY_USER,
-            'FULLNAME': "Proxy User",
-            'PROXIED_RECORD_ID' : record_id,
-            'PROXIED_RECORD_NAME': record_name,
-            'INITIAL_APP': initial_app,
-            'SMART_PASSTHROUGH_SERVER': passthrough_server })
 
+   target_template = "ui/proxy_index"
+   if (initial_app != ""):
+     target_template = "ui/single_app_view"
+     
+   return utils.render_template('ui/single_app_view',
+         { 
+         'ACCOUNT_ID': settings.PROXY_USER,
+         'FULLNAME': "Proxy User",
+         'PROXIED_RECORD_ID' : record_id,
+         'PROXIED_RECORD_NAME': record_name,
+         'INITIAL_APP': initial_app,
+         'SMART_PASSTHROUGH_SERVER': passthrough_server 
+         })
 
 def showcase_index(request):
    api = get_api()
