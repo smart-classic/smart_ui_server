@@ -169,7 +169,8 @@ launch_app: function(pha) {
     new AppManifest({
 	descriptor: pha.id,
 	callback: function(manifest) {
-	    SMART.launch_app(manifest, get_context());
+	    var context = get_context(manifest);
+	    SMART.launch_app(manifest, context);
 	}
     });
 

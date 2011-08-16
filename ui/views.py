@@ -122,21 +122,22 @@ def index(request, template='ui/index'):
     
   return HttpResponseRedirect(reverse(login))
 
-def launch_app(request, account_id, pha_email, record_id):
+def launch_app(request, account_id, pha_email):
     if not tokens_p(request):
       return HttpResponseRedirect(reverse(login))
-    
+
     api = get_api(request)
-    launchdata = api.call(
-        "GET", "/accounts/%s/apps/%s/records/%s/launch"%(
-          account_id, pha_email, record_id))
 
-    launchxml = ET.fromstring(launchdata)
-    token_str =     launchxml.findtext("ConnectToken")
-    secret =     launchxml.findtext("ConnectSecret")  
+    record_id = request.GET.get('record_id', None)
+    launch_opts = {}
+    if record_id:
+      launch_opts['record_id'] = record_id
 
+    launchdata = api.call("GET", 
+                          "/accounts/%s/apps/%s/launch"%(account_id, pha_email), 
+                          options = { 'data': launch_opts })
+    
     return HttpResponse(launchdata)
-
 
 def smart_passthrough(request):
   if not tokens_p(request):

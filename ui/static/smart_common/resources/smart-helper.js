@@ -17,11 +17,15 @@ SMART.get_credentials = function (app_instance, callback){
 
     var app_email_enc = encodeURIComponent(app_instance.manifest.id);
     var account_id_enc = encodeURIComponent(app_instance.context.user.id);
-    var record_id_enc = encodeURIComponent(app_instance.context.record.id);
+
+    var record_data = null;
+    if (app_instance.manifest.scope=="record")
+	record_data = {'record_id': encodeURIComponent(app_instance.context.record.id)};
+
 
     $.ajax({
-        url: "/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/records/"+record_id_enc+"/launch",
-    	data: null,
+        url: "/accounts/"+account_id_enc+"/apps/"+app_email_enc+"/launch",
+    	data: record_data,
     	type: "GET",
     	dataType: "text"})
     	.success(
@@ -40,7 +44,7 @@ SMART.get_credentials = function (app_instance, callback){
 		    api_base: d.AccessToken.APIBase,
 		    rest_token:d.AccessToken.RESTToken, 
 		    rest_secret: d.AccessToken.RESTSecret,
-        	    oauth_header: d.AccessToken.OAuthCookie
+        	    oauth_header: d.AccessToken.OAuthHeader
 		}; 
 		
 		callback(credentials);
@@ -65,8 +69,8 @@ SMART.get_iframe = function (app_instance, callback){
     callback(frame[0]);
 };
 
-var get_context = function() {
-    return {
+var get_context = function(manifest) {
+    var ret = {
 	'user' : {
     	    'id': ACCOUNT_ID,
     	    'full_name': FULLNAME
@@ -77,6 +81,9 @@ var get_context = function() {
 	},
         'browser_environment': 'desktop'
     };
+
+    return ret;
+
 };
 
 // calls back wtih the response to an API call.  
