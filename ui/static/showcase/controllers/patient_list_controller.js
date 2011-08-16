@@ -17,20 +17,13 @@ init: function(params) {
     location.hash = "patient_list";
     this.index();
 }, 
-
-sparql_base:  "\
-PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
-PREFIX  sp:  <http://smartplatforms.org/terms#>\n\
-PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
-PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n\
-PREFIX dcterms:  <http://purl.org/dc/terms/>\n\
-CONSTRUCT {?person ?p ?o.} \n\
-WHERE   {\n\
-  ?person ?p ?o.\n\
-  ?person foaf:familyName ?ln.\n\
-  ?person rdf:type foaf:Person.\n\
-}\n\
-order by ?ln",
+sparql_base: "PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
+	PREFIX  sp:  <http://smartplatforms.org/terms#>\n\
+	PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
+	CONSTRUCT {?person rdf:type sp:Demographics.} \n\
+	WHERE   {\n\
+	  ?person rdf:type sp:Demographics.\n\
+	}",
 index: function(params) {
     var _this = this;
     RecordController.APP_ID = null;
