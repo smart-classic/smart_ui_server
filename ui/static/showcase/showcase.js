@@ -4,8 +4,8 @@ steal.plugins('smart_common')		// form data helper
 .resources(
     "jqueryui/js/jquery-ui-1.8.13.custom.min"
 )
-.models("record", // override the record class with a 'showcase' implementation
-	"../../smart_common/models/account", 
+.models("../../smart_common/models/account", 
+	"../../smart_common/models/record", 
 	"../../smart_common/models/activity", 
 	"../../smart_common/models/pha", 
 	"../../smart_common/models/alert")
