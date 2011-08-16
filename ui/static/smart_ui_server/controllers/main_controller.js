@@ -24,22 +24,6 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Main',
 
 },
 
-'phas_loaded subscribe': function(topic) {
-   if (typeof(INITIAL_APP) !== "undefined") {
-	app = $.grep(PHAController.phas, function(pha) {return (pha.id === INITIAL_APP);})[0];
-
-       $("#main_canvas").css({
-	   "padding-left": "0",
-	   "padding-top": "0",
-	   "z-index":"10",
-	   "background": "white"
-       });
-
-	PHAController.launch_app(app);
-
-    }
-}, 
-
 'request_visible_element subscribe': function(topic, element) {
     this.make_visible(element);
 }, 
