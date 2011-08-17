@@ -139,10 +139,6 @@ _add_app: function(params) {
 },
 
 launch_app: function(pha) {	 
-	if (RecordController.RECORD_ID === undefined) {
-		alert("Please choose a patient before running an app.");
-	}
-
 
 	$("#app_selector li a").removeClass("selected_app");
 	$("#app_selector li a[href='#app_req&id="+pha.safeid()+"']").addClass("selected_app");
@@ -155,21 +151,35 @@ launch_app: function(pha) {
 	$.each(SMART.running_apps,
 	       function(aid, a){if ( a.app == RecordController.APP_ID) about_to_background.push(a);});
 
-	if (about_to_background.length > 0) {
-		SMART.notify_app_backgrounded(about_to_background[0].uuid);
-	}
-	
-	if (already_running.length > 0) {
-		SMART.notify_app_foregrounded(already_running[0].uuid);
-		RecordController.APP_ID = already_running[0].manifest.id;
-		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
-		return;
-	}
-
     new AppManifest({
 	descriptor: pha.id,
 	callback: function(manifest) {
 	    var context = get_context(manifest);
+
+	    if (manifest.scope !== "record")
+	    {
+		delete RecordController.RECORD_ID;
+		delete RecordController.CURRENT_RECORD;
+		OpenAjax.hub.publish("pha.exit_record_scope");
+	    } else if (RecordController.RECORD_ID === undefined) {
+		location.hash = "patient_list_req";
+		setTimeout(function(){
+		    alert("Please choose a patient before running this app.");		
+		}, 1);
+		return;
+	    }
+
+	    if (about_to_background.length > 0) {
+		SMART.notify_app_backgrounded(about_to_background[0].uuid);
+	    }
+	    
+	    if (already_running.length > 0) {
+		SMART.notify_app_foregrounded(already_running[0].uuid);
+		RecordController.APP_ID = already_running[0].manifest.id;
+		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
+		return;
+	    }
+
 	    SMART.launch_app(manifest, context);
 	}
     });

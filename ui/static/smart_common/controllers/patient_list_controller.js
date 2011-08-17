@@ -58,7 +58,8 @@ process_list: function(records) {
 
 display_list: function() {  	      
     $("#patient_list_loading").text("");
-    
+    $('#patient_selected_header').hide();
+
     this.results_element.hide();
     this.results_element.html(this.view("results", {records: RecordController.records}));
     this.results_element.fadeIn(160);

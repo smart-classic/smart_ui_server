@@ -3,14 +3,8 @@ SMART = new SMART_CONNECT_HOST();
 SMART.handle_context_changed = function(){};
 
 SMART.on_app_launch_complete = function(app_instance) {
-    RecordController.APP_ID = app_instance.manifest.id;
-};
-
-SMART.get_manifest = function (app_instance, callback){
-    new AppManifest({
-	descriptor: app_instance.descriptor,
-	callback: callback
-    });
+    if (app_instance.manifest.scope=="record")
+	RecordController.APP_ID = app_instance.manifest.id;
 };
 
 SMART.get_credentials = function (app_instance, callback){
@@ -70,20 +64,20 @@ SMART.get_iframe = function (app_instance, callback){
 };
 
 var get_context = function(manifest) {
-    var ret = {
-	'user' : {
+    var ret = {'browser_environment': 'desktop'};
+
+    ret.user=  {
     	    'id': ACCOUNT_ID,
     	    'full_name': FULLNAME
-    	},
-     	'record' : {
-    	    'full_name' : RecordController.CURRENT_RECORD.label,
-    	    'id' : RecordController.CURRENT_RECORD.record_id
-	},
-        'browser_environment': 'desktop'
     };
 
-    return ret;
+    if (RecordController.CURRENT_RECORD)
+     	ret.record= {
+    	    'full_name' : RecordController.CURRENT_RECORD.label,
+    	    'id' : RecordController.CURRENT_RECORD.record_id
+	};
 
+    return ret;
 };
 
 // calls back wtih the response to an API call.  

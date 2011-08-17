@@ -15,6 +15,11 @@ jQuery.Controller.extend('smart_common.Controllers.Record',
 	this.current_patient_label.text("");
 },
     
+    'pha.exit_record_scope subscribe' : function(topic) {
+	this.current_patient_label.html("");
+	SMART.record_context_changed();
+    },
+
     'patient_record.selected subscribe': function(topic, record_id) {
     	this.RECORD_ID = record_id;		  
 	    this._load_record();
@@ -27,7 +32,7 @@ jQuery.Controller.extend('smart_common.Controllers.Record',
 					  "<span id='pt_label'>"+record.label+"</span>"+
 					  "<a id='next_pt' href='#next_pt_req' title='Next Patient Record'>&gt;</a>");
 
-	  SMART.context_changed();
+	  SMART.record_context_changed();
 
 	  // If there was an app open on the old record, open it automatically
 	  // on the new one.

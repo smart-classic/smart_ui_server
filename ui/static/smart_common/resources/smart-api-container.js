@@ -29,7 +29,6 @@ window.SMART_CONNECT_HOST = function() {
 
     sc.debug = false;
     sc.running_apps = {};
-    sc.running_apps.callbacks = {};
 
     sc.handle_context_changed = function() { };
     sc.on_app_launch_begin =    function(a,callback){ callback(); };
@@ -37,12 +36,6 @@ window.SMART_CONNECT_HOST = function() {
 
     sc.on_app_launch_delegated_begin =    function(a,callback){ callback(); };
     sc.on_app_launch_delegated_complete = function(a,callback) { callback(); };
-
-    sc.get_manifest = function() {
-	var err = "Must override SMART_CONNECT_HOST.get_manifest";
-	console.log(err);
-	throw err;
-    };
 
     sc.get_credentials = function() {
 	var err = "Must override SMART_CONNECT_HOST.get_credentials";
@@ -62,21 +55,25 @@ window.SMART_CONNECT_HOST = function() {
 	throw err;
     };
 
-    sc.context_changed = function() {
-    	jQuery.each(sc.running_apps, function(aid, a){
-    	    var c = a.channel;
-    	    if (c)  {
-        	c.notify({method: "destroy"});
-    		c.destroy();
-    	    }
-	    if (a.iframe)
-	    {
-		$(a.iframe).remove();
-	    }
-    	});
-	
-	sc.running_apps = {};	    
+    sc.destroy_app_instance = function(app_instance) {
+    	var c = app_instance.channel;
+    	if (c)  {
+            c.notify({method: "destroy"});
+    	    c.destroy();
+    	}
+	if (app_instance.iframe)
+	{
+	    jQuery(app_instance.iframe).remove();
+	}
 
+	delete sc.running_apps[app_instance.uuid];
+    };
+
+    sc.record_context_changed = function() {	
+    	jQuery.each(sc.running_apps, function(aid, a){
+	    if (a.manifest.scope !== "record") return;
+	    sc.destroy_app_instance(a);
+	});
     };
 
     sc.notify_app_foregrounded= function(app_instance_id){
@@ -170,7 +167,7 @@ window.SMART_CONNECT_HOST = function() {
 
 
     var begin_launch_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
+	var dfd = jQuery.Deferred();
 	sc.on_app_launch_begin(app_instance, function(r){
 	    dfd.resolve(app_instance);
 	});
@@ -179,7 +176,7 @@ window.SMART_CONNECT_HOST = function() {
     };
 
     var complete_launch_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
+	var dfd = jQuery.Deferred();
 	sc.on_app_launch_complete(app_instance, function(r){
 	    dfd.resolve(app_instance);
 	});
@@ -187,7 +184,7 @@ window.SMART_CONNECT_HOST = function() {
     };
 
     var begin_launch_delegated_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
+	var dfd = jQuery.Deferred();
 	sc.on_app_launch_delegated_begin(app_instance, function(r){
 	    dfd.resolve(app_instance);
 	});
@@ -196,7 +193,7 @@ window.SMART_CONNECT_HOST = function() {
     };
 
     var complete_launch_delegated_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
+	var dfd = jQuery.Deferred();
 	sc.on_app_launch_delegated_complete(app_instance, function(r){
 	    dfd.resolve(app_instance);
 	});
@@ -204,7 +201,7 @@ window.SMART_CONNECT_HOST = function() {
     };
 
     var get_credentials_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
+	var dfd = jQuery.Deferred();
 	sc.get_credentials(app_instance, function(r) {
 	    app_instance.credentials = r;
 	    dfd.resolve(app_instance)
@@ -213,7 +210,7 @@ window.SMART_CONNECT_HOST = function() {
     };
 
     var get_iframe_wrapper = function(app_instance) {
-	var dfd = $.Deferred();
+	var dfd = jQuery.Deferred();
 	sc.get_iframe(app_instance, function(r) {
 	    app_instance.iframe = r;
 	    dfd.resolve(app_instance)
@@ -236,7 +233,7 @@ window.SMART_CONNECT_HOST = function() {
 	var app_instance = null;
 	if (event.data !== '"procure_channel"') return;
 
-	$.each(sc.running_apps, function(aid, a) {
+	jQuery.each(sc.running_apps, function(aid, a) {
 	    if (a.iframe && a.iframe.contentWindow === event.source)
 		app_instance = a;
 	});
