@@ -139,3 +139,4 @@ tr.unread { font-weight: bold; }
 		  float: right;
 		  margin-right: 1em;}
     #back-to-showcase {display: none; float: right;}
+    #loading_div {position: absolute; top: 74px; left: 0px; z-index: 10;}

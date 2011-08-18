@@ -7,13 +7,6 @@ jQuery.Controller.extend('showcase.Controllers.PHA',
 },
 /* @Prototype */
 {
-
-'history.manage_apps_req.index subscribe': function(topic, data) {
-    location.hash = "manage_apps";
-    this.index();
-}, 
-    labels: {'enable': 'Add to dashboard', 'disable': 'Remove from dashboard'},
-		
 init: function(params){
 	var _this = this;
 
@@ -21,7 +14,6 @@ init: function(params){
         var enabled_pha_ids = $.map(phas, function(e){return e.id;})
         
         PHA.get_all(function(phas) {
-	    
         	$.each(phas, function(i,pha) {
         		if ($.inArray(pha.id, enabled_pha_ids) == -1) {
 			    pha.enabled = false;
@@ -38,33 +30,9 @@ init: function(params){
     });
 },
 
-'patient_record.selected subscribe': function(topic, record_id) {
-   $('#app_selector_inner li').removeClass('greyed_out');
-}, 
-
-"history.app_req.index subscribe" : function(called, data) {
-	var app_id = data.id;
-	location.hash = "app&id="+app_id;
-
-	if (PHAController.phas && PHAController.phas.length > 0) {
-	    var app = $.grep(PHAController.phas, function(pha) {return (pha.safeid() === app_id);})[0];
-	    this.launch_app(app);
-	}
-},
-
-
-
 'pha.launch subscribe': function(topic, app) {
     this.launch_app(app);
 }, 
-
-'pha.exit_app_context subscribe': function(topic, new_context) 
-{
-    if (new_context === undefined)
-	new_context = "#patient_list_req";
-    $("#app_selector li a").removeClass("selected_app");
-    $("#app_selector li a[href='"+new_context+"']").addClass("selected_app");
-},
 
 'button.launch click': function(button) {
     var app = button.closest(".manage_apps").model();
@@ -73,39 +41,24 @@ init: function(params){
     this.launch_app(app);
 },
 
-launch_app: function(pha) {	 
+launch_app: function(pha) {	
     $("iframe").fadeOut("fast");
     $("#loading_div").fadeIn("fast");
+    new AppManifest({
+	descriptor: pha.id,
+	callback: function(manifest) {
+	    var context = get_context(manifest);
 
-    if (RecordController.RECORD_ID === undefined) {
-	alert("Please choose a patient before running an app.");
-    }
+	    if (manifest.scope !== "record")
+	    {
+		delete RecordController.RECORD_ID;
+		delete RecordController.CURRENT_RECORD;
+	    }
 
-
-	$("#app_selector li a").removeClass("selected_app");
-	$("#app_selector li a[href='#app_req&id="+pha.safeid()+"']").addClass("selected_app");
-	
-	var already_running = [];
-	$.each(SMART.activities,
-	       function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
-
-	var about_to_background= [];
-	$.each(SMART.activities,
-	       function(aid, a){if ( a.app == RecordController.APP_ID) about_to_background.push(a);});
-
-	if (about_to_background.length > 0) {
-		SMART.background_activity(about_to_background[0].uuid);
+	    SMART.launch_app(manifest, context);
+	    OpenAjax.hub.publish("pha.launched", pha);
 	}
-	
-	if (already_running.length > 0) {
-		SMART.foreground_activity(already_running[0].uuid);
-		RecordController.APP_ID = already_running[0].resolved_activity.app;
-		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
-		return;
-	}
-		
-    SMART.start_activity("main", pha.id);
-    OpenAjax.hub.publish("pha.launched", pha);
+    });		
 },
 
 draw_phas :function() {

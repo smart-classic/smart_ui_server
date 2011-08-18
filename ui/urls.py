@@ -9,7 +9,7 @@ urlpatterns = patterns(
     # testing
     (r'^$', index),
     (r'^mobile_login$', mobile_login),
-    (r'^mobile_index$', mobile_index),
+    (r'^mobile$', mobile_index),
     (r'^proxy_index$', proxy_index),
     (r'^showcase$', showcase_index),
     # auth

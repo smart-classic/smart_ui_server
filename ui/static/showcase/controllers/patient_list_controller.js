@@ -13,10 +13,6 @@ init: function(params) {
 	this.index();
 },
 
-'history.patient_list_req.index subscribe': function(called, data) {
-    location.hash = "patient_list";
-    this.index();
-}, 
 sparql_base: "PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
 	PREFIX  sp:  <http://smartplatforms.org/terms#>\n\
 	PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
@@ -26,15 +22,11 @@ sparql_base: "PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
 	}",
 index: function(params) {
     var _this = this;
-    RecordController.APP_ID = null;
-    RecordController.PAGE = this;
-    OpenAjax.hub.publish("pha.exit_app_context", "#patient_list_req");            
-
     if (RecordController.CURRENT_RECORD === undefined)
-	{
-	    Record.search({sparql : this.sparql_base},  this.callback(this.process_list));
-	    return;
-	}
+    {
+	Record.search({sparql : this.sparql_base},  this.callback(this.process_list));
+	return;
+    }
 },
     
 process_list: function(records) {

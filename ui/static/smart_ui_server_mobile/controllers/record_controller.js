@@ -28,7 +28,7 @@ jQuery.Controller.extend('smart_ui_server_mobile.Controllers.Record',
 					  "<a id='next_pt' href='#next_pt_req' title='Next Patient Record'>&gt;</a>");
 
 	  OpenAjax.hub.publish("pha.exit_app_context");
-	  SMART.context_changed();
+	  SMART.record_context_changed();
 
 	  // If there was an app open on the old record, open it automatically
 	  // on the new one.
@@ -54,55 +54,6 @@ jQuery.Controller.extend('smart_ui_server_mobile.Controllers.Record',
 		  this.after_record_obtained(already_obtained);
       else
     	  Record.get(record_id,this.callback(after_record_obtained));
-    },
-
-
-'history.prev_pt_req.index subscribe': function(topic) {
-    location.hash = "prev_pt";
-    var prev = null;
-    var answer = null;
-    $.each(RecordController.records, function(k,v) {
-	k = v.record_id;
-	if (prev !== null && k == RecordController.CURRENT_RECORD.record_id)
-	    {
-	    answer = prev;
-	    return false;
-	    }
-	prev = k;
-    });
-
-    var r = this.RECENT_RECORDS[(answer || prev)];
-    this.after_record_obtained(r);
-    PatientListController.patient_selected(r.label);
-},
-
-'history.next_pt_req.index subscribe': function(topic) {
-    location.hash = "next_pt";
-
-    var first = null;
-    var answer = null;
-
-    $.each(RecordController.records, function(k,v) {
-	    k = v.record_id;
-	    if (answer === "next")
-	    {
-		answer = k;
-		return false;
-	    }
-	    if (k == RecordController.CURRENT_RECORD.record_id)
-	    {
-		answer = "next";
-	    }
-
-	if (first === null)
-	    first = k;
-
-    });
-    if (answer === "next") answer = null;
-    var r = this.RECENT_RECORDS[(answer || first)];
-    this.after_record_obtained(r);
-    PatientListController.patient_selected(r.label);
-}
-
+    }
  
 });

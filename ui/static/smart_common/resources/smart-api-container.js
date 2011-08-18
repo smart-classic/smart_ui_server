@@ -31,6 +31,8 @@ window.SMART_CONNECT_HOST = function() {
     sc.running_apps = {};
 
     sc.handle_context_changed = function() { };
+    sc.on_app_ready = function(a){ };
+
     sc.on_app_launch_begin =    function(a,callback){ callback(); };
     sc.on_app_launch_complete = function(a,callback) { callback(); };
 
@@ -271,9 +273,10 @@ window.SMART_CONNECT_HOST = function() {
 
 	var ready_data = generate_ready_message(app_instance);
 
-	app_instance.channel.notify({
-		method: "ready",
-		params: ready_data
+	app_instance.channel.call({
+	    method: "ready",
+	    params: ready_data,
+	    success: function(){sc.on_app_ready(app_instance);}
 	});
 
     };

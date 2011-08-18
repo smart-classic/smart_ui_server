@@ -23,7 +23,7 @@ jQuery.Controller.extend('showcase.Controllers.Record',
   after_record_obtained: function(record) {
 	  RecordController.CURRENT_RECORD = record;
 	  OpenAjax.hub.publish("pha.exit_app_context");
-	  SMART.context_changed();
+	  SMART.record_context_changed();
 
 	  // If there was an app open on the old record, open it automatically
 	  // on the new one.

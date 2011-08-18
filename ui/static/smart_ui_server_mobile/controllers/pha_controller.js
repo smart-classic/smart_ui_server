@@ -10,7 +10,7 @@ jQuery.Controller.extend('smart_ui_server_mobile.Controllers.PHA',
 {
 
 'history.page_app_selection.index subscribe': function(topic, data) {
-    SMART.context_changed();
+    SMART.record_context_changed();
     RecordController.APP_ID = null;
     console.log("On the app selection apge");
     this.selection();
@@ -26,7 +26,6 @@ init: function(params){
 
     PHA.get_for_account(ACCOUNT_ID, function(phas) {
 	    var enabled_pha_ids = $.map(phas, function(e){
-		    console.log("USING" + e.id)
 		    if (e.data.supportedBrowserEnvironments.match("mobile")) {
                       return e.id; 
 		    }
@@ -144,32 +143,15 @@ _add_app: function(params) {
 }, 
 
 
-launch_app: function(pha) {	 
-	if (RecordController.RECORD_ID === undefined) {
-		alert("Please choose a patient before running an app.");
+launch_app: function(pha) {	
+    new AppManifest({
+	descriptor: pha.id,
+	callback: function(manifest) {
+	    var context = get_context(manifest);
+ 	    SMART.launch_app(manifest, context);
+	    OpenAjax.hub.publish("pha.launched", pha);
 	}
-
-	this.current_app = pha;
-	var already_running = [];
-	$.each(SMART.activities,
-	       function(aid, a){if ( a.name=="main" && a.app == pha.id) already_running.push(a);});
-
-	var about_to_background= [];
-	$.each(SMART.activities,
-	       function(aid, a){if ( a.app == RecordController.APP_ID) about_to_background.push(a);});
-
-	if (about_to_background.length > 0) {
-		SMART.background_activity(about_to_background[0].uuid);
-	}
-	
-	if (already_running.length > 0) {
-		SMART.foreground_activity(already_running[0].uuid);
-		RecordController.APP_ID = already_running[0].resolved_activity.app;
-		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
-		return;
-	}
-		
-	SMART.start_activity("main", pha.id);
+    });		
 }
 
 });

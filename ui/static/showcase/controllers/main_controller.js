@@ -11,13 +11,16 @@ jQuery.Controller.extend('showcase.Controllers.Main',
 	
 "{window} load": function(params) {      
     ACCOUNT = Account.from_email(ACCOUNT_ID); // init the account via model
-    SMART = new SMART_CONTAINER(SMART_HELPER);
 
     RecordController = new showcase.Controllers.Record($("#app_content"));
     PHAController = new showcase.Controllers.PHA($("#appnav"));
     PatientListController = new showcase.Controllers.PatientList($("#app_content"));
 
     this.previous_message =  $("#header .message").text();
+
+    SMART.on_app_ready = function(app_instance) {
+	$("#loading_div").fadeOut("fast");
+    };
     this.finish_initialization();
 },
 

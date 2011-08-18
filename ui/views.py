@@ -103,7 +103,6 @@ def showcase_index(request):
 
 
 def mobile_index(request, template='ui/mobile_index'):
-  print "MOBILE INDEX"
   return index(request,  template)
 
    
@@ -125,7 +124,9 @@ def index(request, template='ui/index'):
             'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
             'SMART_PASSTHROUGH_SERVER': passthrough_server })
     except:  pass
-    
+
+  if (template == "ui/mobile_index"):
+    return HttpResponseRedirect(reverse(mobile_login))
   return HttpResponseRedirect(reverse(login))
 
 def launch_app(request, account_id, pha_email):
