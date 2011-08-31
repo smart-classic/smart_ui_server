@@ -12,6 +12,7 @@ urlpatterns = patterns(
     (r'^mobile_index$', mobile_index),
     (r'^proxy_index$', proxy_index),
     (r'^showcase$', showcase_index),
+    (r'^token/(?P<token>[^/]+)$', token_login_index),
     # auth
     (r'^login$', login),
     (r'^logout$', logout),

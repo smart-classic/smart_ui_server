@@ -13,7 +13,7 @@ from django.conf import settings
 from indivo_client_py.oauth import oauth
 import xml.etree.ElementTree as ET
 import urllib, re
-import httplib, urllib, urllib2
+import httplib, urllib, urllib2, urlparse
 import time
 import utils
 HTTP_METHOD_GET = 'GET'
@@ -25,6 +25,7 @@ DEBUG = True
 from indivo_client_py.lib.client import IndivoClient
 
 def get_api(request=None):
+  print "Create new api", settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION
   api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
   if request:
     api.update_token(request.session['oauth_token_set'])
@@ -58,29 +59,56 @@ def tokens_get_from_server(request, username, password):
   
   return True
 
-
 def proxy_index(request):
    api = get_api()
 
    record_id = request.GET['record_id']
    record_name = request.GET.get('record_name', "Proxied Patient")
    initial_app= request.GET.get('initial_app', "")
+
    api.call("POST", "/records/create/proxied", options={'data': {'record_id':record_id, 
                                                                  'record_name':record_name}})
 
-   ret = tokens_get_from_server(request, settings.PROXY_USER, settings.PROXY_PASSWORD)
-   if not ret:
-     return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})
+   target_url = api.call("GET", "/records/%s/generate_direct_url"%record_id)
 
+   if initial_app != "":
+     target_url += "&initial_app="+initial_app
+
+   return HttpResponseRedirect(target_url)
+
+def token_login_index(request, token):
+   request.session.flush()
+   api = get_api()
+
+   initial_app= request.GET.get('initial_app', "")
+
+   logintokenxml =   api.call("GET", "/session/from_direct_url", options={'data': {'token':token}})
+   print logintokenxml
+   logintoken= ET.fromstring(logintokenxml) 
+
+   record_id = logintoken.find("Record").get("id")
+   record_name = logintoken.find("Record").get("label")
+
+   session_tokens = dict(urlparse.parse_qsl(logintoken.get("value")))
+   account_id = session_tokens['account_id']
+   request.session['oauth_token_set'] = session_tokens
+   request.session['account_id'] = urllib.unquote(account_id)
+
+   api = get_api(request)
+   account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
+   ret = api.account_info(account_id = account_id)
+
+   e = ET.fromstring(ret.response['response_data'])
+   fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
 
    target_template = "ui/proxy_index"
    if (initial_app != ""):
      target_template = "ui/single_app_view"
-     
-   return utils.render_template('ui/single_app_view',
+   print target_template, initial_app
+   return utils.render_template(target_template,
          { 
-         'ACCOUNT_ID': settings.PROXY_USER,
-         'FULLNAME': "Proxy User",
+         'ACCOUNT_ID': session_tokens["account_id"],
+         'FULLNAME': fullname,
          'PROXIED_RECORD_ID' : record_id,
          'PROXIED_RECORD_NAME': record_name,
          'INITIAL_APP': initial_app,
