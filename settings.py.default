@@ -11,6 +11,10 @@ CONSUMER_KEY='chrome'
 CONSUMER_SECRET='chrome'
 SMART_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
 
+# Proxy user configuration for full screen apps, showcase, etc
+# PROXY_USER = "proxyuser@smartplatforms.org"
+# PROXY_PASSWORD = "password"
+
 #  quick and dirty private labeling
 BRANDING = {
   'short_name': 'smart',
