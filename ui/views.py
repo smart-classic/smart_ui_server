@@ -25,7 +25,6 @@ DEBUG = True
 from indivo_client_py.lib.client import IndivoClient
 
 def get_api(request=None):
-  print "Create new api", settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION
   api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
   if request:
     api.update_token(request.session['oauth_token_set'])
@@ -66,11 +65,20 @@ def proxy_index(request):
    record_name = request.GET.get('record_name', "Proxied Patient")
    initial_app= request.GET.get('initial_app', "")
 
-   api.call("POST", "/records/create/proxied", options={'data': {'record_id':record_id, 
-                                                                 'record_name':record_name}})
+   api.call("POST", "/records/create/proxied", options={
+       'data': {'record_id':record_id, 
+                'record_name':record_name,
+                }
+       })
 
-   target_url = api.call("GET", "/records/%s/generate_direct_url"%record_id)
+   options = {}
+   pin= request.GET.get('pin', "")   
+   if pin: 
+     options['data'] = {'pin' : pin}
 
+   base = "/records/%s/generate_direct_url" 
+   target_url = api.call("GET", base%record_id, options=options)
+   
    if initial_app != "":
      target_url += "&initial_app="+initial_app
 
@@ -80,12 +88,22 @@ def token_login_index(request, token):
    request.session.flush()
    api = get_api()
 
-   initial_app= request.GET.get('initial_app', "")
+   reqstore = request.GET
+   if (request.method == 'POST'): reqstore = request.POST
+    
+   initial_app= reqstore.get('initial_app', "")
 
-   logintokenxml =   api.call("GET", "/session/from_direct_url", options={'data': {'token':token}})
-   print logintokenxml
+   options = {'data': {'token':token}}
+   pin= reqstore.get('pin', "")   
+   if pin: 
+     options['data']['pin'] = pin
+
+   logintokenxml =   api.call("GET", "/session/from_direct_url", 
+                              options=options)
+
+   if logintokenxml.startswith("Permission Denied"):
+     return utils.render_template("ui/need_pin",{})
    logintoken= ET.fromstring(logintokenxml) 
-
    record_id = logintoken.find("Record").get("id")
    record_name = logintoken.find("Record").get("label")
 
@@ -104,7 +122,7 @@ def token_login_index(request, token):
    target_template = "ui/proxy_index"
    if (initial_app != ""):
      target_template = "ui/single_app_view"
-   print target_template, initial_app
+
    return utils.render_template(target_template,
          { 
          'ACCOUNT_ID': session_tokens["account_id"],
@@ -468,7 +486,6 @@ def _approve_and_redirect(request, request_token, account_id=None,  offline_capa
   # strip location= (note: has token and verifer)
   location = urllib.unquote(result.response['prd'][9:])
   
-  print "the location for redirection is ", location
   return HttpResponseRedirect(location)
 
 def create_developer_account(request):

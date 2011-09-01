@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+  <head>
+    <title> SMART App Viewer:  Need PIN</title>
+    <link type="text/css" href="/static/smart_common/smart_ui_server.css" rel="Stylesheet" />
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript">
+
+$.extend({
+  getUrlVars: function(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    return vars;
+  },
+  getUrlVar: function(name){
+    return $.getUrlVars()[name];
+  }
+});
+
+
+$(function(){
+    $('#pin').focus();
+      
+        $('#form').submit(function() {
+          if (!$('#pin').val()) {
+            alert('Please enter a pin');
+            $('#pin').focus();
+            return false;
+          }
+		       
+      var ia = $.getUrlVar("initial_app");
+      if (ia !== undefined) {
+        $("#initial_app").val(ia);
+      }
+      return true;
+
+    });
+});
+    </script>
+  </head>
+  <body style="text-align: center;">
+    <div style="text-align: left; width: 400px; margin-left: auto; margin-right: auto; margin-top: 100px;">
+      <form id="form" method="post">
+        <div  style="text-align: center; margin-left: -0px;">
+            <span id="logo">
+              <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMART'/>
+            </span>
+
+          {% if error %}
+            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px;">
+              {{error}}
+            </div>
+          {% endif %}
+
+        <br clear="both"/>
+        <table style="width: 100%;">
+        <tr>
+          <td colspan="2" style="text-align: center; font-size: 1.8em; font-weight: bold; ">SMART App Viewer</td>
+	</tr>
+        <tr>
+          <td>
+            <span style="font-size: 22px;">PIN:</span>
+          </td>
+          <td>
+            <input type="password" style="font-size: 20px;" id="pin" name="pin" tabindex="1" />
+	    <input type="hidden" name="initial_app" id="initial_app" value=""/>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input style="font-size: 18px; width: 100%;"
+                   type="submit"
+                   name="submit"
+                   id="submit"
+                   tabindex="3"
+                   value="  Enter PIN   "/>
+          </td>
+        </tr>
+        </table>
+	</div>
+      </form>
+
+    </div>
+        <div style="margin-top: 1em; font-size: 80%;">
+	  The SMART App Viewer works with:
+	    <span style="font-weight: bold; font-size: 100%;">Chrome 8+ Firefox 3.6+, IE8+, Safari 5+</span>
+        </div>
+
+    {% if branding %}
+      {% include branding.footer_template %}
+    {% else %}
+      {% include 'ui/footer.html' %}
+    {% endif %}
+  </body>
+</html>
