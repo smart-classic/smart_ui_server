@@ -14,7 +14,6 @@ jQuery.Controller.extend('single_app_view.Controllers.Main',
     ACCOUNT = new Account({email: ACCOUNT_ID,
 			    account_id: ACCOUNT_ID});
      
-    SMART = new SMART_CONTAINER(SMART_HELPER);
 
     RecordController = new smart_common.Controllers.Record($("#app_content"));
     PHAController = new smart_common.Controllers.PHA($("#app_content"));
