@@ -32,7 +32,7 @@ Account = $.Model.extend('smart_common.Models.Account',
    $.getXML('/accounts/' + email, function(account_info){
 		return new Account({email: email, 
 							account_id: account_info.Account['@id'], 
-							username: account_info.Account.authSystem['@username']});  
+							username: email});  
    });
   }
 }, 

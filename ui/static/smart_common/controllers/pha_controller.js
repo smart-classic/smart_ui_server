@@ -21,7 +21,6 @@ init: function(params){
     PHA.get_for_account(ACCOUNT_ID, function(phas) {
         var enabled_pha_ids = $.map(phas, function(e){return e.id;})
         _this.phas = phas;
-        OpenAjax.hub.publish("phas_loaded");
 	
         PHA.get_all(function(phas) {
         	var enabled_phas = [] ;        	
@@ -42,6 +41,8 @@ init: function(params){
         	_this.enabled_phas = enabled_phas;
         	_this.disabled_phas = disabled_phas;    	
         	_this.draw_phas();
+            OpenAjax.hub.publish("phas_loaded");
+
         });        
     });
 },
