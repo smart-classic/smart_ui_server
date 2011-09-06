@@ -80,7 +80,7 @@ def proxy_index(request):
    target_url = api.call("GET", base%record_id, options=options)
    
    if initial_app != "":
-     target_url += "&initial_app="+initial_app
+     target_url += "?initial_app="+initial_app
 
    return HttpResponseRedirect(target_url)
 
