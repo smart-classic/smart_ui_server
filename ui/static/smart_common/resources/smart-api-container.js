@@ -122,26 +122,6 @@ window.SMART_CONNECT_HOST = function() {
 		launch_url += "?oauth_header="+
 		    encodeURIComponent(app_instance.credentials.oauth_header);
 
-		launch_url += "&smart_container_api_base="+
-		    encodeURIComponent(app_instance.credentials.api_base);
-
-		launch_url += "&smart_oauth_token="+
-		    encodeURIComponent(app_instance.credentials.rest_token);
-
-		launch_url += "&smart_oauth_secret="+
-		    encodeURIComponent(app_instance.credentials.rest_secret);
-
-		launch_url += "&smart_user_id="+
-		    encodeURIComponent(app_instance.context.user.id);
-
-		launch_url += "&smart_app_id="+
-		    encodeURIComponent(app_instance.manifest.id);
-
-		if (app_instance.manifest.scope=="record") {
-		    launch_url += "&smart_record_id="+
-  		        encodeURIComponent(app_instance.context.record.id);
-		}
-
 		app_instance.origin = __SMART_extract_origin(launch_url);
 		app_instance.iframe.src = launch_url;
 		return app_instance;
