@@ -2,7 +2,14 @@ SMART = new SMART_CONNECT_HOST();
 
 SMART.handle_context_changed = function(){};
 
+SMART.on_app_launch_begin = function(app_instance, cb) {
+    OpenAjax.hub.publish("request_visible_element", $("#loading_div"));    
+    cb(app_instance);
+};
+
 SMART.on_app_launch_complete = function(app_instance) {
+    OpenAjax.hub.publish("request_grow_app", $(app_instance.iframe));    
+
     if (app_instance.manifest.scope=="record")
 	RecordController.APP_ID = app_instance.manifest.id;
 };
@@ -59,7 +66,6 @@ SMART.get_iframe = function (app_instance, callback){
 	    '" width="100%" height="100%"> </iframe>');
     
     var frame = $("#"+frame_id);
-    OpenAjax.hub.publish("request_grow_app", frame);    
     callback(frame[0]);
 };
 
