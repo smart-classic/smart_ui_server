@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.core import serializers
 from django.db import transaction
 from django.conf import settings
+from django.utils import simplejson
 from indivo_client_py.oauth import oauth
 import xml.etree.ElementTree as ET
 import urllib, re
@@ -103,6 +104,7 @@ def token_login_index(request, token):
 
    if logintokenxml.startswith("Permission Denied"):
      return utils.render_template("ui/need_pin",{})
+
    logintoken= ET.fromstring(logintokenxml) 
    record_id = logintoken.find("Record").get("id")
    record_name = logintoken.find("Record").get("label")
@@ -120,8 +122,15 @@ def token_login_index(request, token):
    fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
 
    target_template = "ui/proxy_index"
+
+
+   credentials = "''"
+   manifest = "''"
+
    if (initial_app != ""):
      target_template = "ui/single_app_view"
+     credentials = single_app_get_credentials(api, account_id, initial_app, record_id)
+     manifest = single_app_get_manifest(api, initial_app)
 
    return utils.render_template(target_template,
          { 
@@ -130,8 +139,37 @@ def token_login_index(request, token):
          'PROXIED_RECORD_ID' : record_id,
          'PROXIED_RECORD_NAME': record_name,
          'INITIAL_APP': initial_app,
-         'SMART_PASSTHROUGH_SERVER': passthrough_server 
+         'SMART_PASSTHROUGH_SERVER': passthrough_server ,
+         'CREDENTIALS': credentials,
+         'MANIFEST': manifest 
          })
+
+def single_app_get_manifest(api, app_id):
+  r =  api.call("GET", "/apps/%s/manifest"%app_id)
+  return r
+
+
+def single_app_get_credentials(api, account_id, app_id, record_id=None):
+    launch_opts = {}
+
+    if record_id:
+      launch_opts['record_id'] = record_id
+
+    launchdata = api.call("GET", 
+                          "/accounts/%s/apps/%s/launch"%(account_id, app_id), 
+                          options = { 'data': launch_opts })
+    
+    e = ET.fromstring(launchdata)
+    credentials = {
+        	    "connect_token":  e.findtext('ConnectToken'), 
+        	    "connect_secret":e.findtext('ConnectSecret'), 
+		    "api_base": e.findtext('APIBase'), 
+		    "rest_token":e.findtext('RESTToken'),  
+		    "rest_secret": e.findtext('RESTSecret'), 
+        	    "oauth_header": e.findtext('OAuthHeader')
+		}; 
+
+    return simplejson.dumps(credentials)
 
 def showcase_index(request):
    api = get_api()
@@ -183,6 +221,7 @@ def launch_app(request, account_id, pha_email):
 
     record_id = request.GET.get('record_id', None)
     launch_opts = {}
+
     if record_id:
       launch_opts['record_id'] = record_id
 

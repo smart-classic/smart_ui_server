@@ -11,6 +11,8 @@
       var PROXIED_RECORD_ID = "{{ PROXIED_RECORD_ID  }}";
       var PROXIED_RECORD_NAME = "{{ PROXIED_RECORD_NAME  }}";
       var INITIAL_APP = "{{ INITIAL_APP  }}";
+      var CREDENTIALS = {{ CREDENTIALS|safe  }};
+      var MANIFEST = {{ MANIFEST|safe  }};
 {% endblock %}
 {% block body %}
 <div id="loading">Loading SMART App Viewer...</div>
