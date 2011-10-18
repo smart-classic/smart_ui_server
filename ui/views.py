@@ -25,8 +25,16 @@ DEBUG = True
 # init the IndivoClient python object
 from indivo_client_py.lib.client import IndivoClient
 
+SMART_SERVER_LOCATION = urlparse.urlparse(settings.SMART_API_SERVER_BASE)
+SMART_SERVER_LOCATION = {
+  'host':SMART_SERVER_LOCATION.hostname,
+  'scheme': SMART_SERVER_LOCATION.scheme,
+  'port':SMART_SERVER_LOCATION.port or (scheme=='http' and '80' or scheme=='https' and '443')
+  }
+
+
 def get_api(request=None):
-  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
+  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, SMART_SERVER_LOCATION)
   if request:
     api.update_token(request.session['oauth_token_set'])
   
@@ -286,7 +294,7 @@ def smart_passthrough(request):
   return ret
 
 def api_server(include_scheme = True):
-    loc = settings.SMART_SERVER_LOCATION
+    loc = SMART_SERVER_LOCATION
     port = loc['port']
     scheme=loc['scheme']
     host = loc['host']
@@ -363,7 +371,7 @@ def account_initialization(request):
   http://localhost/indivoapi/accounts/foo@bar.com/initialize/icmloNHxQrnCQKNn
   """
   errors = {'generic': 'There was a problem setting up your account. Please try again.'}
-  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
+  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, SMART_SERVER_LOCATION)
   
   if request.method == HTTP_METHOD_GET:
     return utils.render_template('ui/account_init', {})
@@ -386,7 +394,7 @@ def account_initialization_2(request):
     username = request.POST['username']
     password = request.POST['pw1']
     errors = {'generic': 'There was a problem updating your data. Please try again. If you are unable to set up your account please contact support.'}
-    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, settings.SMART_SERVER_LOCATION)
+    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, SMART_SERVER_LOCATION)
     ret = api.add_auth_system(
       account_id = account_id,
       data = {'system':'password',
@@ -543,7 +551,7 @@ def create_developer_account(request):
   data = {"account_id" : username, "password" : password, 
           "given_name" : given_name, "family_name" : family_name, 
           "department": department, "role" : role}
-  
+
   ret = api.call("POST", "/users/", options={'data': data})
   if (ret == "account_exists"):
     return utils.render_template('ui/create_developer_account',

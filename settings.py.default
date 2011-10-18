@@ -1,15 +1,18 @@
 # Django settings for smart_ui_server project.
 
-SMART_UI_BASE = '/path/to/smart_ui_server'
+APP_HOME = '{{path_to_smart_ui_server}}'
+
+SMART_API_SERVER_BASE = '{{api_server_base_url}}'
+CONSUMER_KEY='{{chrome_consumer}}'
+CONSUMER_SECRET='{{chrome_secret}}'
+
+
 HIDE_GET_MORE_APPS = False
 
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Configuration for IndivoClient (note: UI server is a 'chrome' app. see docs for more)
-CONSUMER_KEY='chrome'
-CONSUMER_SECRET='chrome'
-SMART_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
 
 # Proxy user configuration for full screen apps, showcase, etc
 # PROXY_USER = "proxyuser@smartplatforms.org"
@@ -18,7 +21,7 @@ SMART_SERVER_LOCATION = {'scheme': 'http', 'host': 'localhost', 'port': '7000'}
 #  quick and dirty private labeling
 BRANDING = {
   'short_name': 'smart',
-  'pretty_name': 'Reference SMArt Container',
+  'pretty_name': 'SMART Reference EMR',
   'pretty_name_prepend': '',
   'header_template': 'ui/header_gpp.html',
   'footer_template': 'ui/footer_smart.html'
@@ -60,7 +63,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'smart_ui_server.ui.urls'
 
 TEMPLATE_DIRS = (
-    SMART_UI_BASE + "/templates"
+    APP_HOME+ "/templates"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -78,4 +81,4 @@ INSTALLED_APPS = (
 
 # use file based sessions for now - fixme: security?
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-SESSION_FILE_PATH = SMART_UI_BASE + "/session"
+SESSION_FILE_PATH = APP_HOME + "/session"

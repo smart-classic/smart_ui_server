@@ -33,12 +33,12 @@ urlpatterns = patterns(
     (r'^oauth/authorize$', authorize),
 
     # widgets
-    (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.SMART_UI_BASE + '/ui/lib'}),
+    (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/lib'}),
     (r'^widgets/DocumentAccess$', document_access),
 
     (r'^create_developer_account$', create_developer_account),
     (r'^reset_password_request$', reset_password_request),
     (r'^reset_password$', reset_password),
     # static
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SMART_UI_BASE + '/ui/static'}),
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/static'}),
 )
