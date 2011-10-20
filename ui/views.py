@@ -29,7 +29,9 @@ SMART_SERVER_LOCATION = urlparse.urlparse(settings.SMART_API_SERVER_BASE)
 SMART_SERVER_LOCATION = {
   'host':SMART_SERVER_LOCATION.hostname,
   'scheme': SMART_SERVER_LOCATION.scheme,
-  'port':SMART_SERVER_LOCATION.port or (scheme=='http' and '80' or scheme=='https' and '443')
+  'port': SMART_SERVER_LOCATION.port or (
+    SMART_SERVER_LOCATION.scheme=='http' and '80' or 
+    SMART_SERVER_LOCATION.scheme=='https' and '443')
   }
 
 
