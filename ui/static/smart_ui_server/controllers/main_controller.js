@@ -49,7 +49,27 @@ make_visible: function(element) {
 finish_initialization: function(params) {
     var _this = this;
 	OpenAjax.hub.publish("maincontroller.initialized");
-	// TOOD: REfactor into height then width, so scrollbar logic can play out		
+
+
+    $(window).resize(function() {
+	var avail_h = $(window).height() -  
+	    $("#main_canvas").get(0).offsetTop -
+	    $("#main_canvas").get(0).clientTop;  
+
+	if ($("#app_selector_inner").css("overflow-y")==="auto")
+	{
+	    $("#app_selector").height(avail_h - 180);
+	}
+	
+	else {
+	    $("#app_selector").css("height", "");
+	}
+
+    });
+
+    $(window).resize();
+
+
 }
 
 });

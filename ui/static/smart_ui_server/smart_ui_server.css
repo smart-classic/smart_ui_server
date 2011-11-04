@@ -97,7 +97,8 @@ li img { height: 32px; width: 32px; }
 #working_with { width: 100%;  color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap; }
 #header_name {  position: absolute; top: 0px; right: 0px; text-align: right; margin-right: 1.5em; margin-top: 3px; white-space: nowrap; } /* eat the header's left padding + 5px */
 #header_username { font-size: .9em; } /* to match the logout link */
-#app_selector { position: fixed; top: 36px; left: 0px; width: 200px; padding-top: 80px; padding-left: 10px; z-index: 10;}
+#app_selector { position: fixed; top: 116px; left: 0px; width: 200px;  padding-left: 10px; z-index: 10;}
+#app_selector_inner {height: 100%; overflow-y: auto;}
 
 #main_canvas {
   position: absolute;
@@ -120,7 +121,9 @@ li img { height: 32px; width: 32px; }
   #footer {display: none;}
   #app_selector {width: 175px;}
   #main_canvas {padding-left: 180px;}
+  #app_selector_inner {overflow-y: visible;}
 }
+
 
 
 #app_selector_hairline_top { width: 120px; margin: 0 35px; border-bottom: 1px solid #ddd; }
