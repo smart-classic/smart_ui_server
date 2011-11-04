@@ -58,7 +58,7 @@ finish_initialization: function(params) {
 
 	if ($("#app_selector_inner").css("overflow-y")==="auto")
 	{
-	    $("#app_selector").height(avail_h - 180);
+	    $("#app_selector").height(avail_h - 220);
 	}
 	
 	else {
