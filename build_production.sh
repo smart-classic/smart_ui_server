@@ -1,7 +1,7 @@
 cd ui/static
-(./js steal/buildjs smart_ui_server/smart_ui_server.html) & \
-(./js steal/buildjs single_app_view/single_app_view.html) & \
-(./js steal/buildjs showcase/showcase.html)
+./js steal/buildjs smart_ui_server/smart_ui_server.html
+./js steal/buildjs single_app_view/single_app_view.html
+./js steal/buildjs showcase/showcase.html
 wait
 
 cd ../..
