@@ -257,6 +257,7 @@ def smart_passthrough(request):
 
   http_request = oauth.HTTPRequest(method=method, 
                                    path=full_path, 
+                                   data=data,
                                    data_content_type=content_type)  
 
   c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
