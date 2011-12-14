@@ -204,11 +204,7 @@ window.SMART_CONNECT_HOST = function() {
     var receive_api_call = function(app_instance, call_info, callback) {
 	sc.handle_api(app_instance, 
 				     call_info, 
-				     function(r){
-					 callback({
-					     contentType: "text",  
-					     data: r})
-				     });	    
+				     callback);	    
     };
 
     var procureChannel = function(event){

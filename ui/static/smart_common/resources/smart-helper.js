@@ -101,21 +101,25 @@ SMART.handle_api = function(app_instance, message, callback) {
     
     var header =  "OAuth " + params_array.join(", ");
     
-    $.ajax({
-	beforeSend: function(xhr) {
-	    xhr.setRequestHeader("Authorization", header);
-	},
-	dataType: "text",
-	url: SMART_PASSTHROUGH_SERVER+message.func,
-	contentType: message.contentType,
-	data: message.params,
-	type: message.method,
-	success: callback,
-	error: function(data) {
-	    alert("error handling API");
-	    console.log(app_instance);
-	    console.log(message);
-	    console.log(data);
-	}
+    var xhr = $.ajax({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", header);
+        },
+        dataType: "text",
+        url: SMART_PASSTHROUGH_SERVER+message.func,
+        contentType: message.contentType,
+        data: message.params,
+        type: message.method,
+        success: function(d) {
+                    callback({
+                        contentType: xhr.getResponseHeader("Content-Type").split(";")[0],  
+                        data: d});
+                 },
+        error: function(data) {
+            alert("error handling API");
+            console.log(app_instance);
+            console.log(message);
+            console.log(data);
+        }
     });
 };
