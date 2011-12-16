@@ -7,3 +7,6 @@
 [submodule "ui/static/jquery"]
 	path = ui/static/jquery
 	url = https://github.com/jupiterjs/jquerymx.git
+[submodule "indivo_client_py/oauth"]
+	path = indivo_client_py/oauth
+	url = https://github.com/chb/oauth_py.git
