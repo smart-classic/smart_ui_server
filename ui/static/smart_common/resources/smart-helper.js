@@ -2,11 +2,29 @@ SMART = new SMART_CONNECT_HOST();
 
 SMART.handle_context_changed = function(){};
 
+SMART.on("request_fullscreen", function(app_instance) {
+var nuf=  $(app_instance.iframe)
+    .css( {
+	position: 'fixed', 
+	width: '100%', 
+	height: '100%', 
+	zIndex:'100', 
+	background: 'yellow', 
+	left:0, 
+	top:0 });
+
+    console.log("ifmrae same: "  + (nuf === app_instance.iframe));
+});
+
 SMART.on_app_launch_begin = function(app_instance, cb) {
     OpenAjax.hub.publish("request_visible_element", $("#loading_div"));    
     cb(app_instance);
 };
 
+SMART.display_app = function(app_instance) {
+    OpenAjax.hub.publish("request_grow_app", $(app_instance.iframe));
+};
+ 
 SMART.on_app_launch_complete = function(app_instance) {
     OpenAjax.hub.publish("request_grow_app", $(app_instance.iframe));    
 
@@ -123,3 +141,4 @@ SMART.handle_api = function(app_instance, message, callback) {
         }
     });
 };
+

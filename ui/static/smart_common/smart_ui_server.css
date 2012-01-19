@@ -110,7 +110,6 @@ li img { height: 32px; width: 32px; }
   box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;  
   vertical-align: top;
 //  border: 10px dotted #ddd;
-  z-index: 5;
 // makes scrollbar disappear!  padding-left: 15px;
 }
 

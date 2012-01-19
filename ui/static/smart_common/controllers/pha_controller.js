@@ -171,11 +171,11 @@ launch_app: function(pha) {
 	    }
 
 	    if (about_to_background.length > 0) {
-		SMART.notify_app_backgrounded(about_to_background[0].uuid);
+		SMART.notify_app("backgrounded", about_to_background[0]);
 	    }
 	    
 	    if (already_running.length > 0) {
-		SMART.notify_app_foregrounded(already_running[0].uuid);
+		SMART.notify_app(already_running[0], "foregrounded");
 		RecordController.APP_ID = already_running[0].manifest.id;
 		OpenAjax.hub.publish("request_grow_app", $(already_running[0].iframe));
 		return;
