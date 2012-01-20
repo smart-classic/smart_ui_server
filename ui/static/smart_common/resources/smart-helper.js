@@ -3,7 +3,7 @@ SMART = new SMART_CONNECT_HOST();
 SMART.handle_context_changed = function(){};
 
 SMART.on("request_fullscreen", function(app_instance) {
-var nuf=  $(app_instance.iframe)
+ $(app_instance.iframe)
     .css( {
 	position: 'fixed', 
 	width: '100%', 
@@ -12,8 +12,6 @@ var nuf=  $(app_instance.iframe)
 	background: 'yellow', 
 	left:0, 
 	top:0 });
-
-    console.log("ifmrae same: "  + (nuf === app_instance.iframe));
 });
 
 SMART.on_app_launch_begin = function(app_instance, cb) {
