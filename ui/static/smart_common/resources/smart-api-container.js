@@ -26,7 +26,7 @@ window.SMART_CONNECT_HOST = function() {
     /*
       Begin public interface to SMART_CONTAINER object
     */
-
+    sc.jQuery = jQuery;
     sc.debug = false;
     sc.running_apps = {};
 
