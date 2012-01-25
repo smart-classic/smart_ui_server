@@ -5,7 +5,7 @@ echo "// DO NOT EDIT. " >> smart-api-container-compiled.js
 echo "(function(window){" >> smart-api-container-compiled.js
 
 cat ../../jquery/jquery.js  >> smart-api-container-compiled.js
-echo "\nvar $ = jQuery = jQuery.noConflict(true);" >> smart-api-container-compiled.js
+echo "\nvar $ = window.jQuery.noConflict(true), jQuery = $;" >> smart-api-container-compiled.js
 cat jschannel.js smart-api-container.js  >> smart-api-container-compiled.js
 
 echo "})(window);" >> smart-api-container-compiled.js
