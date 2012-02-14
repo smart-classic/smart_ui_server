@@ -289,7 +289,9 @@ def smart_passthrough(request):
   data = r.read()
   conn.close()
   
-  ret = HttpResponse(data, content_type=r.getheader("Content-type"))
+  ret = HttpResponse(data, 
+                     content_type=r.getheader("Content-type"), 
+                     status=r.status)
 
   ret['Expires'] = "Sun, 19 Nov 1978 05:00:00 GMT"
   ret['Last-Modified'] =  time.ctime()

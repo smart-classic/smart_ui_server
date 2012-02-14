@@ -126,18 +126,20 @@ SMART.handle_api = function(app_instance, message, callback_success, callback_er
         contentType: message.contentType,
         data: message.params,
         type: message.method,
+
         success: function(d) {
                     callback_success({
                         contentType: xhr.getResponseHeader("Content-Type").split(";")[0],  
                         data: d});
                  },
-        error: function(data) {
-            alert("error handling API");
-            console.log(app_instance);
-            console.log(message);
-            console.log(data);
-            callback_error (404,"Error handling API");
-        }
+        error: function(err) {
+	          console.log(app_instance);
+		  console.log(message);
+		  console.log(err);
+		  callback_error (err.status, {
+                        contentType: xhr.getResponseHeader("Content-Type").split(";")[0], 
+                        data: d});
+	      }
     });
 };
 
