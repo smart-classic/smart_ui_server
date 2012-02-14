@@ -226,10 +226,11 @@ window.SMART_CONNECT_HOST = function() {
     };
 
 
-    var receive_api_call = function(app_instance, call_info, callback) {
+    var receive_api_call = function(app_instance, call_info, callback_success, callback_error) {
 	sc.handle_api(app_instance, 
 				     call_info, 
-				     callback);	    
+				     callback_success,
+                     callback_error);	    
     };
 
     var receive_call_app = function(calling_app_instance, p, callback) {
@@ -311,7 +312,7 @@ window.SMART_CONNECT_HOST = function() {
 		var on_behalf_of = p.app_instance;
 		var call_info = p.call_info;
 
-		receive_api_call(on_behalf_of, call_info, t.complete); 
+		receive_api_call(on_behalf_of, call_info, t.complete, t.error); 
 	    });
 
 	    app_instance.channel.bind("launch_app_delegated", function(t, p) {
@@ -345,7 +346,7 @@ window.SMART_CONNECT_HOST = function() {
 
 	app_instance.channel.bind("api_call", function(t, p) {
 	    t.delayReturn(true);
-	    receive_api_call(app_instance, p, t.complete);
+	    receive_api_call(app_instance, p, t.complete, t.error);
 	});
 
 	for (var n in app_event_handlers)  {

@@ -104,7 +104,7 @@ var get_context = function(manifest) {
 
 // calls back wtih the response to an API call.  
 // (implemented as passthrough to a back-end REST server)
-SMART.handle_api = function(app_instance, message, callback) {
+SMART.handle_api = function(app_instance, message, callback_success, callback_error) {
     var params = {
 	'smart_connect_token': app_instance.credentials.connect_token,
 	'smart_connect_secret': app_instance.credentials.connect_secret
@@ -127,7 +127,7 @@ SMART.handle_api = function(app_instance, message, callback) {
         data: message.params,
         type: message.method,
         success: function(d) {
-                    callback({
+                    callback_success({
                         contentType: xhr.getResponseHeader("Content-Type").split(";")[0],  
                         data: d});
                  },
@@ -136,6 +136,7 @@ SMART.handle_api = function(app_instance, message, callback) {
             console.log(app_instance);
             console.log(message);
             console.log(data);
+            callback_error (404,"Error handling API");
         }
     });
 };
