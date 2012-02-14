@@ -128,16 +128,18 @@ SMART.handle_api = function(app_instance, message, callback_success, callback_er
         type: message.method,
 
         success: function(d) {
+		    var ct = xhr.getResponseHeader("Content-Type") || "unknown";
                     callback_success({
-                        contentType: xhr.getResponseHeader("Content-Type").split(";")[0],  
+                        contentType: ct.split(";")[0],  
                         data: d});
                  },
         error: function(err) {
 	          console.log(app_instance);
 		  console.log(message);
 		  console.log(err);
+		  var ct = xhr.getResponseHeader("Content-Type") || "unknown";
 		  callback_error (err.status, {
-                        contentType: xhr.getResponseHeader("Content-Type").split(";")[0], 
+                        contentType: ct.split(";")[0], 
                         data: err});
 	      }
     });
