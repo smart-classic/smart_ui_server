@@ -138,7 +138,7 @@ SMART.handle_api = function(app_instance, message, callback_success, callback_er
 		  console.log(err);
 		  callback_error (err.status, {
                         contentType: xhr.getResponseHeader("Content-Type").split(";")[0], 
-                        data: d});
+                        data: err});
 	      }
     });
 };
