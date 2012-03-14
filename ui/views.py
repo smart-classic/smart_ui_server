@@ -113,7 +113,9 @@ def token_login_index(request, token):
                               options=options)
 
    if logintokenxml.startswith("Permission Denied"):
-     return utils.render_template("ui/need_pin",{})
+       if "Wrong pin" in logintokenxml:
+          return utils.render_template("ui/need_pin",{})
+       return HttpResponse(logintokenxml)
 
    logintoken= ET.fromstring(logintokenxml) 
    record_id = logintoken.find("Record").get("id")
