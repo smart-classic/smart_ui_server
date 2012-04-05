@@ -17,9 +17,10 @@ sparql_base: "PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
 	PREFIX  sp:  <http://smartplatforms.org/terms#>\n\
 	PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
 	CONSTRUCT {?person rdf:type sp:Demographics.} \n\
-	WHERE   {\n\
+	WHERE   { graph ?g {\n\
 	  ?person rdf:type sp:Demographics.\n\
-	}",
+	}}",
+
 index: function(params) {
     var _this = this;
     if (RecordController.CURRENT_RECORD === undefined)
