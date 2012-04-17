@@ -141,7 +141,7 @@ def token_login_index(request, token):
 
    if (initial_app != ""):
      target_template = "ui/single_app_view"
-     credentials = single_app_get_credentials(api, account_id, initial_app, record_id)
+     credentials = single_app_get_credentials(request, api, account_id, initial_app, record_id)
      manifest = single_app_get_manifest(api, initial_app)
 
    return utils.render_template(target_template,
@@ -160,8 +160,7 @@ def single_app_get_manifest(api, app_id):
   r =  api.call("GET", "/apps/%s/manifest"%app_id)
   return r
 
-
-def single_app_get_credentials(api, account_id, app_id, record_id=None):
+def single_app_get_credentials(request, api, account_id, app_id, record_id=None):
     launch_opts = {}
 
     if record_id:
@@ -170,17 +169,8 @@ def single_app_get_credentials(api, account_id, app_id, record_id=None):
     launchdata = api.call("GET", 
                           "/accounts/%s/apps/%s/launch"%(account_id, app_id), 
                           options = { 'data': launch_opts })
-    
-    e = ET.fromstring(launchdata)
-    credentials = {
-        	    "connect_token":  e.findtext('ConnectToken'), 
-        	    "connect_secret":e.findtext('ConnectSecret'), 
-		    "api_base": e.findtext('APIBase'), 
-		    "rest_token":e.findtext('RESTToken'),  
-		    "rest_secret": e.findtext('RESTSecret'), 
-        	    "oauth_header": e.findtext('OAuthHeader')
-		}; 
 
+    credentials = store_connect_secret(request, launchdata)
     return simplejson.dumps(credentials)
 
 def showcase_index(request):
@@ -225,6 +215,24 @@ def index(request, template='ui/index'):
     return HttpResponseRedirect(reverse(mobile_login))
   return HttpResponseRedirect(reverse(login))
 
+def store_connect_secret(request, launchdata):
+    e = ET.fromstring(launchdata)
+
+    c = {
+        	    "app_id":  e.find('App').get("id"), 
+        	    "connect_token":  e.findtext('ConnectToken'), 
+        	    "connect_secret":  e.findtext('ConnectSecret'), 
+	    	    "api_base": e.findtext('APIBase'), 
+    		    "rest_token":e.findtext('RESTToken'),  
+    		    "rest_secret": e.findtext('RESTSecret'), 
+        	    "oauth_header": e.findtext('OAuthHeader')
+	}; 
+
+    request.session[c["connect_token"]] = c["connect_secret"]
+    del c["connect_secret"]
+
+    return c
+
 def launch_app(request, account_id, pha_email):
     if not tokens_p(request):
       return HttpResponseRedirect(reverse(login))
@@ -240,8 +248,9 @@ def launch_app(request, account_id, pha_email):
     launchdata = api.call("GET", 
                           "/accounts/%s/apps/%s/launch"%(account_id, pha_email), 
                           options = { 'data': launch_opts })
-    
-    return HttpResponse(launchdata)
+
+    credentials = store_connect_secret(request, launchdata)
+    return HttpResponse(simplejson.dumps(credentials), content_type="application/json")
 
 def smart_passthrough(request):
   if not tokens_p(request):
@@ -264,7 +273,7 @@ def smart_passthrough(request):
 
   c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
   token_str =  c['smart_connect_token']
-  secret =  c['smart_connect_secret']
+  secret = request.session[token_str]
 
   token = oauth.OAuthToken(token= token_str, 
                            secret =secret)
