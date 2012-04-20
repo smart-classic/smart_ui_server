@@ -125,7 +125,7 @@ SMART.handle_api = function(app_instance, message, callback_success, callback_er
             var ct = xhr.getResponseHeader("Content-Type") || "unknown";
             callback_error (err.status, {
                 contentType: ct.split(";")[0], 
-                data: err});
+                data: (err.responseText || err.responseXML) });
         }
     });
 };
