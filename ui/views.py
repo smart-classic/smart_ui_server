@@ -12,6 +12,9 @@ from django.db import transaction
 from django.conf import settings
 from django.utils import simplejson
 from indivo_client_py.oauth import oauth
+from django.db import transaction
+
+from models import SmartConnectToken
 import xml.etree.ElementTree as ET
 import urllib, re
 import httplib, urllib, urllib2, urlparse
@@ -228,9 +231,13 @@ def store_connect_secret(request, launchdata):
         	    "oauth_header": e.findtext('OAuthHeader')
 	}; 
 
-    request.session[c["connect_token"]] = c["connect_secret"]
-    del c["connect_secret"]
+    print request.session.session_key, c["connect_token"], c["connect_secret"]
+    t = SmartConnectToken(session_key = request.session.session_key,
+                      smart_connect_token = c["connect_token"],
+                      smart_connect_secret = c["connect_secret"])
 
+    t.save()
+    del c["connect_secret"]
     return c
 
 def launch_app(request, account_id, pha_email):
@@ -273,7 +280,9 @@ def smart_passthrough(request):
 
   c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
   token_str =  c['smart_connect_token']
-  secret = request.session[token_str]
+  t = SmartConnectToken.objects.get(session_key=request.session.session_key, 
+                                    smart_connect_token = token_str)
+  secret = t.smart_connect_secret
 
   token = oauth.OAuthToken(token= token_str, 
                            secret =secret)
