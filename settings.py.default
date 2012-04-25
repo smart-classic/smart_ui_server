@@ -6,6 +6,11 @@ SMART_API_SERVER_BASE = '{{api_server_base_url}}'
 CONSUMER_KEY='{{chrome_consumer}}'
 CONSUMER_SECRET='{{chrome_secret}}'
 
+DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'smart-ui'             # Or path to database file if using sqlite3.
+DATABASE_USER = 'smart'             # Not used with sqlite3.
+DATABASE_PASSWORD = 'smart'         # Not used with sqlite3.
+
 
 HIDE_GET_MORE_APPS = False
 
@@ -72,7 +77,6 @@ TEMPLATE_DIRS = (
 CONCURRENT_THREADING = False
 INSTALLED_APPS = (
     'django_concurrent_test_server',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
