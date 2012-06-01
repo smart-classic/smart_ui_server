@@ -8,14 +8,14 @@ urlpatterns = patterns(
     '',
     # testing
     (r'^$', index),
-    (r'^mobile_login$', mobile_login),
-    (r'^mobile$', mobile_index),
+    #(r'^mobile_login$', mobile_login),
+    #(r'^mobile$', mobile_index),
     (r'^proxy_index$', proxy_index),
-    (r'^showcase$', showcase_index),
+    #(r'^showcase$', showcase_index),
     (r'^token/(?P<token>[^/]+)$', token_login_index),
     # auth
     (r'^login$', login),
-    (r'^logout$', logout),
+    #(r'^logout$', logout),
 
     # special case for account init emails
     # http://localhost/indivoapi/accounts/catherine800@indivohealth.org/initialize/icmloNHxQrnCQKNn
@@ -36,9 +36,9 @@ urlpatterns = patterns(
     (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/lib'}),
     (r'^widgets/DocumentAccess$', document_access),
 
-    (r'^create_developer_account$', create_developer_account),
-    (r'^reset_password_request$', reset_password_request),
-    (r'^reset_password$', reset_password),
+    #(r'^create_developer_account$', create_developer_account),
+    #(r'^reset_password_request$', reset_password_request),
+    #(r'^reset_password$', reset_password),
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/static'}),
 )
