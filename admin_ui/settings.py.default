@@ -1,0 +1,61 @@
+APP_HOME = '/path/to/admin/app'
+
+SMART_API_SERVER_BASE = 'http://smart-vm:7000'
+CONSUMER_KEY='chrome'
+CONSUMER_SECRET='THESECRET'
+
+REPLACE_STRING = 'http://localhost:8001'
+SMART_APP_SERVER_BASE = 'http://smart-vm:8001'
+
+ADMIN_UI = True # Enable Admin UI: True or False
+ADMIN_USER_ID = 'admin@smart-vm' # only needed if admin UI is enabled
+
+
+DEBUG = True
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+TIME_ZONE = 'UTC'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en-us'
+
+SITE_ID = 1
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# Make this unique, and don't share it with anybody. (Used by django for CSRF protection?)
+SECRET_KEY = '2342342345'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.load_template_source',
+    'django.template.loaders.app_directories.load_template_source'
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+)
+
+ROOT_URLCONF = 'urls'
+
+CONCURRENT_THREADING = False
+INSTALLED_APPS = (
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'admin_ui'
+)
+
+# use file based sessions for now - fixme: security?
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_FILE_PATH = APP_HOME + "/session"

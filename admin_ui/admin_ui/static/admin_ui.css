@@ -1,0 +1,18 @@
+table.nicetable {
+    border: 0;
+}
+
+table.nicetable th{
+    border: 0;
+    text-align: left;
+    font-size: 1.2em;
+}
+
+table.nicetable td{
+    border: 0;
+    text-align: left;
+}
+
+div.name {
+    font-weight: bold;
+}
