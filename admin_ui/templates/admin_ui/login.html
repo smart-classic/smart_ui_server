@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <title>Reference SMART EMR: Login</title>
+    <link type="text/css" href="static/smart_ui_server.css" rel="Stylesheet" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        $('#username').focus();
+        
+    {% if account %}
+        $('#username').val('{{account}}');
+        $('#password').focus();
+    {% endif %}
+    
+        $('#form').submit(function() {
+          if (!$('#username').val()) {
+            alert('Please enter an e-mail address.');
+            $('#username').focus();
+            return false;
+          }
+
+          if (!$('#password').val()){
+            alert('Please enter a password.');
+            $('#password').focus();
+            return false;
+          }
+          return true;
+        });
+      });
+    </script>
+  </head>
+  <body style="text-align: center;">
+    <div style="text-align: left; width: 400px; margin-left: auto; margin-right: auto; margin-top: 100px;">
+      <form id="form" method="post" action="login">
+        <div  style="text-align: center; margin-left: -0px;">
+            <span id="logo">
+              <img src="static/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMART'/>
+            </span>
+
+          {% if error %}
+            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px;">
+              {{error}}
+            </div>
+          {% endif %}
+
+        <br clear="both"/>
+        <table style="width: 100%;">
+        <tr>
+          <td colspan="2" style="text-align: center; font-size: 1.8em; font-weight: bold; ">SMART Admin Login</td>
+	</tr>
+        <tr>
+          <td>
+            <span style="font-size: 22px;">Email:</span>
+          </td>
+          <td>
+            <input type="text" style="font-size: 20px;" id="username" name="username" tabindex="1"/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style="font-size: 22px;">Password:</span>
+          </td>
+          <td>
+            <input type="password" style="font-size: 20px;" id="password" name="password" tabindex="2" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="hidden" name="return_url" value="{{return_url}}" />
+            <input style="font-size: 18px; width: 100%;"
+                   type="submit"
+                   name="submit"
+                   id="submit"
+                   tabindex="3"
+                   value="          Login        "/>
+          </td>
+        </tr>
+        </table>
+	</div>
+
+      </form>
+
+    </div>
+        <div style="margin-top: 1em; font-size: 80%;">
+	  The SMART EMR works with: 
+	    <span style="font-weight: bold; font-size: 100%;">Chrome 8+ Firefox 3.6+, IE8+, Safari 5+</span>
+        </div>
+  </body>
+</html>
