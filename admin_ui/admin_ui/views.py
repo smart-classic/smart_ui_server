@@ -81,7 +81,10 @@ def manifest_add (request):
                 
         data.replace (settings.REPLACE_STRING, settings.SMART_APP_SERVER_BASE)
         
-        smart_call(request, "PUT", "/apps/%s/manifest"%"app@host", data)
+        manifest = json.loads(data)
+        descriptor = manifest["id"]
+        
+        smart_call(request, "PUT", "/apps/%s/manifest"%descriptor, data)
     
     return HttpResponseRedirect(reverse(index))
     
@@ -134,7 +137,7 @@ def login(request, info="", template=LOGIN_PAGE):
   
   # get tokens from the backend server and save in this user's django session  
   ret = False
-  if settings.ADMIN_UI and username == settings.ADMIN_USER_ID:
+  if username in settings.ADMIN_USER_ID:
     ret = tokens_get_from_server(request, username, password)
   if not ret:
     return utils.render_template(LOGIN_PAGE, {'error': errors['incorrect'], FORM_RETURN_URL: return_url})

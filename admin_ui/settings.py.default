@@ -1,15 +1,22 @@
-APP_HOME = '/path/to/admin/app'
-
-SMART_API_SERVER_BASE = 'http://smart-vm:7000'
-CONSUMER_KEY='chrome'
-CONSUMER_SECRET='THESECRET'
+# SETTINGS SPECIFIC TO ADMIN UI APP
 
 REPLACE_STRING = 'http://localhost:8001'
-SMART_APP_SERVER_BASE = 'http://smart-vm:8001'
+SMART_APP_SERVER_BASE = 'http://SERVER:8001'
 
-ADMIN_UI = True # Enable Admin UI: True or False
-ADMIN_USER_ID = 'admin@smart-vm' # only needed if admin UI is enabled
+ADMIN_USER_ID = ('admin1@smartplatforms.org', 'admin2@smartplatforms.org')
 
+INSTALLED_APPS = (
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'admin_ui'
+)
+
+# SETTINGS SHARED WITH SMART_UI_SERVER
+
+SMART_API_SERVER_BASE = 'http://SERVER:7000'
+CONSUMER_KEY='chrome'
+CONSUMER_SECRET='CHROMESECRET'
 
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = True
@@ -49,12 +56,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 CONCURRENT_THREADING = False
-INSTALLED_APPS = (
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'admin_ui'
-)
 
 # use file based sessions for now - fixme: security?
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
