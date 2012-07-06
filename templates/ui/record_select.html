@@ -1,0 +1,46 @@
+{% load i18n %}
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0;" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png" />
+	<link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png" />
+	
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.css" type="text/css" />
+	
+	<title>{% block title %}SMART EMR{% endblock %}</title>
+</head>
+<body>
+{% if branding %}
+	{% include branding.header_template %}
+{% else %}
+	{% include 'ui/header.html' %}
+{% endif %}
+	Records for {{ FULLNAME }}
+	
+	<div class="list_form">
+		
+	</div>
+	
+	{% if SETTINGS and SETTINGS.ALLOW_ADDING_RECORDS %}
+	<div class="list_form">
+		<a class="row" href="/records/?after_create_url=/apps/{{ APP_ID }}">
+			{% trans "Add a Record" %}
+		</a>
+	</div>
+	{% endif %}
+	
+	<div id="footer">
+		<h4>
+			<a href="http://chip.org">CHIP</a>
+			<a href="http://hms.harvard.edu">HMS</a>
+			©2012
+		</h4>
+	</div>
+</body>
+</html>

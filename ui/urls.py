@@ -13,9 +13,14 @@ urlpatterns = patterns(
     (r'^proxy_index$', proxy_index),
     (r'^showcase$', showcase_index),
     (r'^token/(?P<token>[^/]+)$', token_login_index),
+    
     # auth
     (r'^login$', login),
     (r'^logout$', logout),
+    
+    # app launch
+    (r'^apps/(?P<app_id>[^/]+)/complete', launch_rest_app_complete),
+    (r'^apps/(?P<app_id>[^/]+)', launch_rest_app),
 
     # special case for account init emails
     # http://localhost/indivoapi/accounts/catherine800@indivohealth.org/initialize/icmloNHxQrnCQKNn
@@ -39,6 +44,7 @@ urlpatterns = patterns(
     (r'^create_developer_account$', create_developer_account),
     (r'^reset_password_request$', reset_password_request),
     (r'^reset_password$', reset_password),
+    
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/static'}),
 )

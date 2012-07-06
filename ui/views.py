@@ -20,134 +20,137 @@ import urllib, re
 import httplib, urllib, urllib2, urlparse
 import time
 import utils
+
+# init the IndivoClient python object
+from indivo_client_py.lib.client import IndivoClient
+
 HTTP_METHOD_GET = 'GET'
 HTTP_METHOD_POST = 'POST'
 LOGIN_PAGE = 'ui/login'
 DEBUG = True
 
-# init the IndivoClient python object
-from indivo_client_py.lib.client import IndivoClient
-
 SMART_SERVER_LOCATION = urlparse.urlparse(settings.SMART_API_SERVER_BASE)
 SMART_SERVER_LOCATION = {
-  'host':SMART_SERVER_LOCATION.hostname,
-  'scheme': SMART_SERVER_LOCATION.scheme,
-  'port': SMART_SERVER_LOCATION.port or (
-    SMART_SERVER_LOCATION.scheme=='http' and '80' or 
-    SMART_SERVER_LOCATION.scheme=='https' and '443')
-  }
+      'host':SMART_SERVER_LOCATION.hostname,
+    'scheme': SMART_SERVER_LOCATION.scheme,
+      'port': SMART_SERVER_LOCATION.port
+              or (
+                  SMART_SERVER_LOCATION.scheme == 'http' and '80'
+                  or SMART_SERVER_LOCATION.scheme == 'https' and '443'
+              )
+    }
 
 
 def get_api(request=None):
-  api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, SMART_SERVER_LOCATION)
-  if request:
-    api.update_token(request.session['oauth_token_set'])
-  
-  return api
+    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, SMART_SERVER_LOCATION)
+    if request:
+        api.update_token(request.session['oauth_token_set'])
+    
+    return api
+
 def tokens_p(request):
-  try:
-    if request.session['oauth_token_set']:
-      return True
-    else:
-      return False
-  except KeyError:
-    return False
+    try:
+        if request.session['oauth_token_set']:
+            return True
+        else:
+            return False
+    except KeyError:
+        return False
 
 def tokens_get_from_server(request, username, password):
-  # aks - hack! re-init IndivoClient here
-  api = get_api()
-  tmp = api.create_session({'username' : username, 'user_pass' : password})
-  
-  if not tmp and DEBUG:
-    utils.log('error: likely a bad username/password, or incorrect tokens from UI server to backend server.')
-    return False
-  
-  request.session['username'] = username
-  request.session['oauth_token_set'] = tmp
-  request.session['account_id'] = urllib.unquote(tmp['account_id'])
-  
-  if DEBUG:
-    utils.log('oauth_token: %(oauth_token)s outh_token_secret: %(oauth_token_secret)s' %
-             request.session['oauth_token_set'])
-  
-  return True
+    # aks - hack! re-init IndivoClient here
+    api = get_api()
+    tmp = api.create_session({'username' : username, 'user_pass' : password})
+    
+    if not tmp and DEBUG:
+        utils.log('error: likely a bad username/password, or incorrect tokens from UI server to backend server.')
+        return False
+    
+    request.session['username'] = username
+    request.session['oauth_token_set'] = tmp
+    request.session['account_id'] = urllib.unquote(tmp['account_id'])
+    
+    if DEBUG:
+        utils.log('oauth_token: %(oauth_token)s outh_token_secret: %(oauth_token_secret)s' % request.session['oauth_token_set'])
+    
+    return True
 
 def proxy_index(request):
-   api = get_api()
-
-   record_id = request.GET['record_id']
-   record_name = request.GET.get('record_name', "Proxied Patient")
-   initial_app= request.GET.get('initial_app', "")
-
-   api.call("POST", "/records/create/proxied", options={
+    api = get_api()
+    
+    record_id = request.GET['record_id']
+    record_name = request.GET.get('record_name', "Proxied Patient")
+    initial_app= request.GET.get('initial_app', "")
+    
+    api.call("POST", "/records/create/proxied", options={
        'data': {'record_id':record_id, 
                 'record_name':record_name,
                 }
        })
-
-   options = {}
-   pin= request.GET.get('pin', "")   
-   if pin: 
-     options['data'] = {'pin' : pin}
-
-   base = "/records/%s/generate_direct_url" 
-   target_url = api.call("GET", base%record_id, options=options)
-   
-   if initial_app != "":
-     target_url += "?initial_app="+initial_app
-
-   return HttpResponseRedirect(target_url)
+    
+    options = {}
+    pin= request.GET.get('pin', "")   
+    if pin: 
+        options['data'] = {'pin' : pin}
+    
+    base = "/records/%s/generate_direct_url" 
+    target_url = api.call("GET", base%record_id, options=options)
+    
+    if initial_app != "":
+        target_url += "?initial_app="+initial_app
+    
+    return HttpResponseRedirect(target_url)
 
 def token_login_index(request, token):
-   request.session.flush()
-   api = get_api()
-
-   reqstore = request.GET
-   if (request.method == 'POST'): reqstore = request.POST
+    request.session.flush()
+    api = get_api()
     
-   initial_app= reqstore.get('initial_app', "")
+    reqstore = request.GET
+    if (request.method == 'POST'):
+        reqstore = request.POST
+    
+    initial_app = reqstore.get('initial_app', "")
+    
+    options = {'data': {'token':token}}
+    pin = reqstore.get('pin', "")   
+    if pin: 
+        options['data']['pin'] = pin
+    
+    logintokenxml =   api.call("GET", "/session/from_direct_url", options=options)
+    
+    if logintokenxml.startswith("Permission Denied"):
+        if "Wrong pin" in logintokenxml:
+            return utils.render_template("ui/need_pin",{})
+        return HttpResponse(logintokenxml)
+    
+    logintoken= ET.fromstring(logintokenxml) 
+    record_id = logintoken.find("Record").get("id")
+    record_name = logintoken.find("Record").get("label")
+    
+    session_tokens = dict(urlparse.parse_qsl(logintoken.get("value")))
+    account_id = session_tokens['account_id']
+    request.session['oauth_token_set'] = session_tokens
+    request.session['account_id'] = urllib.unquote(account_id)
+    
+    api = get_api(request)
+    account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
+    ret = api.account_info(account_id = account_id)
+    
+    e = ET.fromstring(ret.response['response_data'])
+    fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
+    
+    target_template = "ui/proxy_index"
+    
+    
+    credentials = "''"
+    manifest = "''"
+    
+    if (initial_app != ""):
+        target_template = "ui/single_app_view"
+        credentials = single_app_get_credentials(request, api, account_id, initial_app, record_id)
+        manifest = single_app_get_manifest(api, initial_app)
 
-   options = {'data': {'token':token}}
-   pin= reqstore.get('pin', "")   
-   if pin: 
-     options['data']['pin'] = pin
-
-   logintokenxml =   api.call("GET", "/session/from_direct_url", 
-                              options=options)
-
-   if logintokenxml.startswith("Permission Denied"):
-       if "Wrong pin" in logintokenxml:
-          return utils.render_template("ui/need_pin",{})
-       return HttpResponse(logintokenxml)
-
-   logintoken= ET.fromstring(logintokenxml) 
-   record_id = logintoken.find("Record").get("id")
-   record_name = logintoken.find("Record").get("label")
-
-   session_tokens = dict(urlparse.parse_qsl(logintoken.get("value")))
-   account_id = session_tokens['account_id']
-   request.session['oauth_token_set'] = session_tokens
-   request.session['account_id'] = urllib.unquote(account_id)
-
-   api = get_api(request)
-   account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
-   ret = api.account_info(account_id = account_id)
-
-   e = ET.fromstring(ret.response['response_data'])
-   fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
-
-   target_template = "ui/proxy_index"
-
-
-   credentials = "''"
-   manifest = "''"
-
-   if (initial_app != ""):
-     target_template = "ui/single_app_view"
-     credentials = single_app_get_credentials(request, api, account_id, initial_app, record_id)
-     manifest = single_app_get_manifest(api, initial_app)
-
-   return utils.render_template(target_template,
+    return utils.render_template(target_template,
          { 
          'ACCOUNT_ID': session_tokens["account_id"],
          'FULLNAME': fullname,
@@ -160,8 +163,8 @@ def token_login_index(request, token):
          })
 
 def single_app_get_manifest(api, app_id):
-  r =  api.call("GET", "/apps/%s/manifest"%app_id)
-  return r
+    r =  api.call("GET", "/apps/%s/manifest"%app_id)
+    return r
 
 def single_app_get_credentials(request, api, account_id, app_id, record_id=None):
     launch_opts = {}
@@ -177,65 +180,64 @@ def single_app_get_credentials(request, api, account_id, app_id, record_id=None)
     return simplejson.dumps(credentials)
 
 def showcase_index(request):
-   api = get_api()
-
-   initial_app= request.GET.get('initial_app', "")
-
-   ret = tokens_get_from_server(request, settings.PROXY_USER, settings.PROXY_PASSWORD)
-   if not ret:
-     return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})
-
-   return utils.render_template('ui/showcase',
+    api = get_api()
+    
+    initial_app= request.GET.get('initial_app', "")
+    
+    ret = tokens_get_from_server(request, settings.PROXY_USER, settings.PROXY_PASSWORD)
+    if not ret:
+        return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})
+    
+    return utils.render_template('ui/showcase',
           { 'ACCOUNT_ID': settings.PROXY_USER,
             'INITIAL_APP': initial_app,
             'SMART_PASSTHROUGH_SERVER': passthrough_server })
 
 
 def mobile_index(request, template='ui/mobile_index'):
-  return index(request,  template)
+    return index(request,  template)
 
    
 def index(request, template='ui/index'):
-  print "INDEX", template
-
-  if tokens_p(request):
-    # get the realname here. we already have it in the js account model
-    try:
-        api = get_api(request)
-        account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
-        ret = api.account_info(account_id = account_id)
-        e = ET.fromstring(ret.response['response_data'])
-        
-        fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
-        return utils.render_template(template,
-          { 'ACCOUNT_ID': account_id,
-            'FULLNAME': fullname,
-            'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
-            'SMART_PASSTHROUGH_SERVER': passthrough_server })
-    except:  pass
-
-  if (template == "ui/mobile_index"):
-    return HttpResponseRedirect(reverse(mobile_login))
-  return HttpResponseRedirect(reverse(login))
+    print "INDEX", template
+    
+    if tokens_p(request):
+        # get the realname here. we already have it in the js account model
+        try:
+            api = get_api(request)
+            account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
+            ret = api.account_info(account_id = account_id)
+            e = ET.fromstring(ret.response['response_data'])
+            
+            fullname = e.findtext('givenName') +" "+ e.findtext('familyName')
+            return utils.render_template(template,
+              { 'ACCOUNT_ID': account_id,
+                'FULLNAME': fullname,
+                'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
+                'SMART_PASSTHROUGH_SERVER': passthrough_server })
+        except:  pass
+    
+    if (template == "ui/mobile_index"):
+        return HttpResponseRedirect(reverse(mobile_login))
+    return HttpResponseRedirect(reverse(login))
 
 def store_connect_secret(request, launchdata):
     e = ET.fromstring(launchdata)
-
-    c = {
-        	    "app_id":  e.find('App').get("id"), 
-        	    "connect_token":  e.findtext('ConnectToken'), 
-        	    "connect_secret":  e.findtext('ConnectSecret'), 
-	    	    "api_base": e.findtext('APIBase'), 
-    		    "rest_token":e.findtext('RESTToken'),  
-    		    "rest_secret": e.findtext('RESTSecret'), 
-        	    "oauth_header": e.findtext('OAuthHeader')
-	}; 
+    
+    c = {       "app_id":  e.find('App').get("id"), 
+         "connect_token":  e.findtext('ConnectToken'), 
+        "connect_secret":  e.findtext('ConnectSecret'), 
+              "api_base": e.findtext('APIBase'), 
+            "rest_token":e.findtext('RESTToken'),  
+           "rest_secret": e.findtext('RESTSecret'), 
+          "oauth_header": e.findtext('OAuthHeader')
+    }; 
 
     print request.session.session_key, c["connect_token"], c["connect_secret"]
     t = SmartConnectToken(session_key = request.session.session_key,
-                      smart_connect_token = c["connect_token"],
-                      smart_connect_secret = c["connect_secret"])
-
+                  smart_connect_token = c["connect_token"],
+                 smart_connect_secret = c["connect_secret"])
+    
     t.save()
     del c["connect_secret"]
     return c
@@ -243,103 +245,218 @@ def store_connect_secret(request, launchdata):
 def launch_app(request, account_id, pha_email):
     if not tokens_p(request):
       return HttpResponseRedirect(reverse(login))
-
+    
     api = get_api(request)
-
+    
     record_id = request.GET.get('record_id', None)
     launch_opts = {}
-
+    
     if record_id:
-      launch_opts['record_id'] = record_id
-
+        launch_opts['record_id'] = record_id
+    
     launchdata = api.call("GET", 
                           "/accounts/%s/apps/%s/launch"%(account_id, pha_email), 
                           options = { 'data': launch_opts })
-
+    
     credentials = store_connect_secret(request, launchdata)
     return HttpResponse(simplejson.dumps(credentials), content_type="application/json")
 
-def smart_passthrough(request):
-  if not tokens_p(request):
-    return HttpResponseForbidden()
 
-  relative_path =  request.get_full_path().replace(passthrough_server, "")
-  full_path = api_server() + relative_path
-
-  query_string = request.META['QUERY_STRING']
-  body = request.raw_post_data
-  data = query_string or body
-
-  content_type = request.META['CONTENT_TYPE']
-  method = request.method
-
-  http_request = oauth.HTTPRequest(method=method, 
-                                   path=full_path, 
-                                   data=data,
-                                   data_content_type=content_type)  
-
-  c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
-  token_str =  c['smart_connect_token']
-  t = SmartConnectToken.objects.get(session_key=request.session.session_key, 
-                                    smart_connect_token = token_str)
-  secret = t.smart_connect_secret
-
-  token = oauth.OAuthToken(token= token_str, 
-                           secret =secret)
-
-  consumer = oauth.OAuthConsumer(consumer_key = settings.CONSUMER_KEY, 
-                                 secret = settings.CONSUMER_SECRET)
-  
-  oauth_request = oauth.OAuthRequest(consumer, 
-                                     token, 
-                                     http_request)
-  
-  oauth_request.sign()
-
-  headers = oauth_request.to_header(with_content_type=True)
-  api = api_server(include_scheme=False)
-
-  if request.is_secure():
-    conn = httplib.HTTPSConnection(api)
-  else:
-    conn = httplib.HTTPConnection(api)
+##
+##  Apps
+##
+def launch_rest_app(request, app_id):
+    """ Entry point for any given app.
     
-  conn.request(request.method, full_path.split(api)[1], body, headers)
-  r = conn.getresponse()    
-  data = r.read()
-  conn.close()
-  
-  ret = HttpResponse(data, 
+    If the app does not exist (or another exception occurrs), will render /ui/error with the given error message. On success, renders /ui/record_select after
+    the user has logged in. Selecting a record will redirect to launch_app_complete.
+    """
+    
+    # have the user login first
+    login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+    account_id = urllib.unquote(request.session.get('account_id', ''))
+    if not account_id:
+        return HttpResponseRedirect(login_url)
+    
+    # get the account holder's name (fail silently)
+    fullname = 'Unknown'
+    api = get_api(request)
+    ret = api.account_info(account_id = account_id)
+    status = ret.response.get('response_status', 0) if ret and ret.response else 0
+    if 200 == status:
+        e = ET.fromstring(ret.response['response_data'])
+        fullname = "%s %s" % (e.findtext('givenName'), e.findtext('familyName'))
+    
+    # fetch all records
+    import pdb; pdb.set_trace()
+    records = []
+    record_rdf = api.call("GET", "/records/search/xml");
+    print record_rdf
+    
+    # render the template
+    params = {          'SETTINGS': settings,
+                          'APP_ID': app_id,
+                      'ACCOUNT_ID': account_id,
+        'SMART_PASSTHROUGH_SERVER': passthrough_server,
+                        'FULLNAME': fullname
+    }
+    return utils.render_template('ui/record_select', params)
+
+
+def launch_rest_app_complete(request, app_id):
+    """ Prepare an app's start url for launch, and redirect to it. 
+    
+    If this is a POST, then enable the app first (because it was just authorized)
+    """
+    
+    # have the user login first
+    login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+    account_id = urllib.unquote(request.session.get('account_id', ''))
+    if not account_id:
+        return HttpResponseRedirect(login_url)
+    
+    # If we were just authorized, enable the app
+    if request.method == 'POST':
+        record_id = request.POST.get('record_id', '')
+        carenet_id = ''
+        api = get_api(request)
+        if record_id:
+            resp, content = api.record_pha_enable(record_id=record_id, pha_email=app_id)
+            status = resp['status']
+            if status != '200':
+                error_message = ErrorStr("Error enabling the app")
+                return utils.render_template('ui/error', {'error_message': error_message, 'error_status': status})
+    
+    if request.method == 'GET':
+        record_id = request.GET.get('record_id', '')
+        carenet_id = request.GET.get('carenet_id', '')
+    
+    params_dict = {'record_id':record_id, 'carenet_id':carenet_id}
+    
+    # logged in, get information about the desired app
+    api = get_api(request)
+    resp, content = api.pha(pha_email=app_id)
+    status = resp['status']
+    error_message = None
+    if '404' == status:
+        error_message = ErrorStr('No such App').str()
+    elif '200' != status:
+        error_message = ErrorStr(content or 'Error getting app info').str()
+    
+    # success, find start URL template
+    else:
+        app_info_json = content or ''
+        app_info = simplejson.loads(app_info_json)
+        if not app_info:
+            error_message = ErrorStr('Error getting app info')
+        else:
+            start_url = app_info.get('index')    
+            start_url = _interpolate_url_template(app_info.get('index'), params_dict)
+    
+    if not start_url:
+        error_message = ErrorStr('Error getting app info: no start URL')
+    
+    # get SMART credentials for the request
+    api = get_api(request)
+    resp, content = api.get_connect_credentials(account_email=account_id, pha_email=app_id, body=params_dict)
+    status = resp['status']
+    if status == '403':
+        if carenet_id:
+            error_message = ErrorStr("This app is not enabled to be run in the selected carenet.")
+        elif record_id:
+            return utils.render_template('ui/authorize_record_launch_app',
+                                         {'CALLBACK_URL': '/apps/%s/complete/'%app_id,
+                                          'RECORD_ID': record_id,
+                                          'TITLE': _('Authorize "{{name}}"?').replace('{{name}}', app_info['name'])
+})
+    elif status != '200':
+        error_message = ErrorStr("Error getting account credentials")
+    else:
+        oauth_header = etree.XML(content).findtext("OAuthHeader")
+        
+    if not oauth_header:
+        error_message = ErrorStr("Error getting account credentials")
+    
+    if error_message is not None:
+        return utils.render_template('ui/error', {'error_message': error_message, 'error_status': status})
+    
+    # append the credentials and redirect
+    querystring_sep = '&' if '?' in start_url else '?'
+    start_url += querystring_sep + "oauth_header=" + oauth_header
+    return HttpResponseRedirect(start_url)
+
+
+def smart_passthrough(request):
+    if not tokens_p(request):
+        return HttpResponseForbidden()
+    
+    relative_path =  request.get_full_path().replace(passthrough_server, "")
+    full_path = api_server() + relative_path
+    
+    query_string = request.META['QUERY_STRING']
+    body = request.raw_post_data
+    data = query_string or body
+    
+    content_type = request.META['CONTENT_TYPE']
+    method = request.method
+    http_request = oauth.HTTPRequest(method=method, path=full_path, data=data, data_content_type=content_type)
+    
+    c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
+    token_str =  c['smart_connect_token']
+    t = SmartConnectToken.objects.get(session_key=request.session.session_key, smart_connect_token = token_str)
+    secret = t.smart_connect_secret
+    
+    token = oauth.OAuthToken(token = token_str, secret =secret)
+    consumer = oauth.OAuthConsumer(consumer_key = settings.CONSUMER_KEY, secret = settings.CONSUMER_SECRET)
+    oauth_request = oauth.OAuthRequest(consumer, token, http_request)
+    oauth_request.sign()
+    
+    headers = oauth_request.to_header(with_content_type=True)
+    api = api_server(include_scheme=False)
+    
+    if request.is_secure():
+        conn = httplib.HTTPSConnection(api)
+    else:
+        conn = httplib.HTTPConnection(api)
+    
+    conn.request(request.method, full_path.split(api)[1], body, headers)
+    r = conn.getresponse()    
+    data = r.read()
+    conn.close()
+    
+    ret = HttpResponse(data, 
                      content_type=r.getheader("Content-type"), 
                      status=r.status)
-
-  ret['Expires'] = "Sun, 19 Nov 1978 05:00:00 GMT"
-  ret['Last-Modified'] =  time.ctime()
-  ret['Cache-Control'] = "store, no-cache, must-revalidate, post-check=0, pre-check=0" 
-  return ret
+    
+    ret['Expires'] = "Sun, 19 Nov 1978 05:00:00 GMT"
+    ret['Last-Modified'] =  time.ctime()
+    ret['Cache-Control'] = "store, no-cache, must-revalidate, post-check=0, pre-check=0" 
+    return ret
 
 def api_server(include_scheme = True):
     loc = SMART_SERVER_LOCATION
     port = loc['port']
     scheme=loc['scheme']
     host = loc['host']
-
+    
     port_matches = (scheme=='http' and port=='80') or (scheme=='https'  and port=='443')
-
+    
     if (port_matches):
-      ret = host
+        ret = host
     else:
-      ret =  "%s:%s"%(host, port )
-
+        ret =  "%s:%s"%(host, port )
+    
     if (include_scheme):
-      return "%s://%s"%(scheme, ret)
+        return "%s://%s"%(scheme, ret)
     return ret
 
+
+# WTH is this doing down here??
 passthrough_server = "/smart_passthrough"
 
 def mobile_login(request, info="", template='ui/mobile_login'):
-  return login(request, info, template)
-  
+    return login(request, info, template)
+
 def login(request, info="", template=LOGIN_PAGE):
   """
   clear tokens in session, show a login form, get tokens from indivo_server, then redirect to index
