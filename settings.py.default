@@ -1,42 +1,40 @@
 # Django settings for smart_ui_server project.
 
-APP_HOME = '{{path_to_smart_ui_server}}'
+APP_HOME = '{{path_to_smart_ui_server}}'            # filesystem path to this installation
 
-SMART_API_SERVER_BASE = '{{api_server_base_url}}'
-CONSUMER_KEY='{{chrome_consumer}}'
-CONSUMER_SECRET='{{chrome_secret}}'
+SMART_API_SERVER_BASE = '{{api_server_base_url}}'   # the url:port where your SMART server is available
+CONSUMER_KEY='{{chrome_consumer}}'                  # the OAuth cosumer key for chrome apps
+CONSUMER_SECRET='{{chrome_secret}}'                 # OAuth consumer secret for chrome apps
 
-DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'smart-ui'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'smart'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'smart'         # Not used with sqlite3.
-
+DATABASE_ENGINE = 'postgresql_psycopg2'             # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'smart-ui'                          # Or path to database file if using sqlite3.
+DATABASE_USER = 'smart'                             # Not used with sqlite3.
+DATABASE_PASSWORD = 'smart'                         # Not used with sqlite3.
 
 HIDE_GET_MORE_APPS = False
 
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-# Configuration for IndivoClient (note: UI server is a 'chrome' app. see docs for more)
+# Make this unique, and don't share it with anybody. (Used by django for CSRF protection?)
+SECRET_KEY = '2342342345'
 
 # Proxy user configuration for full screen apps, showcase, etc
-# PROXY_USER = "proxyuser@smartplatforms.org"
-# PROXY_PASSWORD = "password"
+#PROXY_USER = "proxyuser@smartplatforms.org"
+#PROXY_PASSWORD = "password"
 
 #  quick and dirty private labeling
-BRANDING = {
-  'short_name': 'smart',
-  'pretty_name': 'SMART Reference EMR',
-  'pretty_name_prepend': '',
-  'header_template': 'ui/header_gpp.html',
-  'footer_template': 'ui/footer_smart.html'
-}
+#BRANDING = {
+#  'short_name': 'smart',
+#  'pretty_name': 'SMART Reference EMR',
+#  'pretty_name_prepend': '',
+#  'header_template': 'ui/header.html',
+#  'footer_template': 'ui/footer.html'
+#}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
+# If running in a Windows environment this must be set to the same as your system time zone.
 TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:
@@ -45,12 +43,8 @@ LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
+# If you set this to False, Django will make some optimizations so as not to load the internationalization machinery.
 USE_I18N = True
-
-# Make this unique, and don't share it with anybody. (Used by django for CSRF protection?)
-SECRET_KEY = '2342342345'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (

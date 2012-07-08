@@ -1,0 +1,87 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+    <link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png"/> 
+    <link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png"/> 
+	<!--	Uncomment AND comment out <script> tags in header.html
+				to use jmvc3 compression without loging in: "$ ./js steal/buildjs http://localhost -to ui" -->
+	<!-- <script compress="true" type="text/javascript" src="/jmvc/steal/steal.js?ui,development"></script> -->
+
+	{% if branding %}
+		{% include branding.header_template %}
+	{% else %}
+		{% include 'ui/header.html' %}
+	{% endif %}
+	
+	<title>
+		{% block title_prefix %}{% endblock %}
+		{% block title %}
+		{% if branding %}
+			{{ branding.pretty_name_prepend }} {{ branding.pretty_name }}
+		{% else %}
+			{% trans "SMART Reference EMR" %}
+		{% endif %}
+		{% endblock %}
+		{% block title_suffix %}{% endblock %}
+	</title>
+	
+	{% block readyscript %}
+	{% endblock %}
+</head>
+<body>
+<div id="full_height">
+	<div id="main_box">
+		
+		<!-- Header -->
+		<div style="text-align: center;">
+			<div id="logo" style="text-align:center;">
+				<img alt="SMART" src="/static/smart_common/resources/images/badges/SMArt-Logo.png" />
+			</div>
+
+			{% if branding %}
+			<img class="branding-image" src='{{ branding.logo_image_big_src }}' />
+			{% endif %}
+			<div id="front_site_name">
+				<span class="welcome_prefix">{% block welcome_prefix %}{% endblock %}</span>
+				{% block welcome %}
+					{% if branding %}
+						{{ branding.pretty_name_prepend }} {{ branding.pretty_name }}
+					{% else %}
+						{% trans "SMART Reference EMR" %}<!--span id="front_site_trademark">&trade;</span-->
+					{% endif %}
+				{% endblock %}
+				{% block welcome_suffix %}{% endblock %}
+			</div>
+			{% block msg_error %}
+			{% if MESSAGE %}
+			<div class="login_message">{{ MESSAGE|safe }}</div>
+			{% endif %}
+			{% if ERROR %}
+			<div class="login_error">{{ ERROR|safe }}</div>
+			{% endif %}
+			{% endblock %}
+			{% block hint %}{% endblock %}
+		</div>
+		
+		<!-- Main Form -->
+		{% block main %}
+		These aren't the droids you're looking for.
+		{% endblock %}
+	</div>
+	
+	<!-- Footer -->
+	{% block footer %}
+	{% if branding %}
+		{% include branding.footer_template %}
+	{% else %}
+		{% include 'ui/footer.html' %}
+	{% endif %}
+	{% endblock %}
+</div>
+</body>
+</html>
