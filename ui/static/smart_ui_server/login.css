@@ -46,14 +46,12 @@ a.row { display: block; font-size: 1.2em; }
 	color: #CCCCCC; padding: 0 1em;
 }
 .login_message {
-	margin: 30px auto 15px; padding: 0.6em 1em; font-size: 20px; text-align: center;
-	border: 2px solid rgb(159,200,0); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px;
-	background-color: rgb(236,240,219); background-color: rgba(159,200,0,0.1);
+	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(93,153,28);
+	border: 2px dotted rgb(108,178,33); border-width: 2px 0;
 }
 .login_error {
-	margin: 30px auto 15px; padding: 0.6em 1em; font-size: 20px; text-align: center;
-	border: 2px solid rgb(200,50,0); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px;
-	background-color: rgb(248,221,214); background-color: rgba(255,50,0,0.125);
+	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(230,53,32);
+	border: 2px dotted rgb(230,53,32); border-width: 2px 0;
 }
 .login_error .moreinfo { margin-top: 1em; font-size: 14px; }
 .main_action_button { margin-top: 1.5em; }

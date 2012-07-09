@@ -14,17 +14,19 @@ body {
 p { margin: 0; }
 label { margin-left: 0.5em; }
 
-#full_height { padding: 20px; }
+#full_height { margin: 0 auto; padding: 20px 0; max-width: 280px; }
 #main_box { margin: 0 auto; }
+
+#logo { float: left; padding: 0; }
+#logo img { height: 50px; }
 
 .welcome_prefix { display: none; }
 #front_site_name {
-	margin-top: 1em;
-	font-size: 1.8em; font-weight: bold;
+	height: 50px; line-height: 50px;
+	font-size: 1.5em; font-weight: bold; text-align: right;
 }
 
-.table_form { margin-top: 0.5em; font-size: 19px; line-height: 1.7; }
-.list_form { margin-top: 1em; font-size: 19px; line-height: 1.7; }
+.table_form, .list_form { margin-top: 1.5em; font-size: 19px; line-height: 1.7; clear: left; }
 
 #login_form input[type="text"], #login_form input[type="email"], #login_form input[type="password"], #setup_form input[type="text"], #setup_form input[type="email"], #setup_form input[type="password"] {
 	width: 100%;
@@ -33,7 +35,7 @@ label { margin-left: 0.5em; }
 .table_form button[type="submit"] { min-width: 34%; font-size: 18px; margin-bottom: 10px; }
 input.error { border-color: rgb(220,0,0); background-color: rgb(255,219,207); }
 
-.row { display: block; width: 280px; margin: 0 auto; }
+.row { display: block; margin: 0 auto; }
 .list_form .row { width: auto; max-width: 380px; margin: 0 auto; padding: 0.2em 0.8em; background-color: white; border: 1px solid #999; border-bottom-width: 0; }
 .list_form .row:first-child {
 	-moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; border-top-left-radius: 6px;
@@ -53,14 +55,12 @@ input.error { border-color: rgb(220,0,0); background-color: rgb(255,219,207); }
 	color: #CCCCCC; padding: 0 1em;
 }
 .login_message {
-	max-width: 280px; margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px;
-	border: 2px solid rgb(159,200,0); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px;
-	background-color: rgb(249,249,234); background-color: rgba(159,200,0,0.05);
+	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(93,153,28);
+	border: 2px dotted rgb(108,178,33); border-width: 2px 0;
 }
 .login_error {
-	margin: 30px 0 15px; padding: 0.6em 1em; text-align: center; font-size: 19px;
-	border: 2px solid rgb(200,50,0); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px;
-	background-color: rgb(248,221,214); background-color: rgba(255,50,0,0.125);
+	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(230,53,32);
+	border: 2px dotted rgb(230,53,32); border-width: 2px 0;
 }
 .login_error .moreinfo { margin-top: 1em; font-size: 14px; }
 .main_action_button { margin-top: 1em; text-align: center; }

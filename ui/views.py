@@ -476,7 +476,7 @@ def mobile_login(request, info="", template='ui/mobile_login'):
 
 def login(request, info="", template=LOGIN_PAGE):
     """
-    clear tokens in session, show a login form, get tokens from indivo_server, then redirect to index
+    clear tokens in session, show a login form, get tokens from indivo_server, then redirect to return_url or index
     FIXME: make note that account will be disabled after 3 failed logins!!!
     """
     # generate a new session
@@ -487,6 +487,7 @@ def login(request, info="", template=LOGIN_PAGE):
             'incorrect': "Incorrect username or password. Please try again.",
              'disabled': "This account has been disabled/locked."}
     
+    username = None
     FORM_USERNAME = 'username'
     FORM_PASSWORD = 'password'
     FORM_RETURN_URL = 'return_url'
@@ -518,7 +519,7 @@ def login(request, info="", template=LOGIN_PAGE):
     
     if not ret:
         error_message = errors[reason] if errors.has_key(reason) else reason
-        return utils.render_template(LOGIN_PAGE, {'error': error_message, FORM_RETURN_URL: return_url})
+        return utils.render_template(LOGIN_PAGE, {'error': error_message, 'account': username, FORM_RETURN_URL: return_url})
     return HttpResponseRedirect(return_url)
 
 def logout(request):
@@ -546,7 +547,7 @@ def account_initialization(request):
         if ret.response['response_status'] == 200:
             return utils.render_template('ui/account_init_2', {'FULLNAME': ''})
         else:
-            return utils.render_template('ui/account_init', {'ERROR': errors['generic']})
+            return utils.render_template('ui/account_init', {'error': errors['generic']})
 
 def account_initialization_2(request):
     if request.method == HTTP_METHOD_POST:
@@ -565,7 +566,7 @@ def account_initialization_2(request):
             tokens_get_from_server(request, username, password)
             return HttpResponseRedirect('/')
         else:
-            return utils.render_template('ui/account_init_2', {'ERROR': errors['generic']})
+            return utils.render_template('ui/account_init_2', {'error': errors['generic']})
     
     return utils.render_template('ui/account_init_2', {})
 
@@ -714,10 +715,10 @@ def create_developer_account(request):
     ret = api.call("POST", "/users/", options={'data': data})
     if (ret == "account_exists"):
         return utils.render_template('ui/create_developer_account',
-                                    {"ERROR": "Account '%s' is already registered."%username })
+                                    {"error": "Account '%s' is already registered."%username })
     
     return utils.render_template(LOGIN_PAGE, 
-                                {"MESSAGE": "Account %s has been created. Please log in."%username,
+                                {"message": "Account %s has been created. Please log in."%username,
                                  "account": username})
 
 def reset_password_request(request):
@@ -740,9 +741,9 @@ def reset_password_request(request):
     
     # show the error if there was one
     if error:
-        return utils.render_template('ui/reset_password_request', {'ERROR': error})
+        return utils.render_template('ui/reset_password_request', {'error': error})
     return utils.render_template(LOGIN_PAGE, 
-                                {"MESSAGE": "Account reset link e-mailed. Please check your e-mail for the link.",
+                                {"message": "Account reset link e-mailed. Please check your e-mail for the link.",
                                  "account": account_email})
 
 def reset_password(request):
@@ -762,5 +763,5 @@ def reset_password(request):
     ret = api.call("POST", "/users/reset_password", options={'data': data})
     
     return utils.render_template(LOGIN_PAGE, 
-                                {"MESSAGE": "Account password has been reset. Please log in below.",
+                                {"message": "Account password has been reset. Please log in below.",
                                  "account": account_email})

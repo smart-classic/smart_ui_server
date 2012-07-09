@@ -58,11 +58,11 @@
 				{% block welcome_suffix %}{% endblock %}
 			</div>
 			{% block msg_error %}
-			{% if MESSAGE %}
-			<div class="login_message">{{ MESSAGE|safe }}</div>
+			{% if message %}
+			<div class="login_message">{{ message|safe }}</div>
 			{% endif %}
-			{% if ERROR %}
-			<div class="login_error">{{ ERROR|safe }}</div>
+			{% if error %}
+			<div class="login_error">{{ error|safe }}</div>
 			{% endif %}
 			{% endblock %}
 			{% block hint %}{% endblock %}
