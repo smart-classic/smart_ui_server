@@ -19,16 +19,18 @@ import xml.etree.ElementTree as ET
 import urllib, re
 import httplib, urllib, urllib2, urlparse
 import time
-import utils
+from smart_ui_server import utils
 
-# init the IndivoClient python object
 from indivo_client_py.lib.client import IndivoClient
+
 
 HTTP_METHOD_GET = 'GET'
 HTTP_METHOD_POST = 'POST'
 LOGIN_PAGE = 'ui/login'
 DEBUG = True
+passthrough_server = "/smart_passthrough"
 
+# init the IndivoClient python object
 SMART_SERVER_LOCATION = urlparse.urlparse(settings.SMART_API_SERVER_BASE)
 SMART_SERVER_LOCATION = {
       'host':SMART_SERVER_LOCATION.hostname,
@@ -187,7 +189,7 @@ def single_app_get_credentials(request, api, account_id, app_id, record_id=None)
     launch_opts = {}
 
     if record_id:
-      launch_opts['record_id'] = record_id
+        launch_opts['record_id'] = record_id
 
     launchdata = api.call("GET", 
                           "/accounts/%s/apps/%s/launch"%(account_id, app_id), 
@@ -196,6 +198,65 @@ def single_app_get_credentials(request, api, account_id, app_id, record_id=None)
     credentials = store_connect_secret(request, launchdata)
     return simplejson.dumps(credentials)
 
+
+##
+##  Login and logout
+##
+def mobile_login(request, info="", template='ui/mobile_login'):
+    return login(request, info, template)
+
+def login(request, info="", template=LOGIN_PAGE):
+    """
+    clear tokens in session, show a login form, get tokens from indivo_server, then redirect to return_url or index
+    FIXME: make note that account will be disabled after 3 failed logins!!!
+    """
+    # generate a new session
+    request.session.flush()
+    
+    # set up the template
+    errors = {'missing': "Either the username or password is missing. Please try again.",
+            'incorrect': "Incorrect username or password. Please try again.",
+             'disabled': "This account has been disabled/locked."}
+    
+    username = None
+    
+    # GET, simply return the login form
+    if request.method == HTTP_METHOD_GET:
+        return_url = request.GET.get('return_url', '/')
+        if (return_url.strip()==""):
+            return_url='/'
+        
+        return utils.render_template(template, {'RETURN_URL': return_url})
+    
+    # credentials were posted, try to login
+    if request.method == HTTP_METHOD_POST:
+        return_url = request.POST.get('return_url', '/')
+        if (return_url.strip()==""): return_url='/'
+        if request.POST.has_key('username') and request.POST.has_key('password'):
+            username = request.POST['username']
+            password = request.POST['password']
+        else:
+            # Also checked initially in js
+            return utils.render_template(template, {'ERROR': errors['missing'], 'RETURN_URL': return_url})
+    else:
+        utils.log('error: bad http request method in login. redirecting to /')
+        return HttpResponseRedirect('/')
+    
+    # get tokens from the backend server and save in this user's django session
+    ret, reason = tokens_get_from_server(request, username, password)
+    
+    if not ret:
+        error_message = errors[reason] if errors.has_key(reason) else reason
+        return utils.render_template(LOGIN_PAGE, {'ERROR': error_message, 'ACCOUNT': username, 'RETURN_URL': return_url})
+    return HttpResponseRedirect(return_url)
+
+def logout(request):
+    # todo: have a "you have logged out message"
+    request.session.flush()
+    return HttpResponseRedirect('/login')
+
+
+
 def showcase_index(request):
     api = get_api()
     
@@ -203,7 +264,7 @@ def showcase_index(request):
     
     ret, reason = tokens_get_from_server(request, settings.PROXY_USER, settings.PROXY_PASSWORD)
     if not ret:
-        return utils.render_template(LOGIN_PAGE, {'error': 'Could not find proxied user'})      # or use 'reason'?
+        return utils.render_template(LOGIN_PAGE, {'ERROR': 'Could not find proxied user'})      # or use 'reason'?
     
     return utils.render_template('ui/showcase',
           { 'ACCOUNT_ID': settings.PROXY_USER,
@@ -241,15 +302,15 @@ def index(request, template='ui/index'):
 def store_connect_secret(request, launchdata):
     e = ET.fromstring(launchdata)
     
-    c = {       "app_id":  e.find('App').get("id"), 
-         "connect_token":  e.findtext('ConnectToken'), 
-        "connect_secret":  e.findtext('ConnectSecret'), 
+    c = {       "app_id": e.find('App').get("id"), 
+         "connect_token": e.findtext('ConnectToken'), 
+        "connect_secret": e.findtext('ConnectSecret'), 
               "api_base": e.findtext('APIBase'), 
-            "rest_token":e.findtext('RESTToken'),  
+            "rest_token": e.findtext('RESTToken'),  
            "rest_secret": e.findtext('RESTSecret'), 
           "oauth_header": e.findtext('OAuthHeader')
-    }; 
-
+    };
+    
     print request.session.session_key, c["connect_token"], c["connect_secret"]
     t = SmartConnectToken(session_key = request.session.session_key,
                   smart_connect_token = c["connect_token"],
@@ -259,9 +320,13 @@ def store_connect_secret(request, launchdata):
     del c["connect_secret"]
     return c
 
+
+##
+##  Apps
+##
 def launch_app(request, account_id, pha_email):
     if not tokens_p(request):
-      return HttpResponseRedirect(reverse(login))
+        return HttpResponseRedirect(reverse(login))
     
     api = get_api(request)
     
@@ -279,9 +344,6 @@ def launch_app(request, account_id, pha_email):
     return HttpResponse(simplejson.dumps(credentials), content_type="application/json")
 
 
-##
-##  Apps
-##
 def launch_rest_app(request, app_id):
     """ Entry point for any given app.
     
@@ -308,6 +370,7 @@ def launch_rest_app(request, app_id):
     import pdb; pdb.set_trace()
     records = []
     record_rdf = api.call("GET", "/records/search/xml");
+    # THIS CRASHES
     print record_rdf
     
     # render the template
@@ -342,7 +405,7 @@ def launch_rest_app_complete(request, app_id):
             status = resp['status']
             if status != '200':
                 error_message = ErrorStr("Error enabling the app")
-                return utils.render_template('ui/error', {'error_message': error_message, 'error_status': status})
+                return utils.render_template('ui/error', {'ERROR_MESSAGE': error_message, 'ERROR_STATUS': status})
     
     if request.method == 'GET':
         record_id = request.GET.get('record_id', '')
@@ -395,7 +458,7 @@ def launch_rest_app_complete(request, app_id):
         error_message = ErrorStr("Error getting account credentials")
     
     if error_message is not None:
-        return utils.render_template('ui/error', {'error_message': error_message, 'error_status': status})
+        return utils.render_template('ui/error', {'ERROR_MESSAGE': error_message, 'ERROR_STATUS': status})
     
     # append the credentials and redirect
     querystring_sep = '&' if '?' in start_url else '?'
@@ -468,65 +531,9 @@ def api_server(include_scheme = True):
     return ret
 
 
-# WTH is this doing down here??
-passthrough_server = "/smart_passthrough"
-
-def mobile_login(request, info="", template='ui/mobile_login'):
-    return login(request, info, template)
-
-def login(request, info="", template=LOGIN_PAGE):
-    """
-    clear tokens in session, show a login form, get tokens from indivo_server, then redirect to return_url or index
-    FIXME: make note that account will be disabled after 3 failed logins!!!
-    """
-    # generate a new session
-    request.session.flush()
-    
-    # set up the template
-    errors = {'missing': "Either the username or password is missing. Please try again.",
-            'incorrect': "Incorrect username or password. Please try again.",
-             'disabled': "This account has been disabled/locked."}
-    
-    username = None
-    FORM_USERNAME = 'username'
-    FORM_PASSWORD = 'password'
-    FORM_RETURN_URL = 'return_url'
-    
-    # process form vars
-    if request.method == HTTP_METHOD_GET:
-        return_url = request.GET.get(FORM_RETURN_URL, '/')
-        if (return_url.strip()==""):
-            return_url='/'
-        template_data = {FORM_RETURN_URL: return_url}
-        
-        return utils.render_template(template, template_data)
-    
-    if request.method == HTTP_METHOD_POST:
-        return_url = request.POST.get(FORM_RETURN_URL, '/')
-        if (return_url.strip()==""): return_url='/'
-        if request.POST.has_key(FORM_USERNAME) and request.POST.has_key(FORM_PASSWORD):
-            username = request.POST[FORM_USERNAME]
-            password = request.POST[FORM_PASSWORD]
-        else:
-            # Also checked initially in js
-            return utils.render_template(template, {'error': errors['missing'], FORM_RETURN_URL: return_url})
-    else:
-        utils.log('error: bad http request method in login. redirecting to /')
-        return HttpResponseRedirect('/')
-    
-    # get tokens from the backend server and save in this user's django session
-    ret, reason = tokens_get_from_server(request, username, password)
-    
-    if not ret:
-        error_message = errors[reason] if errors.has_key(reason) else reason
-        return utils.render_template(LOGIN_PAGE, {'error': error_message, 'account': username, FORM_RETURN_URL: return_url})
-    return HttpResponseRedirect(return_url)
-
-def logout(request):
-    # todo: have a "you have logged out message"
-    request.session.flush()
-    return HttpResponseRedirect('/login')
-
+##
+##  Account handling
+##
 def account_initialization(request):
     """
     http://localhost/indivoapi/accounts/foo@bar.com/initialize/icmloNHxQrnCQKNn
@@ -547,7 +554,7 @@ def account_initialization(request):
         if ret.response['response_status'] == 200:
             return utils.render_template('ui/account_init_2', {'FULLNAME': ''})
         else:
-            return utils.render_template('ui/account_init', {'error': errors['generic']})
+            return utils.render_template('ui/account_init', {'ERROR': errors['generic']})
 
 def account_initialization_2(request):
     if request.method == HTTP_METHOD_POST:
@@ -566,7 +573,7 @@ def account_initialization_2(request):
             tokens_get_from_server(request, username, password)
             return HttpResponseRedirect('/')
         else:
-            return utils.render_template('ui/account_init_2', {'error': errors['generic']})
+            return utils.render_template('ui/account_init_2', {'ERROR': errors['generic']})
     
     return utils.render_template('ui/account_init_2', {})
 
@@ -652,7 +659,7 @@ def authorize(request):
                                         {'NAME': name,
                                   'DESCRIPTION': description,
                                 'REQUEST_TOKEN': REQUEST_TOKEN,
-                              'offline_capable': offline_capable})
+                              'OFFLINE_CAPABLE': offline_capable})
         elif kind == 'same':
             # return HttpResponse('fixme: kind==same not implimented yet')
             # in this case we will have record_id in the app_info
@@ -715,16 +722,16 @@ def create_developer_account(request):
     ret = api.call("POST", "/users/", options={'data': data})
     if (ret == "account_exists"):
         return utils.render_template('ui/create_developer_account',
-                                    {"error": "Account '%s' is already registered."%username })
+                                    {'ERROR': "Account '%s' is already registered."%username })
     
     return utils.render_template(LOGIN_PAGE, 
-                                {"message": "Account %s has been created. Please log in."%username,
-                                 "account": username})
+                                {'MESSAGE': "Account %s has been created. Please log in."%username,
+                                 'ACCOUNT': username})
 
 def reset_password_request(request):
     if request.method == "GET":
         account_email = request.GET.get('account_email', '')
-        return utils.render_template('ui/reset_password_request', {'account': account_email})
+        return utils.render_template('ui/reset_password_request', {'ACCOUNT': account_email})
     
     # must be POST, try to reset password on the server
     error = None
@@ -741,16 +748,16 @@ def reset_password_request(request):
     
     # show the error if there was one
     if error:
-        return utils.render_template('ui/reset_password_request', {'error': error})
+        return utils.render_template('ui/reset_password_request', {'ERROR': error})
     return utils.render_template(LOGIN_PAGE, 
-                                {"message": "Account reset link e-mailed. Please check your e-mail for the link.",
-                                 "account": account_email})
+                                {'MESSAGE': "Account reset link e-mailed. Please check your e-mail for the link.",
+                                 'ACCOUNT': account_email})
 
 def reset_password(request):
     if request.method == "GET":
         account=request.GET.get('account_email', None)
         secret=request.GET.get('account_secret', None)
-        return utils.render_template('ui/reset_password', {'account_email': account, 'account_secret': secret})
+        return utils.render_template('ui/reset_password', {'ACCOUNT': account, 'ACCOUNT_SECRET': secret})
     
     # construct the data
     account_email = request.POST.get('account_email', None)
@@ -763,5 +770,5 @@ def reset_password(request):
     ret = api.call("POST", "/users/reset_password", options={'data': data})
     
     return utils.render_template(LOGIN_PAGE, 
-                                {"message": "Account password has been reset. Please log in below.",
-                                 "account": account_email})
+                                {'MESSAGE': "Account password has been reset. Please log in below.",
+                                 'ACCOUNT': account_email})

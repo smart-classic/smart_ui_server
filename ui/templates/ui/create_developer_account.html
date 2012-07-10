@@ -44,9 +44,9 @@
             </span>
 
         <div style="font-size: 24px">
-          {% if error %}
+          {% if ERROR %}
             <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 18px;">
-              {{error}}
+              {{ ERROR }}
             </div>
           {% endif %}
         </div>
@@ -82,7 +82,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              <input type="hidden" name="return_url" value="{{return_url}}" />
+              <input type="hidden" name="return_url" value="{{ RETURN_URL }}" />
               <input style="font-size: 18px; width: 100%;"
                      type="submit"
                      name="submit"

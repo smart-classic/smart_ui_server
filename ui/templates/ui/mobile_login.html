@@ -17,7 +17,7 @@
         $('#username').focus();
         
     {% if account %}
-        $('#username').val('{{account}}');
+        $('#username').val('{{ ACCOUNT }}');
         $('#password').focus();
     {% endif %}
     
@@ -46,9 +46,9 @@
               <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
             </span>
 
-          {% if error %}
+          {% if ERROR %}
             <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 20px;">
-              {{error}}
+              {{ ERROR }}
             </div>
           {% endif %}
 

@@ -30,11 +30,11 @@
 {% block main %}
 	<!-- Login Form -->
 	<form id="login_form" class="table_form" method="post" action="/login">
-		<input type="hidden" name="return_url" value="{{ return_url }}" />
+		<input type="hidden" name="return_url" value="{{ RETURN_URL }}" />
 		<div class="row">
 			<div class="cell">{% trans "Email:" %}</div>
 			<div class="cell">
-				<input type="text" id="username" name="username" value="{{ account }}" tabindex="1"/>
+				<input type="text" id="username" name="username" value="{{ ACCOUNT }}" tabindex="1"/>
 			</div>
 		</div>
 		<div class="row">

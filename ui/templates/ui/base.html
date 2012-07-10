@@ -42,7 +42,7 @@
 			<div id="logo" style="text-align:center;">
 				<img alt="SMART" src="/static/smart_common/resources/images/badges/SMArt-Logo.png" />
 			</div>
-
+			
 			{% if branding %}
 			<img class="branding-image" src='{{ branding.logo_image_big_src }}' />
 			{% endif %}
@@ -58,11 +58,11 @@
 				{% block welcome_suffix %}{% endblock %}
 			</div>
 			{% block msg_error %}
-			{% if message %}
-			<div class="login_message">{{ message|safe }}</div>
+			{% if MESSAGE %}
+			<div class="login_message">{{ MESSAGE|safe }}</div>
 			{% endif %}
-			{% if error %}
-			<div class="login_error">{{ error|safe }}</div>
+			{% if ERROR %}
+			<div class="login_error">{{ ERROR|safe }}</div>
 			{% endif %}
 			{% endblock %}
 			{% block hint %}{% endblock %}

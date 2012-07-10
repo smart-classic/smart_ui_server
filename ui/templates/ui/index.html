@@ -23,8 +23,8 @@
     <script type="text/javascript">
 {% block global_vars %}
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
-      var SMART_API_SERVER = "{{SMART_API_SERVER}}"
-      var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
+      var SMART_API_SERVER = "{{ SMART_API_SERVER }}"
+      var SMART_PASSTHROUGH_SERVER = "{{ SMART_PASSTHROUGH_SERVER }}";
       var FULLNAME = "{{ FULLNAME }}";
 {% endblock %}
     </script>
@@ -42,7 +42,7 @@
       {% block header_username %}
 .
       <div id='header_name'>
-        <span id='header_username'>{{FULLNAME}}</span>
+        <span id='header_username'>{{ FULLNAME }}</span>
         &middot;
         <a href="{% url ui.views.logout %}">Logout</a>
       </div>
