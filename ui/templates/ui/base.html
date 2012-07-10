@@ -52,7 +52,7 @@
 					{% if branding %}
 						{{ branding.pretty_name_prepend }} {{ branding.pretty_name }}
 					{% else %}
-						{% trans "SMART Reference EMR" %}<!--span id="front_site_trademark">&trade;</span-->
+						{% trans "SMART EMR" %}<!--span id="front_site_trademark">&trade;</span-->
 					{% endif %}
 				{% endblock %}
 				{% block welcome_suffix %}{% endblock %}
@@ -69,9 +69,11 @@
 		</div>
 		
 		<!-- Main Form -->
+		<div id="main_content">
 		{% block main %}
 		These aren't the droids you're looking for.
 		{% endblock %}
+		</div>
 	</div>
 	
 	<!-- Footer -->

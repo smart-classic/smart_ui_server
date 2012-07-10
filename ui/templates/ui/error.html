@@ -1,0 +1,14 @@
+{% extends "ui/Base.html" %}
+{% load i18n %}
+
+{% block main %}
+	<div id="error">
+		<div class="error_status">{{ ERROR_STATUS }}</div>
+		<div class="details">{{ ERROR_MESSAGE }}</div>
+	</div>
+	{% if GOTO_LOGIN %}
+	<p class="moreinfo">
+		<a href="/login">{% trans "Back to login" %}</a>
+	</p>
+	{% endif %}
+{% endblock %}

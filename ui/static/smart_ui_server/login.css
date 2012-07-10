@@ -16,15 +16,22 @@ p { margin: 0; }
 #full_height {
 	position: absolute; top: 0; width: 100%; min-height: 100%;
 }
-#main_box {
-	width: 600px; min-height: 300px; margin: 5% auto 120px;
+#main_content {
+	margin-top: 1.5em;
 }
+#main_box {
+	width: 600px; min-height: 300px; margin: 5% auto 30px;
+}
+
+/* (logo and) title */
 #front_site_name {
 	margin-top: 1em;
 	font-size: 1.8em; font-weight: bold;
 }
+
+/* main area */
 .table_form {
-	display: table; width: 100%; margin-top: 1.5em;
+	display: table; width: 100%;
 	font-size: 22px; line-height: 1.7;
 }
 #login_form input[type="text"], #login_form input[type="email"], #login_form input[type="password"], #setup_form input[type="text"], #setup_form input[type="email"], #setup_form input[type="password"] {
@@ -45,17 +52,21 @@ a.row { display: block; font-size: 1.2em; }
 .moreinfo b {
 	color: #CCCCCC; padding: 0 1em;
 }
+.main_action_button { margin-top: 1.5em; }
+
+/* errors and messages */
 .login_message {
 	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(93,153,28);
 	border: 2px dotted rgb(108,178,33); border-width: 2px 0;
 }
-.login_error {
+#error, .login_error {
 	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(230,53,32);
 	border: 2px dotted rgb(230,53,32); border-width: 2px 0;
 }
 .login_error .moreinfo { margin-top: 1em; font-size: 14px; }
-.main_action_button { margin-top: 1.5em; }
 
+
+/* generic */
 .red { color: rgb(200,50,0); }
 .green { color: rgb(121,160,0); }
 .faded { color: rgb(178,178,178); color: rgba(0,0,0,0.3); }

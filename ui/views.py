@@ -367,11 +367,13 @@ def launch_rest_app(request, app_id):
         fullname = "%s %s" % (e.findtext('givenName'), e.findtext('familyName'))
     
     # fetch all records
-    import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
     records = []
-    record_rdf = api.call("GET", "/records/search/xml");
-    # THIS CRASHES
-    print record_rdf
+    try:
+        record_rdf = api.call("GET", "/records/search/xml");
+        print record_rdf
+    except Exception, e:
+        return utils.render_template('ui/error', {'ERROR_MESSAGE': "Failed to fetch records", 'ERROR_STATUS': 500})
     
     # render the template
     params = {          'SETTINGS': settings,
