@@ -33,7 +33,7 @@ passthrough_server = "/smart_passthrough"
 # init the IndivoClient python object
 SMART_SERVER_LOCATION = urlparse.urlparse(settings.SMART_API_SERVER_BASE)
 SMART_SERVER_LOCATION = {
-      'host':SMART_SERVER_LOCATION.hostname,
+      'host': SMART_SERVER_LOCATION.hostname,
     'scheme': SMART_SERVER_LOCATION.scheme,
       'port': SMART_SERVER_LOCATION.port
               or (
@@ -205,15 +205,34 @@ def single_app_get_credentials(request, api, account_id, app_id, record_id=None)
 def mobile_login(request, info="", template='ui/mobile_login'):
     return login(request, info, template)
 
-def login(request, info="", template=LOGIN_PAGE):
+def login(request, status=None, info="", template=LOGIN_PAGE):
     """
     clear tokens in session, show a login form, get tokens from indivo_server, then redirect to return_url or index
     FIXME: make note that account will be disabled after 3 failed logins!!!
     """
-    # generate a new session
+    
+    # carry over login_return_url should we still have it
+    return_url = request.session.get('login_return_url');
     request.session.flush()
     
+    # generate a new session and get return_url
+    if request.POST.has_key('return_url'):
+        return_url = request.POST['return_url']
+    elif request.GET.has_key('return_url'):
+        return_url = request.GET['return_url']
+    
+    # save return_url
+    if return_url:
+        request.session['login_return_url'] = return_url
+    
     # set up the template
+    params = {'SETTINGS': settings}
+    if return_url:
+        params['RETURN_URL'] = return_url
+    
+    if 'did_logout' == status:
+        params['MESSAGE'] = _("You were logged out")
+    
     errors = {'missing': "Either the username or password is missing. Please try again.",
             'incorrect': "Incorrect username or password. Please try again.",
              'disabled': "This account has been disabled/locked."}
@@ -222,22 +241,17 @@ def login(request, info="", template=LOGIN_PAGE):
     
     # GET, simply return the login form
     if request.method == HTTP_METHOD_GET:
-        return_url = request.GET.get('return_url', '/')
-        if (return_url.strip()==""):
-            return_url='/'
-        
-        return utils.render_template(template, {'RETURN_URL': return_url})
+        return utils.render_template(template, params)
     
     # credentials were posted, try to login
     if request.method == HTTP_METHOD_POST:
-        return_url = request.POST.get('return_url', '/')
-        if (return_url.strip()==""): return_url='/'
         if request.POST.has_key('username') and request.POST.has_key('password'):
             username = request.POST['username']
             password = request.POST['password']
         else:
             # Also checked initially in js
-            return utils.render_template(template, {'ERROR': errors['missing'], 'RETURN_URL': return_url})
+            params['ERROR'] = errors['missing']
+            return utils.render_template(template, params)
     else:
         utils.log('error: bad http request method in login. redirecting to /')
         return HttpResponseRedirect('/')
@@ -246,14 +260,16 @@ def login(request, info="", template=LOGIN_PAGE):
     ret, reason = tokens_get_from_server(request, username, password)
     
     if not ret:
-        error_message = errors[reason] if errors.has_key(reason) else reason
-        return utils.render_template(LOGIN_PAGE, {'ERROR': error_message, 'ACCOUNT': username, 'RETURN_URL': return_url})
+        params['ERROR'] = errors[reason] if errors.has_key(reason) else reason
+        params['ACCOUNT'] = username
+        return utils.render_template(LOGIN_PAGE, params)
     return HttpResponseRedirect(return_url)
 
 def logout(request):
-    # todo: have a "you have logged out message"
+    login_return_url = request.session.get('login_return_url')
+    
     request.session.flush()
-    return HttpResponseRedirect('/login')
+    return HttpResponseRedirect(login_return_url or '/login/did_logout')
 
 
 
@@ -352,35 +368,61 @@ def launch_rest_app(request, app_id):
     """
     
     # have the user login first
-    login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
     account_id = urllib.unquote(request.session.get('account_id', ''))
     if not account_id:
+        login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(login_url)
     
     # get the account holder's name (fail silently)
     fullname = 'Unknown'
     api = get_api(request)
-    ret = api.account_info(account_id = account_id)
-    status = ret.response.get('response_status', 0) if ret and ret.response else 0
-    if 200 == status:
-        e = ET.fromstring(ret.response['response_data'])
-        fullname = "%s %s" % (e.findtext('givenName'), e.findtext('familyName'))
+    try:
+        ret = api.account_info(account_id = account_id)
+        status = ret.response.get('response_status', 0) if ret and ret.response else 0
+        if 200 == status:
+            e = ET.fromstring(ret.response['response_data'])
+            fullname = "%s %s" % (e.findtext('givenName'), e.findtext('familyName'))
+    except Exception, e:
+        pass
     
     # fetch all records
-#    import pdb; pdb.set_trace()
+    error = None
     records = []
     try:
-        record_rdf = api.call("GET", "/records/search/xml");
-        print record_rdf
+        params = None
+        record_xml = api.call("GET", "/records/search/xml", options={'parameters': params});
+        if record_xml:
+            try:
+                tree = ET.XML(record_xml)
+                record_nodes = tree.findall('Record')
+                
+                # create record dictionaries for each record
+                for r in record_nodes:
+                    demo = r.find('demographics')
+                    record = {
+                        'id': r.attrib.get('id', 0),
+                        'firstname': demo.find('firstname').text if demo.find('firstname') is not None else 'Unknown',
+                        'lastname': demo.find('lastname').text if demo.find('lastname') is not None else None,
+                        'dob': demo.find('dob').text if demo.find('dob') is not None else '0000-00-00',
+                        'gender': demo.find('gender').text if demo.find('gender') is not None else None,
+                        'zip': demo.find('zip').text if demo.find('zip') is not None else None
+                    }
+                    records.append(record)
+            except Exception, e:
+                error = e
     except Exception, e:
-        return utils.render_template('ui/error', {'ERROR_MESSAGE': "Failed to fetch records", 'ERROR_STATUS': 500})
+        error = "Failed to fetch records"
+    
+    if error:
+        return utils.render_template('ui/error', {'ERROR_MESSAGE': error, 'ERROR_STATUS': 500})
     
     # render the template
     params = {          'SETTINGS': settings,
                           'APP_ID': app_id,
                       'ACCOUNT_ID': account_id,
         'SMART_PASSTHROUGH_SERVER': passthrough_server,
-                        'FULLNAME': fullname
+                        'FULLNAME': fullname,
+                         'RECORDS': simplejson.dumps(records) if len(records) > 0 else None
     }
     return utils.render_template('ui/record_select', params)
 
@@ -392,16 +434,17 @@ def launch_rest_app_complete(request, app_id):
     """
     
     # have the user login first
-    login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
     account_id = urllib.unquote(request.session.get('account_id', ''))
     if not account_id:
+        login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(login_url)
+    
+    api = get_api(request)
     
     # If we were just authorized, enable the app
     if request.method == 'POST':
         record_id = request.POST.get('record_id', '')
         carenet_id = ''
-        api = get_api(request)
         if record_id:
             resp, content = api.record_pha_enable(record_id=record_id, pha_email=app_id)
             status = resp['status']
@@ -411,12 +454,10 @@ def launch_rest_app_complete(request, app_id):
     
     if request.method == 'GET':
         record_id = request.GET.get('record_id', '')
-        carenet_id = request.GET.get('carenet_id', '')
     
-    params_dict = {'record_id':record_id, 'carenet_id':carenet_id}
+    params_dict = {'record_id': record_id}
     
     # logged in, get information about the desired app
-    api = get_api(request)
     resp, content = api.pha(pha_email=app_id)
     status = resp['status']
     error_message = None
@@ -454,7 +495,7 @@ def launch_rest_app_complete(request, app_id):
     elif status != '200':
         error_message = ErrorStr("Error getting account credentials")
     else:
-        oauth_header = etree.XML(content).findtext("OAuthHeader")
+        oauth_header = ET.XML(content).findtext("OAuthHeader")
         
     if not oauth_header:
         error_message = ErrorStr("Error getting account credentials")

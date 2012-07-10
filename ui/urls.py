@@ -15,7 +15,8 @@ urlpatterns = patterns(
     (r'^token/(?P<token>[^/]+)$', token_login_index),
     
     # auth
-    (r'^login$', login),
+    (r'^login$', login, {'status': None}),
+    (r'^login/(?P<status>[^/]*)', login),
     (r'^logout$', logout),
     
     # app launch

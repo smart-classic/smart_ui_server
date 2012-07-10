@@ -1,46 +1,72 @@
+{% extends "ui/base.html" %}
 {% load i18n %}
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0;" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-	<link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png" />
-	<link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png" />
+{% block title %}Records for {{ FULLNAME }}{% endblock %}
+{% block welcome %}Records{% endblock %}
+
+{% block readyscript %}
+	{% if RECORDS %}
+	<script type="text/javascript">
+	_records = {{ RECORDS|safe }};
 	
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.css" type="text/css" />
-	
-	<title>{% block title %}SMART EMR{% endblock %}</title>
-</head>
-<body>
-{% if branding %}
-	{% include branding.header_template %}
-{% else %}
-	{% include 'ui/header.html' %}
-{% endif %}
-	Records for {{ FULLNAME }}
-	
-	<div class="list_form">
+	// on ready, display all records, ordered alphabetically
+	$(document).ready(function() {
+		var list_div = $('#record_list');
+		var ordered_records = _records.sort(function(a, b) {
+			if (a.lastname < b.lastname) return -1;
+			if (a.lastname > b.lastname) return 1;
+			if (a.firstname < b.firstname) return -1;
+			if (a.firstname > b.firstname) return 1;
+			return 0;
+		});
 		
-	</div>
+		// append all records to the list
+		for (var i = 0; i < ordered_records.length; i++) {
+			var record = _records[i];
+			var link = '/apps/{{ APP_ID }}/complete?record_id=' + record.id;
+			
+			var gender = ('female' == record.gender ? "♀" : ('male' == record.gender ? "♂" : '?'));
+			var record_name = record.lastname + ', ' + record.firstname;
+			var age = '';
+			if (record.dob) {
+				var dob_parts = record.dob.split(/-/);
+				var dob = new Date();
+				var today = new Date();
+				dob.setYear(dob_parts[0]);
+				dob.setMonth(dob_parts[1] - 1);
+				dob.setDate(dob_parts[2]);
+				age = today.getFullYear() - dob.getFullYear();
+				var month = today.getMonth() - dob.getMonth();
+				if (month < 0 || (month === 0 && today.getDate() < dob.getDate())) {
+					age--;
+				}
+			}
+			
+			var row = $('<div/>').addClass('row');		// do this on mobile only: .click(function() { document.location.href = link; });
+			row.append('<span class="cell gender">' + gender + '</span>');
+			row.append('<a class="cell" href="' + link + '">' + record_name + '</a>');
+			row.append('<span class="cell dob">' + record.dob + ', <b>' + age + ' y</b></span>');
+			list_div.append(row);
+		}
+	});
+	</script>
+	{% endif %}
+{% endblock %}
+
+{% block main %}
+	{% if RECORDS %}
+	<div id="record_search" class="list"><div class="row">
+		<input id="search_input" type="search" placeholder="Search" />
+	</div></div>
 	
-	{% if SETTINGS and SETTINGS.ALLOW_ADDING_RECORDS %}
-	<div class="list_form">
-		<a class="row" href="/records/?after_create_url=/apps/{{ APP_ID }}">
-			{% trans "Add a Record" %}
-		</a>
+	<div id="record_list" class="list"></div>
+	{% else %}
+	<div class="login_error">
+	There are no records
 	</div>
 	{% endif %}
 	
-	<div id="footer">
-		<h4>
-			<a href="http://chip.org">CHIP</a>
-			<a href="http://hms.harvard.edu">HMS</a>
-			©2012
-		</h4>
+	<div class="logout">
+		<a href="/logout">{% trans "Logout" %}</a>
 	</div>
-</body>
-</html>
+{% endblock %}
