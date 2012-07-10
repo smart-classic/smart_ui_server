@@ -77,9 +77,9 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'ui'
+    'ui',
 # to enable admin ui, uncomment the line below.
-#   'admin_ui'
+#   'admin_ui',
 )
 
 # use file based sessions for now - fixme: security?
