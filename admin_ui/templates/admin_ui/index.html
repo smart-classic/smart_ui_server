@@ -2,26 +2,25 @@
 <html lang='en'>
   <head>
     <title>SMART Admin UI</title>
-    <link type="text/css" href="static/smart_ui_server.css" rel="Stylesheet" />
-    <link type="text/css" href="static/admin_ui.css" rel="Stylesheet" />
+    <link type="text/css" href="/static/smart_ui_server/smart_ui_server.css" rel="Stylesheet" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   </head>
   <body style="text-align: center;">
-    <div style="text-align: left; width: 400px; margin-left: auto; margin-right: auto; margin-top: 100px;">
+    <div style="text-align: left; width: 400px; margin-left: auto; margin-right: auto;">
         <div  style="text-align: center; margin-left: -0px;">
             <span id="logo">
-              <img src="static/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
+              <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
             </span>
 
             <br clear="both"/>
-            <div>
+            <div style="margin-bottom: 1em;">
             Welcome admin. Click <a href="logout">here to log out</a>
             </div>
             <div id="results">
-                <table class='nicetable'>
+                <table>
                     <thead>
                         <tr>
-                            <th colspan="2">Apps found on the SMART server</th>
+                            <th colspan="2">{{ apps|length }} Apps found on the SMART server</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,6 +44,7 @@
                 <input type="hidden" id="descriptor" name="id"/>
             </form>
             <form method="post" action="add" enctype="multipart/form-data">
+		<b>Add a new app</b><br>
                 <input type="file" name="manifest"/>
                 <button>Load</button>
             </form>
