@@ -14,7 +14,8 @@ from django.conf import settings
 import xml.etree.ElementTree as ET
 import urllib,logging
 
-import utils
+from smart_ui_server import utils
+
 HTTP_METHOD_GET   = 'GET'
 HTTP_METHOD_POST  = 'POST'
 
