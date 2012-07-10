@@ -56,7 +56,7 @@ patient_selected: function(name) {
 	  sb.attr("disabled", "true");
 
 
-	  Record.search({sparql : $("#patient_search_sparql").val()}, function(records) {
+	  Record.search(this.search_params(), function(records) {
 		  sb.attr("value", btext);
 		  sb.removeAttr("disabled");
 		  for (var i=0; i < records.length; i++)
@@ -77,64 +77,34 @@ patient_selected: function(name) {
 	  return false;
   },
   
-  search_terms_changed : function() {
-	var sparql_base = "\
-PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n\
-PREFIX  sp:  <http://smartplatforms.org/terms#>\n\
-PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n\
-PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n\
-PREFIX dcterms:  <http://purl.org/dc/terms/>\n\
-CONSTRUCT {?person ?p ?o.} \n\
-WHERE   {\n\
-  ?person ?p ?o.\n\
-  ?person foaf:familyName ?ln.\n\
-  ?person rdf:type foaf:Person.{WHERE_givenName}{WHERE_familyName}{WHERE_DOB}{WHERE_sex}{WHERE_zip}{FILTER_givenName}{FILTER_familyName}{FILTER_DOB}{FILTER_sex}{FILTER_zip}\n\
-}\n\
-order by ?ln";
-        
-
-         var args = {WHERE_givenName : "", 
-        		 WHERE_familyName : "", 
-        		 WHERE_DOB : "", 
-        		 WHERE_sex : "", 
-        		 WHERE_zip : "", 
-        		 FILTER_givenName: "", 
-        		 FILTER_familyName : "", 
-        		 FILTER_DOB : "", 
-        		 FILTER_sex : "", 
-        		 FILTER_zip : "" 
-        		 };
+  search_params : function() {
+	var search_params = {};
          var r = $("#patient_search_lname").val();
          if (r != "") { 
-        	 args.WHERE_familyName = '\n  ?person foaf:familyName ?familyName. ';
-        	 args.FILTER_familyName = '\n  FILTER  regex(?familyName, "^'+r+'","i") ';	 
+		search_params['family_name'] = r;
          }
          
          var r = $("#patient_search_fname").val();
          if (r != "") { 
-        	 args.WHERE_givenName = '\n  ?person foaf:givenName ?givenName. ';
-        	 args.FILTER_givenName = '\n  FILTER regex(?givenName, "^'+r+'","i") ';	 
+		search_params['given_name'] = r;
          }
          
          var r = $("#patient_search_dob").val();
          if (r.length === 10) { 
-        	 args.WHERE_DOB = '\n  ?person sp:birthday ?bday.';
-        	 args.FILTER_DOB = '\n  FILTER regex(?bday, "^'+r+'$","i") ';	 
+		search_params['birthday'] = r;
          }
          
          var r = $("#patient_search_zip").val();
          if (r != "") { 
-        	 args.WHERE_DOB = '\n  ?person sp:zipcode ?zip. ';
-        	 args.FILTER_DOB = '\n  FILTER regex(?zip, "'+r+'") ';	 
+		search_params['zipcode'] = r;
          }
          
          var r = $('input[name=patient_search_sex]:checked').val();
          if (r !== "" && r !== undefined) { 
-        	 args.WHERE_sex = '\n  ?person foaf:gender ?sex. ';
-        	 args.FILTER_sex = '\n  FILTER regex(?sex, "^'+r+'$","i") ';	 
+		search_params['gender'] = r;
          }
-         
-         $("#patient_search_sparql").val(interpolate_url_template(sparql_base, args));
+  
+	return search_params;        
   }
 
 
