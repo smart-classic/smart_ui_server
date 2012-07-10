@@ -8,9 +8,9 @@ Record= $.Model.extend('smart_common.Models.Record',
     attributes : { 
 	record_id : 'string'
     },
-	search: function(sparql, callback) {
+	search: function(search_params, callback) {
 		var base_url = '/records/search/xml';
-		$.getXML(base_url, sparql,  function(record_list) {
+		$.getXML(base_url, search_params,  function(record_list) {
 
 			var lst = record_list.Records.Record;
 			
