@@ -221,17 +221,16 @@ def login(request, status=None, info="", template=LOGIN_PAGE):
     elif request.GET.has_key('return_url'):
         return_url = request.GET['return_url']
     
-    # save return_url
-    if return_url:
-        request.session['login_return_url'] = return_url
-    
-    # set up the template
+    # save return_url and set up the template
     params = {'SETTINGS': settings}
     if return_url:
+        request.session['login_return_url'] = return_url
         params['RETURN_URL'] = return_url
+    else:
+        return_url = '/'
     
     if 'did_logout' == status:
-        params['MESSAGE'] = _("You were logged out")
+        params['MESSAGE'] = "You were logged out"
     
     errors = {'missing': "Either the username or password is missing. Please try again.",
             'incorrect': "Incorrect username or password. Please try again.",
@@ -440,68 +439,65 @@ def launch_rest_app_complete(request, app_id):
         return HttpResponseRedirect(login_url)
     
     api = get_api(request)
+    error_message = None
+    start_url = None
     
+    import pdb; pdb.set_trace()
     # If we were just authorized, enable the app
-    if request.method == 'POST':
-        record_id = request.POST.get('record_id', '')
-        carenet_id = ''
-        if record_id:
-            resp, content = api.record_pha_enable(record_id=record_id, pha_email=app_id)
-            status = resp['status']
-            if status != '200':
-                error_message = ErrorStr("Error enabling the app")
-                return utils.render_template('ui/error', {'ERROR_MESSAGE': error_message, 'ERROR_STATUS': status})
+#    if request.method == 'POST':
+#        record_id = request.POST.get('record_id', '')
+#        carenet_id = ''
+#        if record_id:
+#            resp, content = api.record_pha_enable(record_id=record_id, pha_email=app_id)
+#            status = resp['status']
+#            if status != 200:
+#                return utils.render_template('ui/error', {'ERROR_MESSAGE': "Error enabling the app", 'ERROR_STATUS': status})
     
+    # find the record id
     if request.method == 'GET':
         record_id = request.GET.get('record_id', '')
     
-    params_dict = {'record_id': record_id}
+    if record_id is None:
+        error_message = "No record id given"
     
-    # logged in, get information about the desired app
-    resp, content = api.pha(pha_email=app_id)
-    status = resp['status']
-    error_message = None
-    if '404' == status:
-        error_message = ErrorStr('No such App').str()
-    elif '200' != status:
-        error_message = ErrorStr(content or 'Error getting app info').str()
-    
-    # success, find start URL template
+    # get information about the desired app, especially the start_url
     else:
-        app_info_json = content or ''
-        app_info = simplejson.loads(app_info_json)
-        if not app_info:
-            error_message = ErrorStr('Error getting app info')
-        else:
-            start_url = app_info.get('index')    
-            start_url = _interpolate_url_template(app_info.get('index'), params_dict)
-    
-    if not start_url:
-        error_message = ErrorStr('Error getting app info: no start URL')
+        app_info = None
+        try:
+            app_info_json = api.call('GET', "/apps/%s/manifest" % app_id)
+            app_info = simplejson.loads(app_info_json)
+            start_url = _interpolate_url_template(app_info.get('index'), {'record_id': record_id})
+        except Exception, e:
+            pass
+        
+        if app_info is None:
+            error_message = 'Error getting app info'
+        elif start_url is None:
+            error_message = 'Error getting app info: no start URL'
     
     # get SMART credentials for the request
-    api = get_api(request)
-    resp, content = api.get_connect_credentials(account_email=account_id, pha_email=app_id, body=params_dict)
-    status = resp['status']
-    if status == '403':
-        if carenet_id:
-            error_message = ErrorStr("This app is not enabled to be run in the selected carenet.")
-        elif record_id:
-            return utils.render_template('ui/authorize_record_launch_app',
-                                         {'CALLBACK_URL': '/apps/%s/complete/'%app_id,
-                                          'RECORD_ID': record_id,
-                                          'TITLE': _('Authorize "{{name}}"?').replace('{{name}}', app_info['name'])
-})
-    elif status != '200':
-        error_message = ErrorStr("Error getting account credentials")
-    else:
-        oauth_header = ET.XML(content).findtext("OAuthHeader")
-        
-    if not oauth_header:
-        error_message = ErrorStr("Error getting account credentials")
+    oauth_header = ''
+#    resp, content = api.get_connect_credentials(account_email=account_id, pha_email=app_id, body={'record_id': record_id})
+#    status = resp['status']
+#    if status == '403':
+#        if carenet_id:
+#            error_message = ErrorStr("This app is not enabled to be run in the selected carenet.")
+#        elif record_id:
+#            return utils.render_template('ui/authorize_record_launch_app',
+#                                         {'CALLBACK_URL': '/apps/%s/complete/'%app_id,
+#                                          'RECORD_ID': record_id,
+#                                          'TITLE': _('Authorize "{{name}}"?').replace('{{name}}', app_info['name'])
+#                })
+#    elif status != '200':
+#        error_message = ErrorStr("Error getting account credentials")
+#    else:
+#        oauth_header = ET.XML(content).findtext("OAuthHeader")
+#        
+#    if not oauth_header:
+#        error_message = ErrorStr("Error getting account credentials")
     
     if error_message is not None:
-        return utils.render_template('ui/error', {'ERROR_MESSAGE': error_message, 'ERROR_STATUS': status})
+        return utils.render_template('ui/error', {'ERROR_MESSAGE': error_message, 'GOTO_LOGIN': True})
     
     # append the credentials and redirect
     querystring_sep = '&' if '?' in start_url else '?'
@@ -815,3 +811,18 @@ def reset_password(request):
     return utils.render_template(LOGIN_PAGE, 
                                 {'MESSAGE': "Account password has been reset. Please log in below.",
                                  'ACCOUNT': account_email})
+
+
+##
+##  Utilities
+##
+def _interpolate_url_template(url, variables):
+    """ Interpolates variables into a url which has placeholders enclosed by curly brackets """
+    
+    new_url = url
+    for key in variables:
+        new_url = re.sub('{\s*' + key + '\s*}', variables.get(key), new_url)
+    
+    return new_url
+
+

@@ -26,6 +26,11 @@ a:hover { border: none; text-decoration: underline; }
 }
 
 /* (logo and) title */
+.header { text-align: center; }
+.header hr {
+	margin-top: 1.5em;
+	border: none; border-top: 1px solid rgb(180,180,180);
+}
 #front_site_name {
 	margin-top: 1em;
 	font-size: 1.8em; font-weight: bold;
@@ -44,9 +49,7 @@ a:hover { border: none; text-decoration: underline; }
 .table_form button[type="submit"] { min-width: 34%; font-size: 18px; margin-bottom: 10px; }
 input.error { border-color: rgb(220,0,0); background-color: rgb(255,219,207); }
 
-#record_search {
-	margin-bottom: 1em; padding-bottom: 1em; border-bottom: 1px solid rgb(180,180,180);
-}
+#record_search { margin-bottom: 2em; padding-bottom: 1em; }
 #record_search .row { display: block; text-align: center; }
 #search_input { width: 50%; }
 #record_list { display: table; width: 100%; }

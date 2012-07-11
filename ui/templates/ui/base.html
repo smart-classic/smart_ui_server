@@ -40,7 +40,7 @@
 	<div id="main_box">
 		
 		<!-- Header -->
-		<div style="text-align: center;">
+		<div class="header">
 			<div id="logo" style="text-align:center;">
 				<img alt="SMART" src="/static/smart_common/resources/images/badges/SMArt-Logo.png" />
 			</div>
@@ -68,6 +68,10 @@
 			{% endif %}
 			{% endblock %}
 			{% block hint %}{% endblock %}
+			
+			{% if not MESSAGE and not MESSAGE %}
+			<hr />
+			{% endif %}
 		</div>
 		
 		<!-- Main Form -->
