@@ -8,11 +8,11 @@
 	{% if RECORDS %}
 	<script type="text/javascript">
 	_records = {{ RECORDS|safe }};
+	_ordered_records = null;
 	
 	// on ready, display all records, ordered alphabetically
 	$(document).ready(function() {
-		var list_div = $('#record_list');
-		var ordered_records = _records.sort(function(a, b) {
+		_ordered_records = _records.sort(function(a, b) {
 			if (a.lastname < b.lastname) return -1;
 			if (a.lastname > b.lastname) return 1;
 			if (a.firstname < b.firstname) return -1;
@@ -20,9 +20,45 @@
 			return 0;
 		});
 		
-		// append all records to the list
-		for (var i = 0; i < ordered_records.length; i++) {
-			var record = _records[i];
+		searchRecords();
+	});
+	
+	// called whenever something is entered in the search field. Only perform search on specific keys
+	function didType(event) {
+		var c = event.keyCode;
+		if (27 == c) {						// ESC
+			$('#search_input').val('');
+			searchRecords();
+		}
+		if (32 == c							// space
+			|| (c >= 48 && c <= 57)			// 0-9
+			|| (c >= 96 && c <= 105)		// 0-9 (num keys)
+			|| (c >= 65 && c <= 90)			// a-z
+			|| 8 == c						// backspace
+			|| 13 == c						// return
+			|| 46 == c) {					// delete
+			
+			var str = $('#search_input').val();
+			searchRecords(str);
+		}
+	}
+	
+	// show the records matching the search string (or all, if no string is given)
+	function searchRecords(searchstring) {
+		$('#no_records').hide();
+		var list_div = $('#record_list');
+		list_div.empty();
+		var matches = 0;
+		
+		// append records to the list
+		for (var i = 0; i < _ordered_records.length; i++) {
+			var record = _ordered_records[i];
+			if (!recordMatches(record, searchstring)) {
+				continue;
+			}
+			
+			// matching record, show
+			matches++;
 			var link = '/apps/{{ APP_ID }}/complete?record_id=' + record.id;
 			
 			var gender = ('female' == record.gender ? "♀" : ('male' == record.gender ? "♂" : '?'));
@@ -48,7 +84,35 @@
 			row.append('<span class="cell dob">' + record.dob + ', <b>' + age + ' y</b></span>');
 			list_div.append(row);
 		}
-	});
+		
+		// no matches, show a hint
+		if (matches < 1) {
+			$('#no_records').text(searchstring ? 'No records matching "' + searchstring + '"' : 'There are no records').show();
+		}
+	}
+	
+	// returns true if a record should match a given searchstring
+	function recordMatches(record, searchstring) {
+		if (record) {
+			if (searchstring) {
+				
+				// search the name
+				var regex = new RegExp('^' + searchstring, 'i');
+				if (regex.test(record.lastname) || regex.test(record.firstname)) {
+					return true;
+				}
+				
+				// match birthyear
+				if (record.dob.substring(0, 4) == searchstring) {
+					console.log('number');
+					return true;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 	</script>
 	{% endif %}
 {% endblock %}
@@ -56,10 +120,11 @@
 {% block main %}
 	{% if RECORDS %}
 	<div id="record_search" class="list"><div class="row">
-		<input id="search_input" type="search" placeholder="Search" />
+		<input id="search_input" type="search" placeholder="Search" onkeyup="didType(event)" />
 	</div></div>
 	
 	<div id="record_list" class="list"></div>
+	<div id="no_records" class="login_error" style="display:none;"></div>
 	{% else %}
 	<div class="login_error">
 	There are no records

@@ -372,12 +372,15 @@ def launch_rest_app(request, app_id):
         login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(login_url)
     
-    # get the account holder's name (fail silently)
+    # get the account holder's name (fail silently EXCEPT we get a 403, then redirect to login)
     fullname = 'Unknown'
     api = get_api(request)
     try:
         ret = api.account_info(account_id = account_id)
         status = ret.response.get('response_status', 0) if ret and ret.response else 0
+        if 403 == status:
+            login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+            return HttpResponseRedirect(login_url)
         if 200 == status:
             e = ET.fromstring(ret.response['response_data'])
             fullname = "%s %s" % (e.findtext('givenName'), e.findtext('familyName'))
@@ -408,12 +411,12 @@ def launch_rest_app(request, app_id):
                     }
                     records.append(record)
             except Exception, e:
-                error = e
+                error = e if tree else "Failed to parse records"
     except Exception, e:
         error = "Failed to fetch records"
     
     if error:
-        return utils.render_template('ui/error', {'ERROR_MESSAGE': error, 'ERROR_STATUS': 500})
+        return utils.render_template('ui/error', {'ERROR': error, 'ERROR_STATUS': 500})
     
     # render the template
     params = {          'SETTINGS': settings,
@@ -451,7 +454,7 @@ def launch_rest_app_complete(request, app_id):
 #            resp, content = api.record_pha_enable(record_id=record_id, pha_email=app_id)
 #            status = resp['status']
 #            if status != 200:
-#                return utils.render_template('ui/error', {'ERROR_MESSAGE': "Error enabling the app", 'ERROR_STATUS': status})
+#                return utils.render_template('ui/error', {'ERROR': "Error enabling the app", 'ERROR_STATUS': status})
     
     # find the record id
     if request.method == 'GET':
@@ -497,7 +500,7 @@ def launch_rest_app_complete(request, app_id):
 #        error_message = ErrorStr("Error getting account credentials")
     
     if error_message is not None:
-        return utils.render_template('ui/error', {'ERROR_MESSAGE': error_message, 'GOTO_LOGIN': True})
+        return utils.render_template('ui/error', {'ERROR': error_message, 'GOTO_LOGIN': True})
     
     # append the credentials and redirect
     querystring_sep = '&' if '?' in start_url else '?'

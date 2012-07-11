@@ -1,10 +1,12 @@
 {% extends "ui/Base.html" %}
 {% load i18n %}
 
+{% block msg_error %}{% endblock %}
+
 {% block main %}
 	<div id="error">
 		<div class="error_status">{{ ERROR_STATUS }}</div>
-		<div class="details">{{ ERROR_MESSAGE }}</div>
+		<div class="details">{{ ERROR }}</div>
 	</div>
 	{% if GOTO_LOGIN %}
 	<p class="moreinfo">
