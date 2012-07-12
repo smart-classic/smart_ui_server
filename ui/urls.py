@@ -20,7 +20,6 @@ urlpatterns = patterns(
     (r'^logout$', logout),
     
     # app launch
-    (r'^apps/(?P<app_id>[^/]+)/complete', launch_rest_app_complete),
     (r'^apps/(?P<app_id>[^/]+)', launch_rest_app),
 
     # special case for account init emails

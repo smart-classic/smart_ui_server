@@ -9,6 +9,7 @@
 	<script type="text/javascript">
 	_records = {{ RECORDS|safe }};
 	_ordered_records = null;
+	_start_url = "{{ START_URL }}";
 	
 	// on ready, display all records, ordered alphabetically
 	$(document).ready(function() {
@@ -59,8 +60,7 @@
 			
 			// matching record, show
 			matches++;
-			var link = '/apps/{{ APP_ID }}/complete?record_id=' + record.id;
-			
+			var link = _start_url + (_start_url.match(/\?/) ? '&' : '?') + 'record_id=' + record.id;
 			var gender = ('female' == record.gender ? "♀" : ('male' == record.gender ? "♂" : '?'));
 			var record_name = record.lastname + ', ' + record.firstname;
 			var age = '';

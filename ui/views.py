@@ -366,13 +366,15 @@ def launch_rest_app(request, app_id):
     the user has logged in. Selecting a record will redirect to launch_app_complete.
     """
     
-    # have the user login first
+    # have the user login if needed
     account_id = urllib.unquote(request.session.get('account_id', ''))
     if not account_id:
         login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(login_url)
     
-    # get the account holder's name (fail silently EXCEPT we get a 403, then redirect to login)
+    # get the account holder's name (fail silently EXCEPT if we get a 403, then redirect to login)
+    error = None
+    error_status = None
     fullname = 'Unknown'
     api = get_api(request)
     try:
@@ -387,13 +389,40 @@ def launch_rest_app(request, app_id):
     except Exception, e:
         pass
     
+    # fetch app info (we're particularly interested in the index URL)
+    start_url = None
+    app_info = None
+    
+    res = api.get_response("/apps/%s/manifest" % app_id)
+    error_status = res.get('response_status', 0) if res else 0
+    if 404 == error_status:
+        error = 'The app "%s" does not exist' % app_id
+    elif 200 != status:
+        error = 'Error getting app info'
+    else:
+        error_status = None
+        
+        # extract start URL
+        app_info_json = res.get('response_data', '') if res else ''
+        try:
+            app_info = simplejson.loads(app_info_json)
+            start_url = app_info.get('index') if app_info else None
+            if start_url is None:
+                error = 'Error getting app info: no start URL'
+        except Exception, e:
+            error = e
+    
     # fetch all records
-    error = None
     records = []
-    try:
-        params = None
-        record_xml = api.call("GET", "/records/search/xml", options={'parameters': params});
-        if record_xml:
+    if error is None:
+        #res = api.get_response("/records/search/xml", options={'family_name': 'P'});       # you can search for records like this
+        res = api.get_response("/records/search/xml");
+        error_status = res.get('response_status', 0) if res else 0
+        if 200 != error_status:
+            error = "Failed to fetch records"
+        else:
+            error_status = 0
+            record_xml = res.get('response_data', '<root/>') if res else ''
             try:
                 tree = ET.XML(record_xml)
                 record_nodes = tree.findall('Record')
@@ -411,101 +440,21 @@ def launch_rest_app(request, app_id):
                     }
                     records.append(record)
             except Exception, e:
-                error = e if tree else "Failed to parse records"
-    except Exception, e:
-        error = "Failed to fetch records"
+                error = e if record_xml else "Failed to parse records"
     
+    # if there was an error, render it now
     if error:
-        return utils.render_template('ui/error', {'ERROR': error, 'ERROR_STATUS': 500})
+        return utils.render_template('ui/error', {'ERROR': error, 'ERROR_STATUS': error_status})
     
     # render the template
-    params = {          'SETTINGS': settings,
-                          'APP_ID': app_id,
-                      'ACCOUNT_ID': account_id,
-        'SMART_PASSTHROUGH_SERVER': passthrough_server,
-                        'FULLNAME': fullname,
-                         'RECORDS': simplejson.dumps(records) if len(records) > 0 else None
+    params = {'SETTINGS': settings,
+                'APP_ID': app_id,
+            'ACCOUNT_ID': account_id,
+             'START_URL': start_url,
+              'FULLNAME': fullname,
+               'RECORDS': simplejson.dumps(records) if len(records) > 0 else None
     }
     return utils.render_template('ui/record_select', params)
-
-
-def launch_rest_app_complete(request, app_id):
-    """ Prepare an app's start url for launch, and redirect to it. 
-    
-    If this is a POST, then enable the app first (because it was just authorized)
-    """
-    
-    # have the user login first
-    account_id = urllib.unquote(request.session.get('account_id', ''))
-    if not account_id:
-        login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
-        return HttpResponseRedirect(login_url)
-    
-    api = get_api(request)
-    error_message = None
-    start_url = None
-    
-    import pdb; pdb.set_trace()
-    # If we were just authorized, enable the app
-#    if request.method == 'POST':
-#        record_id = request.POST.get('record_id', '')
-#        carenet_id = ''
-#        if record_id:
-#            resp, content = api.record_pha_enable(record_id=record_id, pha_email=app_id)
-#            status = resp['status']
-#            if status != 200:
-#                return utils.render_template('ui/error', {'ERROR': "Error enabling the app", 'ERROR_STATUS': status})
-    
-    # find the record id
-    if request.method == 'GET':
-        record_id = request.GET.get('record_id', '')
-    
-    if record_id is None:
-        error_message = "No record id given"
-    
-    # get information about the desired app, especially the start_url
-    else:
-        app_info = None
-        try:
-            app_info_json = api.call('GET', "/apps/%s/manifest" % app_id)
-            app_info = simplejson.loads(app_info_json)
-            start_url = _interpolate_url_template(app_info.get('index'), {'record_id': record_id})
-        except Exception, e:
-            pass
-        
-        if app_info is None:
-            error_message = 'Error getting app info'
-        elif start_url is None:
-            error_message = 'Error getting app info: no start URL'
-    
-    # get SMART credentials for the request
-    oauth_header = ''
-#    resp, content = api.get_connect_credentials(account_email=account_id, pha_email=app_id, body={'record_id': record_id})
-#    status = resp['status']
-#    if status == '403':
-#        if carenet_id:
-#            error_message = ErrorStr("This app is not enabled to be run in the selected carenet.")
-#        elif record_id:
-#            return utils.render_template('ui/authorize_record_launch_app',
-#                                         {'CALLBACK_URL': '/apps/%s/complete/'%app_id,
-#                                          'RECORD_ID': record_id,
-#                                          'TITLE': _('Authorize "{{name}}"?').replace('{{name}}', app_info['name'])
-#                })
-#    elif status != '200':
-#        error_message = ErrorStr("Error getting account credentials")
-#    else:
-#        oauth_header = ET.XML(content).findtext("OAuthHeader")
-#        
-#    if not oauth_header:
-#        error_message = ErrorStr("Error getting account credentials")
-    
-    if error_message is not None:
-        return utils.render_template('ui/error', {'ERROR': error_message, 'GOTO_LOGIN': True})
-    
-    # append the credentials and redirect
-    querystring_sep = '&' if '?' in start_url else '?'
-    start_url += querystring_sep + "oauth_header=" + oauth_header
-    return HttpResponseRedirect(start_url)
 
 
 def smart_passthrough(request):

@@ -5,7 +5,9 @@
 
 {% block main %}
 	<div id="error">
+		{% if ERROR_STATUS > 0 %}
 		<div class="error_status">{{ ERROR_STATUS }}</div>
+		{% endif %}
 		<div class="details">{{ ERROR }}</div>
 	</div>
 	{% if GOTO_LOGIN %}
