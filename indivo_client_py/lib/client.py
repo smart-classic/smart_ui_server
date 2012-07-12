@@ -5,18 +5,7 @@ import traceback
 
 API_FILENAME = 'api'
 
-try:
-    from api import API
-except ImportError:
-    from create_api import CreateAPI
-    if CreateAPI().write_api(API_FILENAME):
-        # Hack
-        import time; time.sleep(1)
-        try:
-            from api import API
-        except ImportError:
-            raise ImportError, "You need to run the create_api script. See README."
-
+from api import API
 from iutils import IUtils
 
 import hashlib, hmac, base64

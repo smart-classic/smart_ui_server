@@ -47,7 +47,6 @@ class IUtils(OAuth):
 
     self.empty_string = ''
     self.wd = self.chars.slash.join(__file__.split(self.chars.slash)[0:-2])
-    self.api, unused = xml_utils.xml2dict(path_home + '/config/api.xml', signature)
     self.url = Url(scheme, host, port)
 
   def _http_request(self, method, oauth_header, parameters):
