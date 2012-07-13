@@ -1,33 +1,40 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
-  <head>
-    {% include 'ui/header.html' %}
-    <title>{% block title %}SMArt EMR{% endblock %}</title>
-  </head>
-  <body>
-    <div style="margin: 5% 10% 0 10%">
-    <form id='authorize_form' method='post' action=''>
-      <h2>{{NAME}}</h2>
-      <p>
-        {{DESCRIPTION}}
-      </p>
-      <p>
-        You are about to authorize <strong>{{NAME}}</strong> to access patient records on your behalf.
-      </p>
+{% extends "ui/Base.html" %}
+{% load i18n %}
 
-{% if offline_capable %}
-<p>
-<b>WARNING</b>: This app is requesting access to your data while you are offline in order to:
-<br />
-<em>[[FILL IN REASON]]</em><br />
-
-<input type="radio" name="offline_capable" value="1" /> Yes, grant offline access<br />
-<input type="radio" name="offline_capable" value="0" checked /> No, only when I'm online<br />
-</p>
-{% endif %}
-      <input type='hidden' name='oauth_token' value='{{REQUEST_TOKEN}}' />
-      <input type='submit' value='authorize' />
-    </form>
-    </div>
-  </body>
-</html>
+{% block main %}
+	<form id="authorize_form" method="post" action="">
+		<input type="hidden" name="oauth_token" value="{{ REQUEST_TOKEN }}" />
+		<input type="hidden" name="oauth_callback" value="{{ CALLBACK_URL }}" />
+		<input type="hidden" name="record_id" value="{{ RECORD_ID }}" />
+		
+		<h2>{{ NAME|default:"Unnamed app" }}</h2>
+		<h4>{{ APP_ID|default:"unknown app id" }}</h4>
+		{% if DESCRIPTION %}
+		<p>{{ DESCRIPTION }}</p>
+		{% endif %}
+		<div class="login_attention">
+			You are about to authorize this app to access patient records on your behalf.
+		</div>
+		
+		{% if OFFLINE_CAPABLE %}
+		<p>
+			<b>WARNING</b>: This app is requesting access to your data while you are offline.<br />
+			<br />
+			<!-- show reason here -->
+			<input id="yes_offline" type="radio" name="offline_capable" value="1" />
+			<label for="yes_offline">Yes, grant offline access</label><br />
+			<input id="not_offline" type="radio" name="offline_capable" value="0" checked="checked" />
+			<label for="not_offline">No, only when I'm online</label><br />
+		</p>
+		{% endif %}
+		
+		<div class="main_action_button">
+			<button type="submit">{% trans "Authorize" %}</button>
+			<p class="moreinfo">
+				<a href="/login" onclick="history.back(); return false;">{% trans "Go back" %}</a>
+				<b>|</b>
+				<a href="/logout">{% trans "Logout" %}</a>
+			</p>
+		</div>
+	</form>
+{% endblock %}

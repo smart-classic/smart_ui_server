@@ -10,6 +10,7 @@
 	_records = {{ RECORDS|safe }};
 	_ordered_records = null;
 	_start_url = "{{ START_URL }}";
+	_api_base = encodeURIComponent("{{ API_BASE }}");
 	
 	// on ready, display all records, ordered alphabetically
 	$(document).ready(function() {
@@ -60,7 +61,7 @@
 			
 			// matching record, show
 			matches++;
-			var link = _start_url + (_start_url.match(/\?/) ? '&' : '?') + 'record_id=' + record.id;
+			var link = _start_url + (_start_url.match(/\?/) ? '&' : '?') + 'record_id=' + record.id + '&api_base=' + _api_base;
 			var gender = ('female' == record.gender ? "♀" : ('male' == record.gender ? "♂" : '?'));
 			var record_name = record.lastname + ', ' + record.firstname;
 			var age = '';

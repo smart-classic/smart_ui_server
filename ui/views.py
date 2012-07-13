@@ -74,10 +74,10 @@ def tokens_get_from_server(request, username, password):
     try:
         tmp = api.create_session({'username': username, 'user_pass': password})
     except Exception, e:
-        if 'Socket Error' == e.value:
+        if 'Socket Error' == e.message:
             reason = "The server is currently not available. Please try again in a few minutes"
         else:
-            reason = e.value;
+            reason = e.message;
     
     if tmp:
         success = True
@@ -448,6 +448,7 @@ def launch_rest_app(request, app_id):
     
     # render the template
     params = {'SETTINGS': settings,
+              'API_BASE': '%s://%s:%s' % (SMART_SERVER_LOCATION['scheme'], SMART_SERVER_LOCATION['host'], SMART_SERVER_LOCATION['port']),
                 'APP_ID': app_id,
             'ACCOUNT_ID': account_id,
              'START_URL': start_url,
@@ -616,7 +617,12 @@ def indivo_api_call_delete_record_app(request):
     return HttpResponse(str(status))
 
 def authorize(request):
-    # check user is logged in
+    """Displays the "authorize this app" page to the user
+    
+    This page upon GET serves the authorize page and upon POST approves the request token
+    """
+    
+    # check if user is logged in
     if not tokens_p(request):
         url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(url)
@@ -624,44 +630,65 @@ def authorize(request):
     api = get_api(request)
     
     # read the app info
-    REQUEST_TOKEN = request.REQUEST['oauth_token']
+    REQUEST_TOKEN = request.REQUEST.get('oauth_token')
     
     # process GETs (initial adding and a normal call for this app)
-    if request.method == HTTP_METHOD_GET and request.GET.has_key('oauth_token'):
+    if request.method == HTTP_METHOD_GET and REQUEST_TOKEN:
+        error = None;
+        
         # claim request token and check return value
-        if api.claim_request_token(request_token=REQUEST_TOKEN).response['response_status'] != 200:
-            return HttpResponse('bad response to claim_request_token')
+        try:
+            ret = api.claim_request_token(request_token=REQUEST_TOKEN)
+            error_status = ret.response.get('response_status', 0) if ret and ret.response else 0
+        except Exception, e:
+            error = e
+            error_status = 500
         
-        # get app and record info
-        app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
-        e = ET.fromstring(app_info)
-        
-        record_id = e.find('record').attrib.get('id', None)
-        name = e.findtext('App/name')
-        app_id = e.find('App').attrib['id']
-        kind = e.findtext('kind')
-        description = e.findtext('App/description')
-        
-        offline_capable = (e.findtext('DataUsageAgreement/offline') == "1")
-        
-        # the "kind" param lets us know if this is app setup or a normal call
-        if kind == 'new':     
-            return utils.render_template('ui/authorize',
-                                        {'NAME': name,
-                                  'DESCRIPTION': description,
-                                'REQUEST_TOKEN': REQUEST_TOKEN,
-                              'OFFLINE_CAPABLE': offline_capable})
-        elif kind == 'same':
-            # return HttpResponse('fixme: kind==same not implimented yet')
-            # in this case we will have record_id in the app_info
-            return _approve_and_redirect(request, REQUEST_TOKEN)
-        else:
-            return HttpResponse('bad value for kind parameter')
+        if error is None:
+            if 200 != error_status:
+                error = 'Error claiming request token'
+            else:
+                error_status = 0
+                
+                # get app and record info
+                ret = api.get_request_token_info(request_token=REQUEST_TOKEN)
+                app_info = ret.response.get('response_data', '<root/>') if ret and ret.response else '<root/>'
+                app_tree = ET.fromstring(app_info)
+                
+                # parse token XML
+                if app_tree:
+                    record_id = app_tree.find('record').attrib.get('id')
+                    name = app_tree.findtext('App/name')
+                    app_id = app_tree.find('App').attrib.get('id')
+                    kind = app_tree.findtext('kind')
+                    description = app_tree.findtext('App/description')
+                    offline_capable = (app_tree.findtext('DataUsageAgreement/offline') == "1")
+                    
+                    # if we don't have a record_id or app_id, something is wrong with the token
+                    if record_id and app_id:
+                        # if the "kind" param equals "new" this app was never before authorized, so ask the user
+                        if kind == 'new':     
+                            return utils.render_template('ui/authorize',
+                                                        {'NAME': name,
+                                                       'APP_ID': app_id,
+                                                  'DESCRIPTION': description,
+                                                'REQUEST_TOKEN': REQUEST_TOKEN,
+                                              'OFFLINE_CAPABLE': offline_capable})
+                        elif kind == 'same':
+                            # return HttpResponse('fixme: kind==same not implimented yet')
+                            # in this case we will have record_id in the app_info
+                            return _approve_and_redirect(request, REQUEST_TOKEN)
+                        else:
+                            error = 'Bad value for the token\'s "kind" parameter'
+                    else:
+                        error = 'The token contains no app id' if record_id else 'The token contains no record id'
+                else:
+                    error = 'Failed to parse app info'
+        if error:
+            return utils.render_template('ui/error', {'ERROR': error, 'ERROR_STATUS': error_status})
     
     # process POST
-    elif request.method == HTTP_METHOD_POST \
-        and request.POST.has_key('oauth_token'):
-        
+    elif request.method == HTTP_METHOD_POST and request.POST.has_key('oauth_token'):
         app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
         e = ET.fromstring(app_info)
         
@@ -677,9 +704,10 @@ def authorize(request):
         return _approve_and_redirect(request, request.POST['oauth_token'], offline_capable = offline_capable)
     return HttpResponse('bad request method or missing param in request to authorize')
 
+
 def _approve_and_redirect(request, request_token, account_id=None,  offline_capable=False):
     """
-    carenet_id is the carenet that an access token is limited to.
+    approves the request token
     """
     
     data = {}

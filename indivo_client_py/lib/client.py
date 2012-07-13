@@ -24,22 +24,20 @@ class DataStore:
         self.reset()
     
     def reset(self):
-        self.app_info           = {}
-        self.user_info      = {}
-        self.account_id     = ''
-        self.record_id      = ''
-        self.document_id    = ''
-        self.carenet_id     = ''
-        self.app_id             = ''
+        self.app_info    = {}
+        self.user_info   = {}
+        self.account_id  = ''
+        self.record_id   = ''
+        self.document_id = ''
+        self.app_id      = ''
     
     def values(self):
-        return {    'app_info'      : self.app_info,
-                            'user_info'     : self.user_info,
-                            'account_id'    : self.account_id,
-                            'record_id'     : self.record_id,
-                            'document_id' : self.document_id,
-                            'carenet_id'    : self.carenet_id,
-                            'app_id'            : self.app_id}
+        return {'app_info': self.app_info,
+               'user_info': self.user_info,
+              'account_id': self.account_id,
+               'record_id': self.record_id,
+             'document_id': self.document_id,
+                  'app_id': self.app_id}
 
 class APIConnectorError(RuntimeError):
     def __init__(self, msg='Unknown Error', include_traceback=True):
@@ -94,13 +92,14 @@ class APIConnector:
                     return retval
         return False
     
-    def get_response(self, method, options=None, debug=False):
+    # produces a GET call to the server with the given method and the given parameters
+    def get_response(self, method, parameters=None, debug=False):
     	return self.utils_obj.get_response('post_document', 
 					'get', 
 					method, 
 					[], 
 					self.ds.app_info, 
-					options, 
+					parameters, 
 					debug=debug)
     
     

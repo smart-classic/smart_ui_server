@@ -12,7 +12,6 @@ body {
 	background: radial-gradient(50% 50%, rgb(246,246,246) 35%, rgb(244,244,244) 70%, rgb(226,226,226));
 	background-attachment: fixed;
 }
-p { margin: 0; }
 a:hover { border: none; text-decoration: underline; }
 
 #full_height {
@@ -70,10 +69,19 @@ a.row { display: block; font-size: 1.2em; }
 .main_action_button { margin-top: 1.5em; }
 .logout { margin-top: 1em; padding-top: 1em; border-top: 1px solid rgb(180,180,180); }
 
+/* authorization */
+#authorize_form h2 { margin-bottom: 0; }
+#authorize_form h4 { margin-bottom: 1em; color: rgb(120,120,120); }
+#authorize_form .login_attention { font-size: inherit; }
+
 /* errors and messages */
 .login_message {
 	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(93,153,28);
 	border: 2px dotted rgb(108,178,33); border-width: 2px 0;
+}
+.login_attention {
+	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; font-weight: 500; color: rgb(232,110,31);
+	border: 2px dotted rgb(232,110,31); border-width: 2px 0;
 }
 #error, .login_error {
 	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(230,53,32);
