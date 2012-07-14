@@ -20,7 +20,7 @@ urlpatterns = patterns(
     (r'^logout$', logout),
     
     # app launch
-    (r'^apps/(?P<app_id>[^/]+)', launch_rest_app),
+    (r'^apps/(?P<app_id>[^/]+)/launch', launch_rest_app),
 
     # special case for account init emails
     # http://localhost/indivoapi/accounts/catherine800@indivohealth.org/initialize/icmloNHxQrnCQKNn

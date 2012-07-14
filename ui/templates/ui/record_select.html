@@ -66,7 +66,7 @@
 			var record_name = record.lastname + ', ' + record.firstname;
 			var age = '';
 			if (record.dob) {
-				var dob_parts = record.dob.split(/-/);
+				var dob_parts = record.dob.split(/\D+/);
 				var dob = new Date();
 				var today = new Date();
 				dob.setYear(dob_parts[0]);
