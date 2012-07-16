@@ -13,12 +13,12 @@ urlpatterns = patterns(
     (r'^proxy_index$', proxy_index),
     (r'^showcase$', showcase_index),
     (r'^token/(?P<token>[^/]+)$', token_login_index),
-    
+
     # auth
     (r'^login$', login, {'status': None}),
     (r'^login/(?P<status>[^/]*)', login),
     (r'^logout$', logout),
-    
+
     # app launch
     (r'^apps/(?P<app_id>[^/]+)/launch', launch_rest_app),
 
@@ -31,7 +31,7 @@ urlpatterns = patterns(
     (r'^indivoapi/delete_record_app/$', indivo_api_call_delete_record_app),
     (r'^indivoapi/', indivo_api_call_get),
     (r'^smart_api/', indivo_api_call_get),  # AWFUL hack relies on 10-letter name.
-    (r'^smart_passthrough/', smart_passthrough), 
+    (r'^smart_passthrough/', smart_passthrough),
     (r'^accounts/(?P<account_id>[^/]+)/apps/(?P<pha_email>[^/]+)/launch$', launch_app),
 
     # oauth
@@ -44,7 +44,7 @@ urlpatterns = patterns(
     (r'^create_developer_account$', create_developer_account),
     (r'^reset_password_request$', reset_password_request),
     (r'^reset_password$', reset_password),
-    
+
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/static'}),
 )
