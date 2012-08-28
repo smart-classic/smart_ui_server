@@ -209,3 +209,18 @@ table.light tbody td:first-child { border-left:none; }
 table.light tbody td:last-child { border-right:none; }
 tr.odd { background: #fff; }
 tr.unread { font-weight: bold; }
+
+
+/*** Admin UI ***/
+.app_admin_icon { vertical-align: top; }
+.app_admin { text-align: left; }
+.app_admin .name { font-size: 1.1em; font-weight: bold; }
+.app_admin .app_id { color: #333: }
+.app_admin .oauth_toggle { font-size: 0.85em; }
+.app_admin .oauth_secrets {
+	display: none;
+    margin-top: 0.5em; padding: 0.5em 0;
+	border-top: 2px dotted red; border-bottom: 2px dotted red;
+}
+
+
