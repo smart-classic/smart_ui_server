@@ -6,6 +6,10 @@ SMART_API_SERVER_BASE = '{{api_server_base_url}}'
 CONSUMER_KEY='{{chrome_consumer}}'
 CONSUMER_SECRET='{{chrome_secret}}'
 
+# To allow admin interface, define admin users here and uncomment
+# uncomment admin_ui in the INSTALLED_APPS list below.
+# ADMIN_USER_ID = ('admin@smartplatforms.org',)
+
 DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'smart-ui'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'smart'             # Not used with sqlite3.
@@ -67,20 +71,15 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'smart_ui_server.ui.urls'
 
-TEMPLATE_DIRS = (
-    APP_HOME+ "/templates"
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
 CONCURRENT_THREADING = False
 INSTALLED_APPS = (
     'django_concurrent_test_server',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'ui'
+    'ui',
+# to enable admin ui, uncomment the line below.
+#   'admin_ui',
 )
 
 # use file based sessions for now - fixme: security?
