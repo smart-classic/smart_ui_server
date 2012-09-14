@@ -19,7 +19,7 @@ import xml.etree.ElementTree as ET
 import urllib, re
 import httplib, urllib, urllib2, urlparse
 import time
-import utils
+from smart_ui_server import utils 
 HTTP_METHOD_GET = 'GET'
 HTTP_METHOD_POST = 'POST'
 LOGIN_PAGE = 'ui/login'
