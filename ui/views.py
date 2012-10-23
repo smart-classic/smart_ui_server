@@ -398,7 +398,7 @@ def launch_rest_app(request, app_id):
         return HttpResponseRedirect(login_url)
 
     # get the account holder's name (fail silently EXCEPT if we get a 403, then redirect to login)
-    error = None
+    error_msg = None
     error_status = None
     fullname = 'Unknown'
     api = get_api(request)
@@ -421,9 +421,9 @@ def launch_rest_app(request, app_id):
     res = api.get_response("/apps/%s/manifest" % app_id)
     error_status = res.get('response_status', 0) if res else 0
     if 404 == error_status:
-        error = 'The app "%s" does not exist' % app_id
+        error_msg = 'The app "%s" does not exist' % app_id
     elif 200 != status:
-        error = 'Error getting app info'
+        error_msg = 'Error getting app info'
     else:
         error_status = None
 
@@ -433,18 +433,24 @@ def launch_rest_app(request, app_id):
             app_info = simplejson.loads(app_info_json)
             start_url = app_info.get('index') if app_info else None
             if start_url is None:
-                error = 'Error getting app info: no start URL'
+                error_msg = 'Error getting app info: no start URL'
         except Exception, e:
-            error = e
+            error_msg = e
 
     # fetch all records
     records = []
-    if error is None:
-        #res = api.get_response("/records/search/xml", options={'family_name': 'P'});       # you can search for records like this
-        res = api.get_response("/records/search/xml")
+    if error_msg is None:
+        res = None
+        try:
+            #res = api.get_response("/records/search/xml", options={'family_name': 'P'});       # you can search for records like this
+            res = api.get_response("/records/search/xml")
+        except Exception, e:
+            error_msg = "Failed to fetch records: %s" % str(e)
+            
         error_status = res.get('response_status', 0) if res else 0
         if 200 != error_status:
-            error = "Failed to fetch records"
+            if error_msg is None:
+                error_msg = "Failed to fetch records"
         else:
             error_status = 0
             record_xml = res.get('response_data', '<root/>') if res else ''
@@ -465,12 +471,12 @@ def launch_rest_app(request, app_id):
                     }
                     records.append(record)
             except Exception, e:
-                error = e if record_xml else "Failed to parse records"
+                error_msg = e if record_xml else "Failed to parse records"
 
     # if there was an error, render it now
-    if error:
+    if error_msg:
         return utils.render_template('ui/error', {
-            'ERROR': error,
+            'ERROR': error_msg,
             'ERROR_STATUS': error_status
         })
 
