@@ -108,6 +108,19 @@ def manifest_add(request):
     return HttpResponseRedirect(reverse(index))
 
 
+def manifest_get(request, app_id):
+    """Fetches the app manifest from the server and displays it as text/json
+    """
+    if not admin_tokens_p(request):
+        return HttpResponseRedirect(admin_login_url(request))
+
+    # get the manifest
+    api = get_api()
+    manifest = api.call("GET", "/apps/%s/manifest" % app_id)
+
+    return HttpResponse(manifest, mimetype="application/json")
+
+
 def manifest_delete(request):
     if not admin_tokens_p(request):
         return HttpResponseRedirect(admin_login_url(request))

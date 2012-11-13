@@ -9,13 +9,11 @@
 <body style="text-align: center;">
 	<div style="text-align: left; width: 550px; margin: 0 auto 3em;">
 		<div  style="text-align: center; margin-left: -0px;">
-			<a id="logo" href="/">
-			  <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt="SMArt" />
-			</a>
+			<a href="logout" style="float:right; margin-top:0.5em;">Logout</a>
 			
-			<div style="margin-bottom: 1em;">
-				Welcome admin. Click <a href="logout">here to log out</a>
-			</div>
+			<a id="logo" href="/">
+			  <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="margin: 1em 0 2em;" alt="SMArt" />
+			</a>
 			
 			<!-- the app table -->
 			<table class="alternate" style="margin-bottom:2em;">
@@ -33,6 +31,7 @@
 						<td class="app_admin">
 							<div class="name">{{ app.name }}</div>
 							<div class="app_id">{{ app.id }}</div>
+							<a class="oauth_toggle" href="manifest/{{ app.id }}" target="_blank">Manifest</a> <b> • </b>
 							<a class="oauth_toggle" href="javascript:void(0);" onclick="$(this).parent().find('.oauth_secrets').toggle()">OAuth credentials</a>
 							<table class="oauth_secrets">
 								<tr>
