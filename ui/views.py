@@ -414,11 +414,15 @@ def launch_rest_app(request, app_id):
     start_url = None
     app_info = None
 
-    res = api.get_response("/apps/%s/manifest" % app_id)
-    error_status = res.get('response_status', 0) if res else 0
+    try:
+        res = api.get_response("/apps/%s/manifest" % app_id)
+        error_status = res.get('response_status', 0) if res else 0
+    except Exception, e:
+        error_status = 500
+    
     if 404 == error_status:
         error_msg = 'The app "%s" does not exist' % app_id
-    elif 200 != status:
+    elif 200 != error_status:
         error_msg = 'Error getting app info'
     else:
         error_status = None
