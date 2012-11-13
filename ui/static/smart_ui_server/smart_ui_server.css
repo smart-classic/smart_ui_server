@@ -93,7 +93,8 @@ li img { height: 32px; width: 32px; }
 #prev_pt {padding-left: 2em; padding-right: 1em; }
 #next_pt {padding-left: 1em; padding-right: 2em;}
 #next_pt:hover,#prev_pt:hover {text-decoration: none; font-weight: bold; border-bottom: 0px;}
-#logo { padding-top: .8em; display: inline-block;}
+#logo { padding-top: .8em; display: inline-block; }
+a#logo { border: none; }
 #header_logo { width: 210px; position: absolute; top: 0px; left: 0px;  color: #666; font-size: 18px; font-weight: 200;  background: #F6F6F6; text-align: center;}
 #working_with { width: 100%;  color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap; }
 #header_name {  position: absolute; top: 0px; right: 0px; text-align: right; margin-right: 1.5em; margin-top: 3px; white-space: nowrap; font-size: 0.9em; } /* eat the header's left padding + 5px */
@@ -157,15 +158,15 @@ UL.manage_apps li { list-style: none; }
 
 /** extras **/
 .inputHintOverlay { color: #999; font-size: 12px; }
-.activity_iframe {border: 0px; display: block; width: 100%; height: 100%;}
-ul.search_results { margin: 0px; padding: 0px;  }
-li.record { cursor:pointer; list-style-type: none;  margin-bottom: .3em;}
+.activity_iframe { border: 0px; display: block; width: 100%; height: 100%; }
+ul.search_results { margin: 0px; padding: 0px; }
+li.record { cursor:pointer; list-style-type: none;  margin-bottom: .3em; }
 li.record:hover { color: #0088cc; }
 /*.fullScreen { position:absolute; top:0; left:0; width:100%; height: 100%; }*/
 
 #loading_div {
-margin: 0px; 
-border: 0px; 
+	margin: 0px; 
+	border: 0px; 
 }
 
 
@@ -180,39 +181,49 @@ span.oneliner {}
 span.record_tag {background: #ccc; font-size: 10px; padding-left: 2px; padding-right: 2px; padding-top: 1px; margin-right: 2px;   }
 
 /*** tables ***/
-/* a "light" table style */
 th, td { border: 1px solid #eee;}
 
+/* a "light" table style */
 table.light {
-  width: 100%;
-  margin: 0 auto;
+	width: 100%; margin: 0 auto;
 }
-
 table.light thead th { 
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  text-transform: uppercase;
-  font-weight: normal;
+	border: none; border-bottom: 1px solid #ddd;
+	text-align: left; text-transform: uppercase; font-weight: normal;
 }
 table.light tfoot td {
-  border: none;
-  text-align: right;
-  font-weight: normal;
-  color: #999;
-  font-style: italic;
-  font-size: .85em;
+	border: none;
+	color: #999;
+	text-align: right; font-weight: normal; font-style: italic; font-size: .85em;
 }
 table.light tbody td:first-child { border-left:none; }
 table.light tbody td:last-child { border-right:none; }
+
+/* a table with alternating rows and no borders around the cells */
+table.alternate {
+	width: 100%; margin: 0;
+	border: 1px solid #eee;
+}
+table.alternate > thead > th { 
+	border: none; border-bottom: 1px solid #ddd;
+}
+table.alternate > tbody > tr:nth-child(even) {
+	
+}
+table.alternate > tbody > tr:nth-child(odd) {
+	background-color: #eee;
+}
+table.alternate > tbody > tr > td {
+	border: none;
+}
+
 tr.odd { background: #fff; }
 tr.unread { font-weight: bold; }
 
 
 /*** Admin UI ***/
 .app_admin_icon { vertical-align: top; }
+.app_admin_icon img { max-width: 32px; max-height: 32px; }
 .app_admin { text-align: left; }
 .app_admin .name { font-size: 1.1em; font-weight: bold; }
 .app_admin .app_id { color: #333: }
@@ -220,7 +231,13 @@ tr.unread { font-weight: bold; }
 .app_admin .oauth_secrets {
 	display: none;
     margin-top: 0.5em; padding: 0.5em 0;
-	border-top: 2px dotted red; border-bottom: 2px dotted red;
+    background-color: rgba(0,0,0,0.05);
+	border-top: 2px solid red; border-bottom: 2px solid red;
 }
-
+.app_admin .oauth_secrets th {
+	text-align: right;
+}
+.app_admin .oauth_secrets td, .app_admin .oauth_secrets th {
+	border: none;
+}
 
