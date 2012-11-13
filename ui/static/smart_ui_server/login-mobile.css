@@ -32,24 +32,21 @@ a:hover { border: none; }
 
 .welcome_prefix { display: none; }
 #front_site_name {
-	height: 50px; line-height: 50px;
+	min-height: 50px;
 	font-size: 1.5em; font-weight: bold; text-align: right;
 }
 
 /* main area */
 .table_form, .list { margin-top: 1em; font-size: 19px; line-height: 1.3; }
 
-#login_form input[type="text"], #login_form input[type="email"], #login_form input[type="password"], #setup_form input[type="text"], #setup_form input[type="email"], #setup_form input[type="password"] {
-	width: 100%;
-}
-.table_form input[type="text"], .table_form input[type="email"] { width: 98%; }
+.table_form input[type="text"], .table_form input[type="email"], .table_form input[type="password"] { width: 98%; }
 .table_form button[type="submit"] { min-width: 34%; font-size: 18px; margin-bottom: 10px; }
 input.error { border-color: rgb(220,0,0); background-color: rgb(255,219,207); }
 
 #search_input { width: 98%; height: 36px; border: none; }
 #record_list .cell { display: block; }
 
-.row { display: block; margin: 0 auto; }
+.row { display: block; margin: 0.75em auto 0; }
 .list .row { width: auto; max-width: 380px; margin: 0 auto; padding: 0.2em 0.8em; background-color: white; border: 1px solid #999; border-bottom-width: 0; }
 .list .row:first-child {
 	-moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; border-top-left-radius: 6px;
@@ -60,12 +57,13 @@ input.error { border-color: rgb(220,0,0); background-color: rgb(255,219,207); }
 	-moz-border-radius-bottomleft: 6px; -webkit-border-bottom-left-radius: 6px; border-bottom-left-radius: 6px;
 	-moz-border-radius-bottomright: 6px; -webkit-border-bottom-right-radius: 6px; border-bottom-right-radius: 6px;
 }
+.cell:first-child { margin-bottom: 0.25em; }
 .list .cell:first-child { color: #666; }
 .list .gender { float: right; height: 40px; line-height: 40px; margin-left: 0.5em; }
 .list .dob { font-size: 0.85em; color: rgb(120,120,120); }
 
 .moreinfo {
-	margin-top: 1em; font-size: 15px; font-weight: normal; color: #666;
+	margin-top: 0.5em; font-size: 15px; font-weight: normal; color: #666;
 }
 .moreinfo b {
 	color: #CCCCCC; padding: 0 1em;
@@ -80,6 +78,7 @@ input.error { border-color: rgb(220,0,0); background-color: rgb(255,219,207); }
 #authorize_form .login_attention { font-size: inherit; }
 
 /* errors and messages */
+.details { word-wrap: break-word; }
 .login_message {
 	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(93,153,28);
 	border: 2px dotted rgb(108,178,33); border-width: 2px 0;

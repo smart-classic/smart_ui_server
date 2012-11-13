@@ -75,6 +75,7 @@ a.row { display: block; font-size: 1.2em; }
 #authorize_form .login_attention { font-size: inherit; }
 
 /* errors and messages */
+.details { word-wrap: break-word; }
 .login_message {
 	margin: 30px auto 15px; padding: 0.6em 1em; text-align: center; font-size: 19px; color: rgb(93,153,28);
 	border: 2px dotted rgb(108,178,33); border-width: 2px 0;

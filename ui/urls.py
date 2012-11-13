@@ -41,6 +41,7 @@ urlpatterns = patterns(
     (r'^lib/(?P<path>[^/]*)$', 'django.views.static.serve', {'document_root': settings.APP_HOME + '/ui/lib'}),
     (r'^widgets/DocumentAccess$', document_access),
 
+	# passwords
     (r'^create_developer_account$', create_developer_account),
     (r'^reset_password_request$', reset_password_request),
     (r'^reset_password$', reset_password),

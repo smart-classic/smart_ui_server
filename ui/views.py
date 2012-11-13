@@ -800,32 +800,40 @@ def create_developer_account(request):
         })
 
     return utils.render_template(LOGIN_PAGE, {
-        'MESSAGE': "Account %s has been created. Please log in." % username,
+        'MESSAGE': "Account %s has been created.<br />Please log in." % username,
         'ACCOUNT': username
     })
 
 
 def reset_password_request(request):
+    """Shows the page prompting for the email address to which to send the
+    password reset instructions.
+    """
     if request.method == "GET":
         account_email = request.GET.get('account_email', '')
         return utils.render_template('ui/reset_password_request', {'ACCOUNT': account_email})
 
     # must be POST, try to reset password on the server
-    error = None
+    error_msg = None
     account_email = request.POST.get("account_email")
     if not account_email:
-        error = "Please provide your email address"
+        error_msg = "Please provide your email address"
     else:
         data = {"account_email": account_email}
 
         api = get_api()
-        ret = api.call("POST", "/users/reset_password_request", options={'data': data})
-        if (ret == "no_account_exists"):
-            error = "Account <b>%s</b> does not exist." % account_email
+        try:
+            ret = api.call("POST", "/users/reset_password_request", options={'data': data})
+            if (ret == "no_account_exists"):
+                error_msg = "Account <b>%s</b> does not exist." % account_email
+        except Exception, e:
+            error_msg = "Failed to request a password reset:<br />%s" % str(e)
 
     # show the error if there was one
-    if error:
-        return utils.render_template('ui/reset_password_request', {'ERROR': error})
+    if error_msg:
+        return utils.render_template('ui/reset_password_request', {'ERROR': error_msg, 'ACCOUNT': account_email})
+    
+    # if it went through, show the login page and a hint to the email
     return utils.render_template(LOGIN_PAGE, {
         'MESSAGE': "Account reset link e-mailed. Please check your e-mail for the link.",
         'ACCOUNT': account_email
@@ -833,6 +841,11 @@ def reset_password_request(request):
 
 
 def reset_password(request):
+    """The user lands here after he clicks the link embedded in the password
+    reset email.
+    """
+    
+    # GET request, show the form
     if request.method == "GET":
         account = request.GET.get('account_email', None)
         secret = request.GET.get('account_secret', None)
@@ -841,16 +854,32 @@ def reset_password(request):
             'ACCOUNT_SECRET': secret
         })
 
-    # construct the data
+    # get the data
     account_email = request.POST.get('account_email', None)
-    data = {"account_email": account_email,
-            "account_secret": request.POST.get('account_secret', None),
-            "new_password": request.POST.get('new_password', None)}
+    account_secret = request.POST.get('account_secret', None)
 
     # post to server
+    error_msg = None
     api = get_api()
-    ret = api.call("POST", "/users/reset_password", options={'data': data})
+    try:
+        data = {
+            "account_email": account_email,
+            "account_secret": account_secret,
+            "new_password": request.POST.get('new_password', None)
+        }
+        ret = api.call("POST", "/users/reset_password", options={'data': data})
+    except Exception, e:
+        error_msg = 'Failed to reset password:<br />%s<br />Please try again' % str(e)
 
+    # display error
+    if error_msg is not None:
+        return utils.render_template('ui/reset_password', {
+            'ACCOUNT': account_email,
+            'ACCOUNT_SECRET': account_secret,
+            'ERROR': error_msg
+        })
+    
+    # success, prompt to login
     return utils.render_template(LOGIN_PAGE, {
         'MESSAGE': "Account password has been reset. Please log in below.",
         'ACCOUNT': account_email
