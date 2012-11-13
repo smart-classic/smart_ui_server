@@ -212,10 +212,6 @@ def single_app_get_credentials(request, api, account_id, app_id, record_id=None)
 ##
 ##  Login and logout
 ##
-def mobile_login(request, info="", template='ui/mobile_login'):
-    return login(request, info, template)
-
-
 def login(request, status=None, info="", template=LOGIN_PAGE):
     """
     clear tokens in session, show a login form, get tokens from indivo_server,
@@ -331,9 +327,9 @@ def index(request, template='ui/index'):
         except:
             pass
 
-    if (template == "ui/mobile_index"):
-        return HttpResponseRedirect(reverse(mobile_login))
-    return HttpResponseRedirect(reverse(login))
+    # have the user login
+    login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+    return HttpResponseRedirect(login_url)
 
 
 def store_connect_secret(request, launchdata):
