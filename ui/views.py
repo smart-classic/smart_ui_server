@@ -770,10 +770,16 @@ def _approve_and_redirect(request, request_token, account_id=None,  offline_capa
 
     api = get_api(request)
     result = api.approve_request_token(request_token=request_token, data=data)
+    
     # strip location= (note: has token and verifer)
     location = urllib.unquote(result.response['prd'][9:])
 
-    return HttpResponseRedirect(location)
+    # We can't use HttpResponseRedirect here because, if redirecting to custom
+    # schemes, Django (on Apache) throws an error. So let's trick Django here.
+    # https://www.djangoproject.com/weblog/2012/jul/30/security-releases-issued/
+    res = HttpResponse(location, status=302)
+    res['Location'] = location
+    return res
 
 
 def create_developer_account(request):
