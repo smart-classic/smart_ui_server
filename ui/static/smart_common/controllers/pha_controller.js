@@ -102,16 +102,12 @@ index: function(params) {
 
 _add_app: function(params) {
     var pha = params.pha;
+    pha.data.safe_id = pha.safeid();
+    $('#app_selector_inner').append(this.view("app_list_item", { "app": pha.data }));
     
-    $('#app_selector_inner').append('<li><a href="#app_req&id=' + pha.safeid() + '">' + pha.data.name + '</a></li>');//('add', '#'+pha.safeid(), pha.data.name);
-    var line = '<img class="app_tab_img" src="' + pha.data.iconURL + '" />';
-    
-    $('#app_selector_inner li:last').addClass('app');
     if (!RecordController.CURRENT_RECORD) {
         $('#app_selector_inner li:last').addClass('greyed_out');
     }
-    
-    $('#app_selector_inner li:last A').prepend(line);
 },
 
 "history.app_req.index subscribe" : function(called, data) {

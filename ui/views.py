@@ -37,18 +37,19 @@ passthrough_server = "/smart_passthrough"
 # init the IndivoClient python object
 SMART_SERVER_LOCATION = urlparse.urlparse(settings.SMART_API_SERVER_BASE)
 SMART_SERVER_LOCATION = {
-    'host':   SMART_SERVER_LOCATION.hostname,
+    'host': SMART_SERVER_LOCATION.hostname,
     'scheme': SMART_SERVER_LOCATION.scheme,
-    'port':   SMART_SERVER_LOCATION.port
-                or (
-                    SMART_SERVER_LOCATION.scheme == 'http' and '80'
-                    or SMART_SERVER_LOCATION.scheme == 'https' and '443'
-                )
+    'port': SMART_SERVER_LOCATION.port
+    or (
+    SMART_SERVER_LOCATION.scheme == 'http' and '80'
+    or SMART_SERVER_LOCATION.scheme == 'https' and '443'
+    )
 }
 
 
 def get_api(request=None):
-    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, SMART_SERVER_LOCATION)
+    api = IndivoClient(settings.CONSUMER_KEY, settings.CONSUMER_SECRET,
+                       SMART_SERVER_LOCATION)
     if request:
         api.update_token(request.session['oauth_token_set'])
 
@@ -94,7 +95,8 @@ def tokens_get_from_server(request, username, password):
 
     request.session['username'] = username
     request.session['oauth_token_set'] = tmp
-    request.session['account_id'] = urllib.unquote(tmp.get('account_id', '') if tmp else '')
+    request.session['account_id'] = urllib.unquote(
+        tmp.get('account_id', '') if tmp else '')
 
     if tmp and DEBUG:
         utils.log('oauth_token: %(oauth_token)s outh_token_secret: %(oauth_token_secret)s' % request.session['oauth_token_set'])
@@ -141,7 +143,8 @@ def token_login_index(request, token):
     if pin:
         options['data']['pin'] = pin
 
-    logintokenxml = api.call("GET", "/session/from_direct_url", options=options)
+    logintokenxml = api.call(
+        "GET", "/session/from_direct_url", options=options)
     if logintokenxml.startswith("Permission Denied"):
         if "Wrong pin" in logintokenxml:
             return utils.render_template("ui/need_pin", {})
@@ -157,7 +160,8 @@ def token_login_index(request, token):
     request.session['account_id'] = urllib.unquote(account_id)
 
     api = get_api(request)
-    account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
+    account_id = urllib.unquote(
+        request.session['oauth_token_set']['account_id'])
     ret = api.account_info(account_id=account_id)
 
     e = ET.fromstring(ret.response['response_data'])
@@ -304,7 +308,7 @@ def showcase_index(request):
 
 
 def mobile_index(request, template='ui/mobile_index'):
-    return index(request,  template)
+    return index(request, template)
 
 
 def index(request, template='ui/index'):
@@ -314,7 +318,8 @@ def index(request, template='ui/index'):
         # get the realname here. we already have it in the js account model
         try:
             api = get_api(request)
-            account_id = urllib.unquote(request.session['oauth_token_set']['account_id'])
+            account_id = urllib.unquote(
+                request.session['oauth_token_set']['account_id'])
             ret = api.account_info(account_id=account_id)
             e = ET.fromstring(ret.response['response_data'])
 
@@ -328,20 +333,21 @@ def index(request, template='ui/index'):
             pass
 
     # have the user login
-    login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+    login_url = "%s?return_url=%s" % (
+        reverse(login), urllib.quote(request.get_full_path()))
     return HttpResponseRedirect(login_url)
 
 
 def store_connect_secret(request, launchdata):
     e = ET.fromstring(launchdata)
 
-    c = {"app_id":         e.find('App').get('id'),
-         "connect_token":  e.findtext('ConnectToken'),
+    c = {"app_id": e.find('App').get('id'),
+         "connect_token": e.findtext('ConnectToken'),
          "connect_secret": e.findtext('ConnectSecret'),
-         "api_base":       e.findtext('APIBase'),
-         "rest_token":     e.findtext('RESTToken'),
-         "rest_secret":    e.findtext('RESTSecret'),
-         "oauth_header":   e.findtext('OAuthHeader')}
+         "api_base": e.findtext('APIBase'),
+         "rest_token": e.findtext('RESTToken'),
+         "rest_secret": e.findtext('RESTSecret'),
+         "oauth_header": e.findtext('OAuthHeader')}
 
     print request.session.session_key, c["connect_token"], c["connect_secret"]
     t = SmartConnectToken(session_key=request.session.session_key,
@@ -390,23 +396,28 @@ def launch_rest_app(request, app_id):
     # have the user login if needed
     account_id = urllib.unquote(request.session.get('account_id', ''))
     if not account_id:
-        login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+        login_url = "%s?return_url=%s" % (
+            reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(login_url)
 
-    # get the account holder's name (fail silently EXCEPT if we get a 403, then redirect to login)
+    # get the account holder's name (fail silently EXCEPT if we get a 403,
+    # then redirect to login)
     error_msg = None
     error_status = None
     fullname = 'Unknown'
     api = get_api(request)
     try:
         ret = api.account_info(account_id=account_id)
-        status = ret.response.get('response_status', 0) if ret and ret.response else 0
+        status = ret.response.get(
+            'response_status', 0) if ret and ret.response else 0
         if 403 == status:
-            login_url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+            login_url = "%s?return_url=%s" % (
+                reverse(login), urllib.quote(request.get_full_path()))
             return HttpResponseRedirect(login_url)
         if 200 == status:
             e = ET.fromstring(ret.response['response_data'])
-            fullname = "%s %s" % (e.findtext('givenName'), e.findtext('familyName'))
+            fullname = "%s %s" % (
+                e.findtext('givenName'), e.findtext('familyName'))
     except Exception, e:
         pass
 
@@ -419,7 +430,7 @@ def launch_rest_app(request, app_id):
         error_status = res.get('response_status', 0) if res else 0
     except Exception, e:
         error_status = 500
-    
+
     if 404 == error_status:
         error_msg = 'The app "%s" does not exist' % app_id
     elif 200 != error_status:
@@ -442,11 +453,13 @@ def launch_rest_app(request, app_id):
     if error_msg is None:
         res = None
         try:
-            #res = api.get_response("/records/search/xml", options={'family_name': 'P'});       # you can search for records like this
+            # res = api.get_response("/records/search/xml",
+            # options={'family_name': 'P'});       # you can search for records
+            # like this
             res = api.get_response("/records/search/xml")
         except Exception, e:
             error_msg = "Failed to fetch records: %s" % str(e)
-            
+
         error_status = res.get('response_status', 0) if res else 0
         if 200 != error_status:
             if error_msg is None:
@@ -482,13 +495,13 @@ def launch_rest_app(request, app_id):
 
     # render the template
     params = {
-        'SETTINGS':   settings,
-        'API_BASE':   '%s://%s:%s' % (SMART_SERVER_LOCATION['scheme'], SMART_SERVER_LOCATION['host'], SMART_SERVER_LOCATION['port']),
-        'APP_ID':     app_id,
+        'SETTINGS': settings,
+        'API_BASE': '%s://%s:%s' % (SMART_SERVER_LOCATION['scheme'], SMART_SERVER_LOCATION['host'], SMART_SERVER_LOCATION['port']),
+        'APP_ID': app_id,
         'ACCOUNT_ID': account_id,
-        'START_URL':  start_url,
-        'FULLNAME':   fullname,
-        'RECORDS':    simplejson.dumps(records) if len(records) > 0 else None
+        'START_URL': start_url,
+        'FULLNAME': fullname,
+        'RECORDS': simplejson.dumps(records) if len(records) > 0 else None
     }
     return utils.render_template('ui/record_select', params)
 
@@ -506,15 +519,18 @@ def smart_passthrough(request):
 
     content_type = request.META['CONTENT_TYPE']
     method = request.method
-    http_request = oauth.HTTPRequest(method=method, path=full_path, data=data, data_content_type=content_type)
+    http_request = oauth.HTTPRequest(method=method, path=full_path, data=data,
+                                     data_content_type=content_type)
 
     c = oauth.parse_header(request.META['HTTP_AUTHORIZATION'])
     token_str = c['smart_connect_token']
-    t = SmartConnectToken.objects.get(session_key=request.session.session_key, smart_connect_token=token_str)
+    t = SmartConnectToken.objects.get(session_key=request.session.session_key,
+                                      smart_connect_token=token_str)
     secret = t.smart_connect_secret
 
     token = oauth.OAuthToken(token=token_str, secret=secret)
-    consumer = oauth.OAuthConsumer(consumer_key=settings.CONSUMER_KEY, secret=settings.CONSUMER_SECRET)
+    consumer = oauth.OAuthConsumer(
+        consumer_key=settings.CONSUMER_KEY, secret=settings.CONSUMER_SECRET)
     oauth_request = oauth.OAuthRequest(consumer, token, http_request)
     oauth_request.sign()
 
@@ -547,7 +563,8 @@ def api_server(include_scheme=True):
     scheme = loc['scheme']
     host = loc['host']
 
-    port_matches = (scheme == 'http' and port == '80') or (scheme == 'https' and port == '443')
+    port_matches = (scheme == 'http' and port == '80') or (
+        scheme == 'https' and port == '443')
 
     if (port_matches):
         ret = host
@@ -566,16 +583,19 @@ def account_initialization(request):
     """
     http://localhost/indivoapi/accounts/foo@bar.com/initialize/icmloNHxQrnCQKNn
     """
-    errors = {'generic': 'There was a problem setting up your account. Please try again.'}
+    errors = {'generic':
+              'There was a problem setting up your account. Please try again.'}
     api = get_api()
 
     if request.method == HTTP_METHOD_GET:
         return utils.render_template('ui/account_init', {})
 
     if request.method == HTTP_METHOD_POST:
-        # a 404 returned from this call could indicate that the account doesn't exist! Awesome REST logic!
+        # a 404 returned from this call could indicate that the account doesn't
+        # exist! Awesome REST logic!
         account_id = request.path_info.split('/')[3]
-        data = {'secondary_secret': request.POST['conf1'] + request.POST['conf2']}
+        data = {'secondary_secret': request.POST['conf1'] +
+                request.POST['conf2']}
         ret = api.account_initialize(
             account_id=account_id,
             primary_secret=request.path_info.split('/')[5],
@@ -602,7 +622,8 @@ def account_initialization_2(request):
         ret = api.add_auth_system(account_id=account_id, data=data)
 
         if ret.response['response_status'] == 200:
-            # everything's OK, log this person in, hard redirect to change location
+            # everything's OK, log this person in, hard redirect to change
+            # location
             tokens_get_from_server(request, username, password)
             return HttpResponseRedirect('/')
         else:
@@ -623,7 +644,8 @@ def indivo_api_call_get(request):
         utils.log('indivo_api_call_get: No oauth_token or oauth_token_secret... sending to login')
         return HttpResponseRedirect('/login')
 
-    # update the IndivoClient object with the tokens stored in the django session
+    # update the IndivoClient object with the tokens stored in the django
+    # session
     api = get_api(request)
 
     # strip the leading /indivoapi, do API call, and return result
@@ -647,13 +669,15 @@ def indivo_api_call_delete_record_app(request):
         return HttpResponseRedirect('/')
 
     if DEBUG:
-        utils.log('indivo_api_call_delete_record_app: ' + request.path + ' ' + request.POST['app_id'] + ' ' + request.POST['record_id'])
+        utils.log('indivo_api_call_delete_record_app: ' + request.path + ' ' +
+                  request.POST['app_id'] + ' ' + request.POST['record_id'])
 
     if not tokens_p(request):
         utils.log('indivo_api_call_delete_record_app: No oauth_token or oauth_token_secret.. sending to login')
         return HttpResponseRedirect('/login')
 
-    # update the IndivoClient object with the tokens stored in the django session
+    # update the IndivoClient object with the tokens stored in the django
+    # session
     api = get_api(request)
 
     # get the app id from the post, and return to main
@@ -674,7 +698,8 @@ def authorize(request):
 
     # check if user is logged in
     if not tokens_p(request):
-        url = "%s?return_url=%s" % (reverse(login), urllib.quote(request.get_full_path()))
+        url = "%s?return_url=%s" % (
+            reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(url)
 
     api = get_api(request)
@@ -689,7 +714,8 @@ def authorize(request):
         # claim request token and check return value
         try:
             ret = api.claim_request_token(request_token=REQUEST_TOKEN)
-            error_status = ret.response.get('response_status', 0) if ret and ret.response else 0
+            error_status = ret.response.get(
+                'response_status', 0) if ret and ret.response else 0
         except Exception, e:
             error = e
             error_status = 500
@@ -712,11 +738,14 @@ def authorize(request):
                     app_id = app_tree.find('App').attrib.get('id')
                     kind = app_tree.findtext('kind')
                     description = app_tree.findtext('App/description')
-                    offline_capable = (app_tree.findtext('DataUsageAgreement/offline') == "1")
+                    offline_capable = (app_tree.findtext(
+                        'DataUsageAgreement/offline') == "1")
 
-                    # if we don't have a record_id or app_id, something is wrong with the token
+                    # if we don't have a record_id or app_id, something is
+                    # wrong with the token
                     if record_id and app_id:
-                        # if the "kind" param equals "new" this app was never before authorized, so ask the user
+                        # if the "kind" param equals "new" this app was never
+                        # before authorized, so ask the user
                         if kind == 'new':
                             return utils.render_template('ui/authorize', {
                                 'NAME': name,
@@ -727,7 +756,8 @@ def authorize(request):
                             })
                         elif kind == 'same':
                             # return HttpResponse('fixme: kind==same not implimented yet')
-                            # in this case we will have record_id in the app_info
+                            # in this case we will have record_id in the
+                            # app_info
                             return _approve_and_redirect(request, REQUEST_TOKEN)
                         else:
                             error = 'Bad value for the token\'s "kind" parameter'
@@ -743,7 +773,8 @@ def authorize(request):
 
     # process POST
     elif request.method == HTTP_METHOD_POST and 'oauth_token' in request.POST:
-        app_info = api.get_request_token_info(request_token=REQUEST_TOKEN).response['response_data']
+        app_info = api.get_request_token_info(
+            request_token=REQUEST_TOKEN).response['response_data']
         e = ET.fromstring(app_info)
 
         name = e.findtext('App/name')
@@ -759,7 +790,7 @@ def authorize(request):
     return HttpResponse('bad request method or missing param in request to authorize')
 
 
-def _approve_and_redirect(request, request_token, account_id=None,  offline_capable=False):
+def _approve_and_redirect(request, request_token, account_id=None, offline_capable=False):
     """
     approves the request token
     """
@@ -770,7 +801,7 @@ def _approve_and_redirect(request, request_token, account_id=None,  offline_capa
 
     api = get_api(request)
     result = api.approve_request_token(request_token=request_token, data=data)
-    
+
     # strip location= (note: has token and verifer)
     location = urllib.unquote(result.response['prd'][9:])
 
@@ -829,7 +860,8 @@ def reset_password_request(request):
 
         api = get_api()
         try:
-            ret = api.call("POST", "/users/reset_password_request", options={'data': data})
+            ret = api.call("POST", "/users/reset_password_request",
+                           options={'data': data})
             if (ret == "no_account_exists"):
                 error_msg = "Account <b>%s</b> does not exist." % account_email
         except Exception, e:
@@ -838,7 +870,7 @@ def reset_password_request(request):
     # show the error if there was one
     if error_msg:
         return utils.render_template('ui/reset_password_request', {'ERROR': error_msg, 'ACCOUNT': account_email})
-    
+
     # if it went through, show the login page and a hint to the email
     return utils.render_template(LOGIN_PAGE, {
         'MESSAGE': "Account reset link e-mailed. Please check your e-mail for the link.",
@@ -850,7 +882,7 @@ def reset_password(request):
     """The user lands here after he clicks the link embedded in the password
     reset email.
     """
-    
+
     # GET request, show the form
     if request.method == "GET":
         account = request.GET.get('account_email', None)
@@ -884,7 +916,7 @@ def reset_password(request):
             'ACCOUNT_SECRET': account_secret,
             'ERROR': error_msg
         })
-    
+
     # success, prompt to login
     return utils.render_template(LOGIN_PAGE, {
         'MESSAGE': "Account password has been reset. Please log in below.",
@@ -904,5 +936,3 @@ def _interpolate_url_template(url, variables):
         new_url = re.sub('{\s*' + key + '\s*}', variables.get(key), new_url)
 
     return new_url
-
-

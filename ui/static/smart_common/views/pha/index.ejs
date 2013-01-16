@@ -1,27 +1,30 @@
 <h2>Enabled Apps:</h2>
-These apps can access any record you open with them.
-  <UL class="manage_apps">
-  <% for (var p = 0; p < enabled_phas.length; p++) { %>
-  <% var pha = enabled_phas[p]; %>
+<p>These apps can access any record you open with them.</p>
+<ul class="manage_apps">
+	<% for (var p = 0; p < enabled_phas.length; p++) { %>
+	<% var pha = enabled_phas[p]; %>
 	<li>
-  	<img class="app_tab_img" src="<%=pha.data.iconURL%>" />
-        </td><td>
-  	<p><strong><%=pha.data.name%></strong>
-  	<button id="remove_app_<%=pha.safeid()%>" type="button">Remove</button>
-  	<br><%=pha.data.description%></p>
-  	</li>
-  <% } %>
-  </UL>
-<h2>Disabled Apps:</h2>
-  <UL class="manage_apps">
-  <% for (var p = 0; p <  disabled_phas.length; p++) { %>
-  <% var pha = disabled_phas[p]; %>
-  	<li>
-  	<img class="app_tab_img" src="<%=pha.data.iconURL%>" />
-    </td><td>
-  	<p><strong><%=pha.data.name%></strong>
-  	<button id="add_app_<%=pha.safeid()%>" type="button">Add</button>
-  	<br><%=pha.data.description%></p>
+		<img class="app_tab_img" src="<%= pha.data.iconURL %>" />
+		<button id="remove_app_<%= pha.safeid() %>" type="button">Remove</button>
+		<p>
+			<strong><%= pha.data.name %></strong><br />
+			<%= pha.data.description %>
+		</p>
 	</li>
-  	  <% } %>
-  </ul>
+	<% } %>
+</ul>
+
+<h2>Disabled Apps:</h2>
+<ul class="manage_apps">
+	<% for (var p = 0; p < disabled_phas.length; p++) { %>
+	<% var pha = disabled_phas[p]; %>
+	<li>
+		<img class="app_tab_img" src="<%= pha.data.iconURL %>" />
+		<button id="add_app_<%= pha.safeid() %>" type="button">Add</button>
+		<p>
+			<strong><%= pha.data.name %></strong><br />
+			<%= pha.data.description %>
+		</p>
+	</li>
+	<% } %>
+</ul>
