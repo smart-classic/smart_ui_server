@@ -327,6 +327,7 @@ def index(request, template='ui/index'):
             return utils.render_template(template, {
                 'ACCOUNT_ID': account_id,
                 'FULLNAME': fullname,
+                'SMART_API_SERVER': settings.SMART_API_SERVER_BASE,
                 'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
                 'SMART_PASSTHROUGH_SERVER': passthrough_server})
         except:

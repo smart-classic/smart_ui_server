@@ -14,23 +14,23 @@ PHA= $.Model.extend('smart_common.Models.PHA',
 		
 	multi_callback: function(callback) {
 		ajax_callback = function(result) {
-		var pha_list = result.Apps;
-		
-		if (pha_list == null) {
-			callback([]);
-			return;
-		}
+			var pha_list = result.Apps;
+			
+			if (pha_list == null) {
+				callback([]);
+				return;
+			}
 
-		var phas = pha_list.App;
-		
-		// for consistency
-		if (!(phas instanceof Array))
-			phas = [phas];
-		
-		var pha_objs = $.map(phas, function(pha) {
-			return new PHA({id: pha['@id'], data: pha});
-		});
-		callback(pha_objs);
+			var phas = pha_list.App;
+			
+			// for consistency
+			if (!(phas instanceof Array))
+				phas = [phas];
+			
+			var pha_objs = $.map(phas, function(pha) {
+				return new PHA({id: pha['@id'], data: pha});
+			});
+			callback(pha_objs);
 		};
 		return ajax_callback;
 	},
@@ -79,7 +79,7 @@ PHA= $.Model.extend('smart_common.Models.PHA',
 /* @Prototype */
 {
 	init: function(params) {
-		this.data.frameable = (this.data.frameable == "True");
+		this.data.standalone = (this.data.standalone == "True");
 		this.data.ui = (this.data.ui == "True");
 	},
 

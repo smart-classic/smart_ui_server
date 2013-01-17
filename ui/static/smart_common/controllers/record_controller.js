@@ -15,53 +15,56 @@ jQuery.Controller.extend('smart_common.Controllers.Record',
 	this.current_patient_label.text("");
 },
     
-    'pha.exit_record_scope subscribe' : function(topic) {
+'pha.exit_record_scope subscribe' : function(topic) {
 	this.current_patient_label.html("");
 	SMART.record_context_changed();
-    },
+},
 
-    'patient_record.selected subscribe': function(topic, record_id) {
-    	this.RECORD_ID = record_id;		  
-	    this._load_record();
-	}, 
+'patient_record.selected subscribe': function(topic, record_id) {
+	this.record_id_to_load = record_id;
+    this._load_record();
+}, 
 
-  after_record_obtained: function(record) {
+after_record_obtained: function(record) {
 
-	  RecordController.CURRENT_RECORD = record;
- 	  this.current_patient_label.html("<a id='prev_pt' href='#prev_pt_req' title='Previous Patient Record'>&lt;</a>"+
+	RecordController.CURRENT_RECORD = record;
+ 	this.current_patient_label.html("<a id='prev_pt' href='#prev_pt_req' title='Previous Patient Record'>&lt;</a>"+
 					  "<span id='pt_label'>"+record.label+"</span>"+
 					  "<a id='next_pt' href='#next_pt_req' title='Next Patient Record'>&gt;</a>");
 
-	  SMART.record_context_changed();
+	SMART.record_context_changed();
 
-	  // If there was an app open on the old record, open it automatically
-	  // on the new one.
-	  if (RecordController.APP_ID) {
-	      var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
+	// If there was an app open on the old record, open it automatically
+	// on the new one.
+	if (RecordController.APP_ID) {
+	    var app = $.grep(PHAController.phas, function(pha) {return (pha.id === RecordController.APP_ID);})[0];
 
-	      OpenAjax.hub.publish("pha.launch", app);
-	  } else if (RecordController.PAGE) {
-	      RecordController.PAGE.index();
-	  }
-      else
-	  OpenAjax.hub.publish("pha.exit_app_context");
-
-  },
+	    OpenAjax.hub.publish("pha.launch", app);
+	}
+	else if (RecordController.PAGE) {
+	    RecordController.PAGE.index();
+	}
+    else {
+	  	OpenAjax.hub.publish("pha.exit_app_context");
+	}
+},
   
-  _load_record: function() {
-      var record_id = this.RECORD_ID;
-	  // if the 'new' selection ain't new, we're done here.
-	  if ( this.CURRENT_RECORD && record_id == this.CURRENT_RECORD.record_id ) {
-		  return;
-	  }
-	  
-	  var already_obtained = RecordController.RECENT_RECORDS[record_id];
-	  
-	  if (already_obtained)
-		  this.after_record_obtained(already_obtained);
-      else
-    	  Record.get(record_id,this.callback(after_record_obtained));
-    },
+_load_record: function() {
+    var record_id = this.record_id_to_load;
+	// if the 'new' selection ain't new, we're done here.
+	if ( this.CURRENT_RECORD && record_id == this.CURRENT_RECORD.record_id ) {
+		return;
+	}
+	
+	var already_obtained = RecordController.RECENT_RECORDS[record_id];
+	
+	if (already_obtained) {
+		this.after_record_obtained(already_obtained);
+	}
+    else {
+    	Record.get(record_id,this.callback(after_record_obtained));
+    }
+},
 
 
 'history.prev_pt_req.index subscribe': function(topic) {
