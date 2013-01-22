@@ -1,106 +1,79 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
-  <head>
-    {% if branding %}
-      {% include branding.header_template %}
-    {% else %}
-      {% include 'ui/header.html' %}
-    {% endif %}
-    
-    <title>{% block title %}SMArt EMR{% endblock %}</title>
-    <link type="text/css" href="/static/smart_common/smart_ui_server.css" rel="Stylesheet" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
-    <script type="text/javascript">
-      $(function(){
-        if (!("autofocus" in document.createElement("input"))) { $('#given_name').focus(); }
-    
-        $('#form').submit(function() {
-          if (!$('#given_name').val() || !$('#family_name').val()){
-            alert('Please enter your full name.');
-            $('#password').focus();
-            return false;
-          }
-          if (!$('#username').val()) {
-            alert('Please enter an e-mail address.');
-            $('#username').focus();
-            return false;
-          }
-          if (!$('#password').val()){
-            alert('Please enter a password.');
-            $('#password').focus();
-            return false;
-          }
-          return true;
-        });
-      })
-    </script>
-  </head>
-  <body style="text-align: center;">
-    <div style="text-align: left; width: 550px; margin-left: auto; margin-right: auto; margin-top: 100px;">
-      <form id="form" method="post" action="">
-        <div  style="text-align: center; margin-left: -0px;">
-            <span id="logo">
-              <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
-            </span>
+{% extends "ui/base.html" %}
+{% load i18n %}
 
-        <div style="font-size: 24px">
-          {% if error %}
-            <div style="border: 3px dashed red; padding: 10px; margin: 70px 0 0 0; font-size: 18px;">
-              {{error}}
-            </div>
-          {% endif %}
-        </div>
+{% block title %}{% trans "Create Developer Account" %}{% endblock %}
+{% block welcome %}{% trans "Create Developer Account" %}{% endblock %}
 
-        <br clear="both"/>
-        <table style="font-size:18px">
-        <tr>
-          <td colspan="2" style="text-align: center; font-size: 1.8em; font-weight: bold; ">Create Developer Account</td>
-	</tr>
-          <tr>
-            <td>First name:</td>
-            <td><input AUTOFOCUS type="text" style="font-size: 18px;" id="given_name" name="given_name" tabindex="1"/></td>
-          </tr>
-          <tr>
-            <td>Last name:</td>
-            <td><input type="text" style="font-size: 18px;" id="family_name" name="family_name" tabindex="2"/></td>
-          </tr>
-          <tr>
-            <td>Department:</td>
-            <td><input type="text" style="font-size: 18px;" id="department" name="department" value="informatics" tabindex="3"/></td>
-          </tr>
-          <tr>
-            <td>Role:</td>
-            <td><input type="text" style="font-size: 18px;" id="role" name="role" value="developer" tabindex="4"/></td>
-          </tr>
-          <tr>
-            <td>Email:</td>
-            <td><input type="email" style="font-size: 18px;" id="username" name="username" tabindex="5"/></td>
-          </tr>
-          <tr>
-            <td>Password:</td>
-            <td><input type="password" style="font-size: 18px;" id="password" name="password" tabindex="6" /></td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <input type="hidden" name="return_url" value="{{return_url}}" />
-              <input style="font-size: 18px; width: 100%;"
-                     type="submit"
-                     name="submit"
-                     id="submit"
-                     tabindex="7"
-                     value="          Create Account          "/>
-            </td>
-          </tr>
-        </table>
-      </form>
-    </div>
+{% block readyscript %}
+<script type="text/javascript">
+	$(function(){
+		if (!("autofocus" in document.createElement("input"))) { $('#given_name').focus(); }
+	
+		$('#form').submit(function() {
+			if (!$('#given_name').val() || !$('#family_name').val()){
+				alert('Please enter your full name.');
+				$('#password').focus();
+				return false;
+			}
+			if (!$('#username').val()) {
+				alert('Please enter an e-mail address.');
+				$('#username').focus();
+				return false;
+			}
+			if (!$('#password').val()){
+				alert('Please enter a password.');
+				$('#password').focus();
+				return false;
+			}
+			return true;
+		});
+	})
+</script>
+{% endblock %}
 
-  {% if branding %}
-    {% include branding.footer_template %}
-  {% else %}
-    {% include 'ui/footer.html' %}
-  {% endif %}
-  
-  </body>
-</html>
 
+{% block main %}
+<h2 style="text-align:center;"></h2>
+<form id="form" method="post" action="" class="table_form">
+	<input type="hidden" name="return_url" value="{{ RETURN_URL }}" />
+	
+	<!-- signup form -->
+	<div class="row">
+		<div class="cell">First name:</div>
+		<div class="cell"><input type="text" style="font-size: 18px;" id="given_name" name="given_name" tabindex="1" autofocus="autofocus" /></div>
+	</div>
+	<div class="row">
+		<div class="cell">Last name:</div>
+		<div class="cell"><input type="text" style="font-size: 18px;" id="family_name" name="family_name" tabindex="2" /></div>
+	</div>
+	<div class="row">
+		<div class="cell">Department:</div>
+		<div class="cell"><input type="text" style="font-size: 18px;" id="department" name="department" value="informatics" tabindex="3" /></div>
+	</div>
+	<div class="row">
+		<div class="cell">Role:</div>
+		<div class="cell"><input type="text" style="font-size: 18px;" id="role" name="role" value="developer" tabindex="4" /></div>
+	</div>
+	<div class="row">
+		<div class="cell">Email:</div>
+		<div class="cell"><input type="email" style="font-size: 18px;" id="username" name="username" tabindex="5" /></div>
+	</div>
+	<div class="row">
+		<div class="cell">Password:</div>
+		<div class="cell"><input type="password" style="font-size: 18px;" id="password" name="password" tabindex="6" /></div>
+	</div>
+	
+	<!-- submit -->
+	<div class="row">
+		<div class="cell"></div>
+		<div class="cell">
+			<div class="main_action_button">
+				<button type="submit" id="submit" tabindex="7">{% trans "Create Account" %}</button>
+				<p class="moreinfo">
+					<a href="/login">{% trans "Back to login" %}</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock %}

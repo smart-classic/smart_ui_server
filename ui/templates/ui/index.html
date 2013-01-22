@@ -1,93 +1,97 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
-    <link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
+	<link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
 
-    {% if branding %}
-      {% include branding.header_template %}
-    {% else %} 
-      {% include 'ui/header.html' %}
-    {% endif %}
+	{% if branding %}
+		{% include branding.header_template %}
+	{% else %} 
+		{% include 'ui/header.html' %}
+	{% endif %}
 
-    {% block head_material %}{% endblock %}
+	{% block head_material %}{% endblock %}
 
-    {% block scripts %}
-    <!-- development or production -->
-    <script type="text/javascript" src="/static/steal/steal.js?steal[app]=smart_ui_server&steal[env]=development"></script>
-    {% endblock %}
-    <script type="text/javascript">
+	{% block scripts %}
+	<!-- development or production -->
+	<script type="text/javascript" src="/static/steal/steal.js?steal[app]=smart_ui_server&steal[env]=development"></script>
+	{% endblock %}
+	<script type="text/javascript">
 {% block global_vars %}
-      var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
-      var SMART_API_SERVER = "{{SMART_API_SERVER}}"
-      var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
-      var FULLNAME = "{{ FULLNAME }}";
+		var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
+		var SMART_API_SERVER = "{{ SMART_API_SERVER }}"
+		var SMART_PASSTHROUGH_SERVER = "{{ SMART_PASSTHROUGH_SERVER }}";
+		var FULLNAME = "{{ FULLNAME }}";
 {% endblock %}
-    </script>
-    <title>{% block title %}SMART EMR{% endblock %}</title>
-  </head>
+	</script>
+	<title>{% block title %}SMART EMR{% endblock %}</title>
+</head>
 {% block body %}
-  <body>
-    <div id="header">
-      <div id="header_logo">
-            <span id="logo">
-              <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
-            </span></div>
-      <div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
+<body>
+	<div id="header">
+		<div id="header_logo">
+			<span id="logo">
+				<img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
+			</span>
+		</div>
+		<div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
 
-      {% block header_username %}
+		{% block header_username %}
 .
-      <div id='header_name'>
-        <span id='header_username'>{{FULLNAME}}</span>
-        &middot;
-        <a href="{% url ui.views.logout %}">Logout</a>
-      </div>
-      {% endblock %}
-    </div>
-      <div id="app_selector">
-        <div id="app_selector_hairline_top"></div>
-          <ul id="app_selector_inner">
-      {% block patient_list %}
-            <li class="patient_list">
-              <a href="#patient_list_req" class="selected_app">
-                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_common/resources/images/app_icons_32/patientsearch.png" />
-                Patient List
-              </a>
-            </li>
-      {% endblock %}
+		<div id='header_name'>
+			<span id='header_username'>{{ FULLNAME }}</span>
+			&middot;
+			<a href="{% url ui.views.logout %}">Logout</a>
+		</div>
+		{% endblock %}
+	</div>
+		<div id="app_selector">
+			<div id="app_selector_hairline_top"></div>
+				<ul id="app_selector_inner">
+		{% block patient_list %}
+					<li class="patient_list">
+						<a href="#patient_list_req" class="selected_app">
+							<img class="app_tab_img" src="/static/smart_common/resources/images/app_icons_32/patientsearch.png" />
+							Patient List
+						</a>
+					</li>
+		{% endblock %}
 
-      {% block alert_list %}
-            <li class="alert_list">
-              <a href="#alert_list_req" >
-                <img class="app_tab_img" height="16px" width="16px" src="/static/smart_common/resources/images/app_icons_32/alert.png" />
-                Alerts
-              </a>
-            </li>
-      {% endblock %}
-          </ul>
-          <div id="app_selector_hairline_bottom"></div>
-          <div id="record_owned_options">
-            <ul id="manage_apps_list">
-              <li>
-                <a id="manage_apps_link" href="#manage_apps_req">
-                 <img class="app_tab_img_small" height="16px" width="16px" src="/static/smart_common/resources/images/icons_24/edit_add.png" />
-                 <span>Manage Apps</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div> <!-- end app selector -->
-        <div id="main_canvas">
-          <div id="app_content_iframe_holder"></div>
-          <div id="app_content"></div>
-	  <div class="activity_iframe" id="loading_div" style="display: none;"><img src="/static/smart_common/resources/images/ajax-loader.gif"> </div>
-        </div>
-        
-        {% include 'ui/footer.html' %}
-  </body>
+		{% block alert_list %}
+					<li class="alert_list">
+						<a href="#alert_list_req" >
+							<img class="app_tab_img" src="/static/smart_common/resources/images/app_icons_32/alert.png" />
+							Alerts
+						</a>
+					</li>
+		{% endblock %}
+				</ul>
+				<div id="app_selector_hairline_bottom"></div>
+				<div id="record_owned_options">
+					<ul id="manage_apps_list">
+						<li>
+							<a id="manage_apps_link" href="#manage_apps_req">
+							 <img class="app_tab_img_small" src="/static/smart_common/resources/images/icons_24/edit_add.png" />
+							 <span>Manage Apps</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div> <!-- end app selector -->
+			<div id="main_canvas">
+				<div id="app_content_iframe_holder"></div>
+				<div id="app_content"></div>
+				<div class="activity_iframe" id="loading_div" style="display: none;">
+					<img src="/static/smart_common/resources/images/ajax-loader.gif">
+				</div>
+			</div>
+			
+			{% include 'ui/footer.html' %}
+</body>
 {% endblock %}
 </html>

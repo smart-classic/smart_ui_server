@@ -1,17 +1,22 @@
-<div class="results_sub_header">Click a record to select...</div>
+<h2>Available records</h2>
 
-<% if (records.length == 0) { %> No patients found. <% } %>
+<% if (records.length == 0) { %>
+	<p>No patients found.</p>
+<% } else { %>
 
-<ul class='search_results'>
-<% for (var i = 0; i < records.length; i++) { %>
-<% var record = records[i]; %>
-	<li class='record' <%= record%>>
-	<div>
-	<%= record.demographics.firstname%> <%= record.demographics.lastname%>
-	</div>
-	<div class='gender'>Gender: <%= record.demographics.gender %></div>
-	<div class='dob'>DOB: <%= record.demographics.dob %></div>
-	<div class='zip'>Zip Code: <%= record.demographics.zipcode %></div>
-	</li>
+<table class="search_results">
+<tbody>
+<% for (var i = 0; i < records.length; i++) {
+	var record = records[i]; %>
+	<tr class="record" <%= record%>>
+		<th class="name">
+		<%= record.demographics.firstname%> <%= record.demographics.lastname%>
+		</th>
+		<td class="gender"><%= record.demographics.gender %></td>
+		<td class="dob"><%= record.demographics.dob %></td>
+		<td class="zip">Zip Code: <%= record.demographics.zipcode %></td>
+	</tr>
 <% } %>
-</ul>  
+</tbody>
+</table>  
+<% } %>

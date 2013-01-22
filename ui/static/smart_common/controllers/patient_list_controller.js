@@ -27,15 +27,13 @@ index: function(params) {
     RecordController.PAGE = this;
     OpenAjax.hub.publish("pha.exit_app_context", "#patient_list_req");            
 
-    if (RecordController.CURRENT_RECORD === undefined)
-	{
-	    Record.search({},  this.callback(this.process_list));
+    if (RecordController.CURRENT_RECORD === undefined) {
+	    Record.search({}, this.callback(this.process_list));
 	    return;
 	}
     this.display_list();
-
 },
-    
+
 process_list: function(records) {
     records.sort(function(a,b) { if (a.label > b.label) return 1; if (a.label < b.label) return -1; return 0;});
     
@@ -55,13 +53,12 @@ display_list: function() {
     this.results_element.hide();
     this.results_element.html(this.view("results", {records: RecordController.records}));
     this.results_element.fadeIn(160);
-    if ( RecordController.CURRENT_RECORD !== undefined)
-	this.patient_selected(RecordController.CURRENT_RECORD.label);
+    if (RecordController.CURRENT_RECORD !== undefined) {
+    	this.patient_selected(RecordController.CURRENT_RECORD.label);
+    }
 },
 
-
 patient_selected: function(name) {
-    var _this = this;
     var sm = $('#patient_selected_header');
     sm.remove();
     sm = $(this.view("patient_selected", {name: name}));
@@ -70,14 +67,11 @@ patient_selected: function(name) {
 
     this.element.prepend(sm);
     sm.fadeIn(160);
-
 },
 
 ".record click": function(el) {
-	  var name = $.trim($('div:first', el).text());
-	  var record_id = el.closest(".record").model().record_id;
-	  OpenAjax.hub.publish("patient_record.selected", record_id);
-	  this.patient_selected(name);
+	var record_id = el.closest(".record").model().record_id;
+	OpenAjax.hub.publish("patient_record.selected", record_id);
 }
 
 });

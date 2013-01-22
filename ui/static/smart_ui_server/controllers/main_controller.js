@@ -14,14 +14,14 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Main',
 
     RecordController = new smart_common.Controllers.Record($("#app_content"));
 
-    if (typeof(PROXIED_RECORD_ID) == "undefined") 
-      PatientListController = new smart_common.Controllers.PatientList($("#app_content"));
+    if (typeof(PROXIED_RECORD_ID) == "undefined") {
+        PatientListController = new smart_common.Controllers.PatientList($("#app_content"));
+    }
     
     PHAController = new smart_common.Controllers.PHA($("#app_content"));
     AlertListController = new smart_common.Controllers.AlertList($("#app_content"));
     	
     this.finish_initialization();
-
 },
 
 'request_visible_element subscribe': function(topic, element) {
@@ -50,7 +50,6 @@ finish_initialization: function(params) {
     var _this = this;
 	OpenAjax.hub.publish("maincontroller.initialized");
 
-
     $(window).resize(function() {
 	var avail_h = $(window).height() -  
 	    $("#main_canvas").get(0).offsetTop -
@@ -68,8 +67,6 @@ finish_initialization: function(params) {
     });
 
     $(window).resize();
-
-
 }
 
 });
