@@ -135,8 +135,7 @@ window.SMART_CONNECT_HOST = function() {
 		launch_url = launch_url.replace("{base_url}", base_url);
 
 		querystring_sep = launch_url.indexOf('?') !== -1 ? '&' : '?';
-		launch_url += querystring_sep + "oauth_header=" +
-			encodeURIComponent(app_instance.credentials.oauth_header);
+		launch_url += querystring_sep + "record_id=" + encodeURIComponent(app_instance.context.record.id);
 
 		app_instance.origin = __SMART_extract_origin(launch_url);
 		app_instance.iframe.src = launch_url;
@@ -164,7 +163,6 @@ window.SMART_CONNECT_HOST = function() {
     var generate_ready_message = function(app_instance, callback) {	    
 	var message = { 
 	    context: app_instance.context,
-	    credentials: app_instance.credentials,
 	    uuid: app_instance.uuid,
 	    manifest: app_instance.manifest,
 	    ready_data: app_instance.ready_data
