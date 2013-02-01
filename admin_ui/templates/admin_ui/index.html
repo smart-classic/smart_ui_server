@@ -15,6 +15,10 @@
 			  <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="margin: 1em 0 2em;" alt="SMArt" />
 			</a>
 			
+			{% if error_message %}
+			<p class="warning_paragraph">{{ error_message }}</p>
+			{% endif %}
+			
 			<!-- the app table -->
 			<table class="alternate" style="margin-bottom:2em;">
 				<thead>

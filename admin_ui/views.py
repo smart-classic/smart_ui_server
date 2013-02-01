@@ -71,12 +71,19 @@ def tokens_get_from_server(request, username, password):
     return True
 
 
-def index(request, template=INDEX_PAGE):
+def index(request, template=INDEX_PAGE, err_msg=None):
     if not admin_tokens_p(request):
         return HttpResponseRedirect(admin_login_url(request))
 
-    response = smart_call(request, "GET", "/apps/manifests/")
-    data = json.loads(str(response.content))
+    data = {}
+    error_message = err_msg
+    response = None
+    try:
+        response = smart_call(request, "GET", "/apps/manifests/")
+        data = json.loads(str(response.content))
+    except Exception, e:
+        error_message = response.content if response else str(e)
+    
     apps = sorted(data, key=lambda k: k['name'])
     
     # fetch OAuth credentials
@@ -86,13 +93,14 @@ def index(request, template=INDEX_PAGE):
         app['consumer_key'] = creds['consumer_key']
         app['consumer_secret'] = creds['consumer_secret']
 
-    return utils.render_template(template, {"apps": apps})
+    return utils.render_template(template, {"apps": apps, "error_message": error_message})
 
 
 def manifest_add(request):
     if not admin_tokens_p(request):
         return HttpResponseRedirect(admin_login_url(request))
 
+    err_msg = None
     if request.method == HTTP_METHOD_POST:
         data = ""
 
@@ -103,9 +111,12 @@ def manifest_add(request):
         manifest = json.loads(data)
         descriptor = manifest["id"]
 
-        smart_call(request, "PUT", "/apps/%s/manifest" % descriptor, data)
+        try:
+            smart_call(request, "PUT", "/apps/%s/manifest" % descriptor, data)
+        except Exception, e:
+            err_msg = str(e)
 
-    return HttpResponseRedirect(reverse(index))
+    return index(request, err_msg=err_msg)
 
 
 def manifest_get(request, app_id):

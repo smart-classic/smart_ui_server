@@ -89,7 +89,12 @@ class IUtils(OAuth):
                 raise Exception('Server Error')
                 #return self.HTTP.Errors.server_error
             else:
-                raise Exception(str(resp.status) + self.chars.colon + self.chars.space + uri)
+                try:
+                    msg = resp.read()
+                except:
+                    msg = '%s: %s' % (str(resp.status), uri)
+                raise Exception(msg)
+                
             # Handle Exceptions
         except httplib.ResponseNotReady:
             raise Exception(self.HTTP.Errors.server_not_ready)
@@ -101,8 +106,8 @@ class IUtils(OAuth):
             raise Exception(self.HTTP.Errors.cannot_send_header)
         except socket.error:
             raise Exception(self.HTTP.Errors.socket_error)
-        except Exception():
-            raise Exception(self.HTTP.Errors.general_exception)
+        except Exception, e:
+            raise e
     
     def http_conn(self, method, url, app_info, parameters=None, data=None):
         """ """
