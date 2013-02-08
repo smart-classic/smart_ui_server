@@ -401,8 +401,7 @@ def launch_rest_app(request, app_id):
             reverse(login), urllib.quote(request.get_full_path()))
         return HttpResponseRedirect(login_url)
 
-    # get the account holder's name (fail silently EXCEPT if we get a 403,
-    # then redirect to login)
+    # get the account holder's name (if we fail, redirect to login)
     error_msg = None
     error_status = None
     fullname = 'Unknown'
@@ -411,16 +410,14 @@ def launch_rest_app(request, app_id):
         ret = api.account_info(account_id=account_id)
         status = ret.response.get(
             'response_status', 0) if ret and ret.response else 0
-        if 403 == status:
-            login_url = "%s?return_url=%s" % (
-                reverse(login), urllib.quote(request.get_full_path()))
-            return HttpResponseRedirect(login_url)
         if 200 == status:
             e = ET.fromstring(ret.response['response_data'])
             fullname = "%s %s" % (
                 e.findtext('givenName'), e.findtext('familyName'))
     except Exception, e:
-        pass
+        login_url = "%s?return_url=%s" % (
+            reverse(login), urllib.quote(request.get_full_path()))
+        return HttpResponseRedirect(login_url)
 
     # fetch app info (we're particularly interested in the index URL)
     start_url = None
@@ -432,7 +429,9 @@ def launch_rest_app(request, app_id):
     except Exception, e:
         error_status = 500
 
-    if 404 == error_status:
+    if 401 == error_status:
+        error_msg = 'Incorrect app credentials'
+    elif 404 == error_status:
         error_msg = 'The app "%s" does not exist' % app_id
     elif 200 != error_status:
         error_msg = 'Error getting app info'
@@ -711,15 +710,16 @@ def authorize(request):
     # process GETs (initial adding and a normal call for this app)
     if request.method == HTTP_METHOD_GET and REQUEST_TOKEN:
         error = None
+        error_status = 0
 
         # claim request token and check return value
         try:
             ret = api.claim_request_token(request_token=REQUEST_TOKEN)
-            error_status = ret.response.get(
-                'response_status', 0) if ret and ret.response else 0
+            if ret and ret.response:
+                error_status = ret.response.get('response_status', 0)
         except Exception, e:
             error = e
-            error_status = 500
+            error_status = 401 if 'Unauthorized' == str(e) else 500
 
         if error is None:
             if 200 != error_status:
