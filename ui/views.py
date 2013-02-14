@@ -364,6 +364,7 @@ def store_connect_secret(request, launchdata):
 ##  Apps
 ##
 def launch_app(request, account_id, pha_email):
+    """ Entry point from /accounts/{account-id}/apps/{app-id}/launch """
     if not tokens_p(request):
         return HttpResponseRedirect(reverse(login))
 

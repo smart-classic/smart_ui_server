@@ -80,7 +80,7 @@ window.SMART_CONNECT_HOST = function() {
         var c = app_instance.channel;
         sc.notify_app(app_instance, "destroyed");
         
-        if (c)   {
+        if (c) {
              c.destroy();
         }
         if (app_instance.iframe) {
@@ -118,20 +118,20 @@ window.SMART_CONNECT_HOST = function() {
      */
     
     var launch_app_instance = function(app_instance) {
-    begin_launch_wrapper(app_instance)
+        begin_launch_wrapper(app_instance)
         .pipe(get_credentials_wrapper)
         .pipe(get_iframe_wrapper)
         .pipe(function() {
-        var launch_url = app_instance.manifest.index;
-        var base_url =  app_instance.manifest.base_url;
-        launch_url = launch_url.replace("{base_url}", base_url);
-
-        querystring_sep = launch_url.indexOf('?') !== -1 ? '&' : '?';
-        launch_url += querystring_sep + "record_id=" + encodeURIComponent(app_instance.context.record.id);
-
-        app_instance.origin = __SMART_extract_origin(launch_url);
-        app_instance.iframe.src = launch_url;
-        return app_instance;
+            
+            // create the launch_url
+            var launch_url = app_instance.manifest.index;
+            querystring_sep = launch_url.indexOf('?') !== -1 ? '&' : '?';
+            launch_url += querystring_sep + "api_base=" + encodeURIComponent(app_instance.credentials.api_base);
+            launch_url += "&record_id=" + encodeURIComponent(app_instance.context.record.id);
+            
+            app_instance.origin = __SMART_extract_origin(launch_url);
+            app_instance.iframe.src = launch_url;
+            return app_instance;
         })
         .pipe(complete_launch_wrapper); 
     };
