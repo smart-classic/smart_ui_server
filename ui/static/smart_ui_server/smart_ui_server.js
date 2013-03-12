@@ -6,14 +6,14 @@ steal.plugins('smart_common')
 	    "../../smart_common/models/activity", 
 	    "../../smart_common/models/app_manifest", 
 	    "../../smart_common/models/pha", 
-	    "../../smart_common/models/record",
-	    "../../smart_common/models/alert")
+	    "../../smart_common/models/record")
+	    //"../../smart_common/models/alert"
 
     .controllers("main", "proxy_main",
 		 "../../smart_common/controllers/patient_list", 
 		 "../../smart_common/controllers/pha", 
-		 "../../smart_common/controllers/record", 
-		 "../../smart_common/controllers/alert_list") 
+		 "../../smart_common/controllers/record") 
+		 //"../../smart_common/controllers/alert_list"
 
 .views()                            // adds views to be added to build
 
