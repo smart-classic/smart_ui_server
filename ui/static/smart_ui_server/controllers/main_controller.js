@@ -19,7 +19,7 @@ jQuery.Controller.extend('smart_ui_server.Controllers.Main',
     }
     
     PHAController = new smart_common.Controllers.PHA($("#app_content"));
-    AlertListController = new smart_common.Controllers.AlertList($("#app_content"));
+    //AlertListController = new smart_common.Controllers.AlertList($("#app_content"));
     	
     this.finish_initialization();
 },
