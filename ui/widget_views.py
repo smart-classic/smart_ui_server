@@ -12,26 +12,29 @@ from django.db import transaction
 from django.conf import settings
 
 import xml.etree.ElementTree as ET
-import urllib,logging
+import urllib
+import logging
 
 from smart_ui_server import utils
 
-HTTP_METHOD_GET   = 'GET'
-HTTP_METHOD_POST  = 'POST'
+HTTP_METHOD_GET = 'GET'
+HTTP_METHOD_POST = 'POST'
 
 DEBUG = True
 
 from views import get_api
 
+
 def _verify_surl(request):
-  url = request.get_full_path()
-  api = get_api(request)
-  result = ET.fromstring(api.call("GET", "/oauth/internal/surl-verify", {'parameters': {'url': url}}))
-  if result.text == "ok":
-    return
-  else:
-    raise Exception("bad signature")
+    url = request.get_full_path()
+    api = get_api(request)
+    result = ET.fromstring(api.call("GET", "/oauth/internal/surl-verify", {'parameters': {'url': url}}))
+    if result.text == "ok":
+        return
+    else:
+        raise Exception("bad signature")
+
 
 def document_access(request):
-  _verify_surl(request)
-  return utils.render_template('widgets/document_access', request.GET)
+    _verify_surl(request)
+    return utils.render_template('widgets/document_access', request.GET)

@@ -1,0 +1,18 @@
+<div style="padding: 2em;">
+	<h1><%= app.data.name %></h1>
+	<p style=""><%= app.data.description %></p>
+	
+	<% if (!app.launch_url || app.launch_url.length < 6) { %>
+	<p style="">This app does not provide a launch URL</p>
+	<% } else {
+		if ('http' != app.launch_url.substr(0, 4)) { %>
+		<p class="warning_paragraph">
+			This app does not seem to be a web-app, however it may be registered on your system.<br />
+			Give it a try:
+		</p>
+		<% } else { %>
+		<p>This app launches in its own browser window. If you'd rather have it launch in place you can do so by <a href="javascript:void(0);" onclick="console.log(PHAController), PHAController.load_in_static_iframe('<%= app.launch_url %>')">clicking here</a>.<p>
+		<% } %>
+	<a class="link_button" href="<%= app.launch_url %>" target="_blank">Launch App</a>
+	<% } %>
+</div>

@@ -1,72 +1,99 @@
 <!DOCTYPE html>
 <html lang='en'>
-  <head>
-    <title>SMART Admin UI</title>
-    <link type="text/css" href="/static/smart_ui_server/smart_ui_server.css" rel="Stylesheet" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  </head>
-  <body style="text-align: center;">
-    <div style="text-align: left; width: 400px; margin-left: auto; margin-right: auto;">
-        <div  style="text-align: center; margin-left: -0px;">
-            <span id="logo">
-              <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
-            </span>
-
-            <br clear="both"/>
-            <div style="margin-bottom: 1em;">
-            Welcome admin. Click <a href="logout">here to log out</a>
-            </div>
-            <div id="results">
-                <table>
-                    <thead>
-                        <tr>
-                            <th colspan="2">{{ apps|length }} Apps found on the SMART server</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for app in apps %}
-                        <tr>
-                            <td>
-                                <div class='name'>{{app.name}}</div>
-                                <div class='id'>{{app.id}}</div>
-                            </td>
-                            <td>
-                                <button class='delete' onclick="ADMIN.del('{{app.id}}')">Delete</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div>
-            <form id="form-delete" method="post" action="delete">
-                <input type="hidden" id="descriptor" name="id"/>
-            </form>
-            <form method="post" action="add" enctype="multipart/form-data">
-		<b>Add a new app</b><br>
-                <input type="file" name="manifest"/>
-                <button>Load</button>
-            </form>
-        </div>
-    </div>
-    
-    <script>
-    
-var ADMIN;
-if (!ADMIN) {
-    ADMIN = {};
-}
-    
-(function () {
-    "use strict";
-    
-    ADMIN.del = function (id) {
-        $("form#form-delete input#descriptor").val(id);
-        $("form#form-delete").submit();
-    };
-}());
-</script>
-    
-  </body>
+<head>
+	<title>SMART Admin UI</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<link type="text/css" href="/static/smart_ui_server/smart_ui_server.css" rel="Stylesheet" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+</head>
+<body style="text-align: center;">
+	<div style="text-align: left; width: 550px; margin: 0 auto 3em;">
+		<div  style="text-align: center; margin-left: -0px;">
+			<a href="logout" style="float:right; margin-top:0.5em;">Logout</a>
+			
+			<a id="logo" href="/">
+			  <img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="margin: 1em 0 2em;" alt="SMArt" />
+			</a>
+			
+			{% if error_message %}
+			<p class="warning_paragraph">{{ error_message }}</p>
+			{% endif %}
+			
+			<!-- the app table -->
+			<table class="alternate" style="margin-bottom:2em;">
+				<thead>
+					<tr>
+						<th colspan="3">{{ apps|length }} Apps found on the SMART server</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for app in apps %}
+					<tr>
+						<td class="app_admin_icon">
+							<img src="{{ app.icon|default:"" }}" alt="Icon" />
+						</td>
+						<td class="app_admin">
+							<div class="name">{{ app.name }}</div>
+							<div class="app_id">{{ app.id }}</div>
+							<a class="oauth_toggle" href="manifest/{{ app.id }}" target="_blank">Manifest</a> <b> • </b>
+							<a class="oauth_toggle" href="javascript:void(0);" onclick="$(this).parent().find('.oauth_secrets').toggle()">OAuth credentials</a>
+							<table class="oauth_secrets">
+								<tr>
+									<th>Key:</th><td>{{ app.consumer_key }}</td>
+								</tr>
+								<tr>
+									<th>Secret:</th><td>{{ app.consumer_secret }}</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<button class="delete" onclick="ADMIN.del('{{ app.id }}')">Delete...</button>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		
+		<!-- delete form -->
+		<form id="form-delete" method="post" action="delete">
+			<input type="hidden" id="descriptor" name="id"/>
+		</form>
+		
+		<!-- add app form -->
+		<form method="post" action="add" enctype="multipart/form-data">
+			<table class="alternate">
+				<thead>
+					<tr>
+						<th colspan="2">Add a new app</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="file" name="manifest"/></td>
+						<td><button>Load</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	
+	<script>
+	var ADMIN;
+	if (!ADMIN) {
+		ADMIN = {};
+	}
+	
+	(function () {
+		"use strict";
+		
+		ADMIN.del = function (id) {
+			if (confirm('Are you sure you wish to delete this app?')) {
+				$("form#form-delete input#descriptor").val(id);
+				$("form#form-delete").submit();
+			}
+		};
+	}());
+	</script>
+</body>
 </html>
