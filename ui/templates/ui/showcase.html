@@ -1,10 +1,14 @@
 {% extends "ui/index.html" %}
 {% block title %}SMART App Showcase{% endblock %}
 
-    {% block scripts %}
+{% block header %}
+    <script type="text/javascript" src="/static/jquery/jquery.js"></script>
+{% endblock %}
+
+{% block scripts %}
     <!-- development or production -->
     <script type="text/javascript" src="/static/steal/steal.js?steal[app]=showcase&steal[env]=development"></script>
-    {% endblock %}
+{% endblock %}
 
 {% block global_vars %}
       var ACCOUNT_ID = "{{ ACCOUNT_ID }}";
@@ -41,15 +45,7 @@
 
 </div> <!-- end non-footer-->
 
-  <div id='footer'>
-      <a href="http://chip.org">CHIP</a> 
-        &middot;
-      <a href="http://hms.harvard.edu">HMS</a> 
-        &middot;
-    <span id="copyright">&copy; 2012</span> 
-
-
-  </div>
+  {% include 'ui/footer.html' %}
 
   <div id='hidden_things' style='display: none;'>
   <div id='app_content'></div>

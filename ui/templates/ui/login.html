@@ -25,7 +25,14 @@
 {% endblock %}
 
 {% block welcome_prefix %}{% endblock %}
-{% block welcome %}EMR Login{% endblock %}
+{% block welcome %}		
+    {% if branding %}
+        {{ branding.pretty_name }}
+        {% if branding.version%}{{ branding.version }}{% endif %}
+    {% else %}
+        {% trans "SMART Reference EMR" %}
+    {% endif %}
+{% endblock %}
 
 {% block main %}
 	<!-- Login Form -->
