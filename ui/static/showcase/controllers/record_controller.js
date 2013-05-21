@@ -56,8 +56,10 @@ jQuery.Controller.extend('showcase.Controllers.Record',
     var l = $("#patient-list");
 
     $.each(RecordController.records, function(k,v) {
-	k = v.record_id;
-	options += "<option value='"+k+"'>Patient: "+v.label+"</option>";
+        k = v.record_id;
+        if (typeof PATIENTS === "undefined" || $.inArray(k, PATIENTS.split(",")) > -1) {
+            options += "<option value='"+k+"'>Patient: "+v.label+"</option>";
+        }
     });    
 
     l.html(options);

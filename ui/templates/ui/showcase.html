@@ -15,10 +15,13 @@
       var FULLNAME = "Showcase Viewer";
       var SMART_API_SERVER = "{{SMART_API_SERVER}}"
       var SMART_PASSTHROUGH_SERVER = "{{SMART_PASSTHROUGH_SERVER}}";
+      var APP;
     {% if INITIAL_APP %}
-      var INITIAL_APP = "{{ INITIAL_APP  }}";
+      var INITIAL_APP = "{{INITIAL_APP}}";
     {% endif %}
-
+    {% if PATIENTS %}
+      var PATIENTS = "{{PATIENTS}}";
+    {% endif %}
 {% endblock %}
 
 {% block body %}
