@@ -12,19 +12,24 @@
 				to use jmvc3 compression without loging in: "$ ./js steal/buildjs http://localhost -to ui" -->
 	<!-- <script compress="true" type="text/javascript" src="/jmvc/steal/steal.js?ui,development"></script> -->
 
+   {% block header %}
 	{% if branding %}
 		{% include branding.header_template %}
+        <link rel="stylesheet" media="screen and (min-width: 701px)" href="/static/smart_ui_server/login.css" />
+		<link rel="stylesheet" media="only screen and (max-width: 700px)" href="/static/smart_ui_server/login-mobile.css" />
 	{% else %}
 		{% include 'ui/header.html' %}
 		<link rel="stylesheet" media="screen and (min-width: 701px)" href="/static/smart_ui_server/login.css" />
 		<link rel="stylesheet" media="only screen and (max-width: 700px)" href="/static/smart_ui_server/login-mobile.css" />
 	{% endif %}
+    {% endblock %}
 	
 	<title>
 		{% block title_prefix %}{% endblock %}
 		{% block title %}
 		{% if branding %}
 			{{ branding.pretty_name_prepend }} {{ branding.pretty_name }}
+            {% if branding.version%}{{ branding.version }}{% endif %}
 		{% else %}
 			{% trans "SMART Reference EMR" %}
 		{% endif %}

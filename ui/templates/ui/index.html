@@ -1,19 +1,22 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
 	<link rel="apple-touch-startup-image" href="/static/smart_common/resources/images/smart-ipad-icon.png"/>
 
+    {% block header %}
 	{% if branding %}
 		{% include branding.header_template %}
 	{% else %} 
 		{% include 'ui/header.html' %}
 	{% endif %}
+    {% endblock %}
 
 	{% block head_material %}{% endblock %}
 
@@ -29,15 +32,29 @@
 		var FULLNAME = "{{ FULLNAME }}";
 {% endblock %}
 	</script>
-	<title>{% block title %}SMART EMR{% endblock %}</title>
+		<title>
+		{% block title_prefix %}{% endblock %}
+		{% block title %}
+		{% if branding %}
+			{{ branding.pretty_name_prepend }} {{ branding.pretty_name }}
+            {% if branding.version%}{{ branding.version }}{% endif %}
+		{% else %}
+			{% trans "SMART Reference EMR" %}
+		{% endif %}
+		{% endblock %}
+		{% block title_suffix %}{% endblock %}
+	</title>
 </head>
 {% block body %}
 <body>
 	<div id="header">
 		<div id="header_logo">
-			<span id="logo">
+			<div id="logo">
 				<img src="/static/smart_common/resources/images/badges/SMArt-Logo.png" style="padding-bottom: 0px;" alt='SMArt'/>
-			</span>
+			</div>
+            {% if branding and branding.version%}
+                <div id="version">{{ branding.version }}</div>
+            {% endif %}
 		</div>
 		<div id="working_with">&nbsp;<span id="current_patient"></span></div> <!-- nbsp for no collapse when empty -->
 

@@ -9,7 +9,11 @@ jQuery.Controller.extend('showcase.Controllers.Main',
 /* @Prototype */
 {
 	
-"{window} load": function(params) {      
+"{window} load": function(params) {
+    if (typeof INITIAL_APP !== "undefined") {
+        $("#appnav").hide();
+    }
+
     ACCOUNT = Account.from_email(ACCOUNT_ID); // init the account via model
 
     RecordController = new showcase.Controllers.Record($("#app_content"));
@@ -19,7 +23,7 @@ jQuery.Controller.extend('showcase.Controllers.Main',
     this.previous_message =  $("#header .message").text();
 
     SMART.on_app_ready = function(app_instance) {
-	$("#loading_div").fadeOut("fast");
+        $("#loading_div").fadeOut("fast");
     };
     this.finish_initialization();
 },
@@ -40,7 +44,9 @@ make_visible: function(element) {
 	
 'pha.launched subscribe': function(topic, pha) {
     $("#patient-list").fadeIn("fast");
-    $("#back-to-showcase").fadeIn("fast");
+    if (typeof INITIAL_APP === "undefined") {
+        $("#back-to-showcase").fadeIn("fast");
+    }
     $("#header .message").text("Viewing app: " + pha.data.name);
     $("#appnav").hide();
     $("#showcase-content").css("height", "100%");
@@ -56,7 +62,7 @@ make_visible: function(element) {
     $("#showcase-content").css("height", "");
     $("#non-footer").css("height", "");
     $("#header .message").text(this.previous_message);
-    SMART.context_changed();
+    //SMART.context_changed();
 },
 
 finish_initialization: function(params) {

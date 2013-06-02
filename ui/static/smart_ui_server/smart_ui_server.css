@@ -91,8 +91,9 @@ a#logo { border: none; }
 #header_logo { width: 210px; position: absolute; top: 0px; left: 0px; color: #666; font-size: 18px; font-weight: 200; background: #F6F6F6; text-align: center; }
 #working_with { width: 100%; color: #004488; font-size: 18px; margin: auto; text-align: center; white-space: nowrap; }
 #header_name { position: absolute; top: 0px; right: 0px; text-align: right; margin-right: 1.5em; margin-top: 3px; white-space: nowrap; } /* eat the header's left padding + 5px */
-#app_selector { position: fixed; top: 116px; left: 0px; width: 200px; padding-left: 10px; z-index: 10;}
+#app_selector { position: fixed; top: 124px; left: 0px; width: 200px; padding-left: 10px; z-index: 10;}
 #app_selector_inner {height: 100%; overflow-y: auto;}
+#version { font-size: 0.8em; position: relative; top: -6px;}
 
 #main_canvas {
 	position: absolute;

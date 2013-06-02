@@ -30,7 +30,7 @@ SMART.on_app_launch_complete = function(app_instance) {
         RecordController.APP_ID = app_instance.manifest.id;
 };
 
-SMART.get_credentials = function (app_instance, callback){
+SMART.get_api_base = function (app_instance, callback){
 
     var app_email_enc = encodeURIComponent(app_instance.manifest.id);
     var account_id_enc = encodeURIComponent(app_instance.context.user.id);
@@ -54,7 +54,8 @@ SMART.get_credentials = function (app_instance, callback){
                 " vs. " + d.AccessToken.App["@id"];
             }
 
-            callback(credentials);
+            app_instance.credentials = credentials;
+            callback(credentials.api_base);
         })
         .error(function(data) {
             // error handler
@@ -96,6 +97,7 @@ var get_context = function(manifest) {
 // calls back wtih the response to an API call.  
 // (implemented as passthrough to a back-end REST server)
 SMART.handle_api = function(app_instance, message, callback_success, callback_error) {
+
     var params = { 'smart_connect_token': app_instance.credentials.connect_token };
 
     var params_array = [];

@@ -52,10 +52,10 @@ window.SMART_CONNECT_HOST = function() {
         delete app_event_handlers[n];
     };
     
-    sc.get_credentials = function() {
-        var err = "Must override SMART_CONNECT_HOST.get_credentials";
-        console.log(err);
-        throw err;
+    sc.get_api_base = function(app_instance, callback) {
+        var warning = "Please override SMART_CONNECT_HOST.get_api for SMART REST apps";
+        console.log(warning);
+        callback(null);
     };
     
     sc.get_iframe = function() {
@@ -119,15 +119,18 @@ window.SMART_CONNECT_HOST = function() {
     
     var launch_app_instance = function(app_instance) {
         begin_launch_wrapper(app_instance)
-        .pipe(get_credentials_wrapper)
+        .pipe(get_api_base_wrapper)
         .pipe(get_iframe_wrapper)
         .pipe(function() {
             
             // create the launch_url
             var launch_url = app_instance.manifest.index;
             querystring_sep = launch_url.indexOf('?') !== -1 ? '&' : '?';
-            launch_url += querystring_sep + "api_base=" + encodeURIComponent(app_instance.credentials.api_base);
-            launch_url += "&record_id=" + encodeURIComponent(app_instance.context.record.id);
+            if (app_instance.api_base) {
+                launch_url += querystring_sep + "api_base=" + encodeURIComponent(app_instance.api_base);
+                querystring_sep = "&";
+            }
+            launch_url += querystring_sep + "record_id=" + encodeURIComponent(app_instance.context.record.id);
             
             app_instance.origin = __SMART_extract_origin(launch_url);
             app_instance.iframe.src = launch_url;
@@ -196,10 +199,10 @@ window.SMART_CONNECT_HOST = function() {
         return dfd.promise();
     };
     
-    var get_credentials_wrapper = function(app_instance) {
+    var get_api_base_wrapper = function(app_instance) {
         var dfd = jQuery.Deferred();
-        sc.get_credentials(app_instance, function(r) {
-            app_instance.credentials = r;
+        sc.get_api_base(app_instance, function(r) {
+            app_instance.api_base = r;
             dfd.resolve(app_instance)
         });
         return dfd.promise();
@@ -312,7 +315,7 @@ window.SMART_CONNECT_HOST = function() {
             
             var new_app_instance = p;
             begin_launch_delegated_wrapper(new_app_instance)
-            .pipe(get_credentials_wrapper)
+            .pipe(get_api_base_wrapper)
             .pipe(function() {
                 var uuid = new_app_instance.uuid;
                 t.complete(new_app_instance);

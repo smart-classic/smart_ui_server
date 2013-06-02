@@ -30,8 +30,9 @@ SECRET_KEY = '2342342345'
 #  quick and dirty private labeling
 #BRANDING = {
 #  'short_name': 'smart',
-#  'pretty_name': 'SMART Reference EMR',
-#  'pretty_name_prepend': '',
+#  'pretty_name': 'Reference EMR',
+#  'pretty_name_prepend': 'SMART',
+#  'version': 'version 0.6',
 #  'header_template': 'ui/header.html',
 #  'footer_template': 'ui/footer.html'
 #}

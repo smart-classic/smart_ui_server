@@ -289,7 +289,8 @@ def logout(request):
 def showcase_index(request):
     api = get_api()
 
-    initial_app = request.GET.get('initial_app', "")
+    initial_app = request.GET.get('app', "")
+    patients = request.GET.get('patients', "")
 
     ret, reason = tokens_get_from_server(
         request,
@@ -304,6 +305,7 @@ def showcase_index(request):
     return utils.render_template('ui/showcase', {
         'ACCOUNT_ID': settings.PROXY_USER,
         'INITIAL_APP': initial_app,
+        'PATIENTS': patients,
         'SMART_PASSTHROUGH_SERVER': passthrough_server})
 
 

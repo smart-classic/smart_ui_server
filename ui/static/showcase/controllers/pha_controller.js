@@ -25,8 +25,19 @@ init: function(params){
 
 	    phas.sort(PHA.compare);
         	_this.phas = phas;
-        	_this.draw_phas();
-        });        
+            if (typeof INITIAL_APP === "undefined") {
+                _this.draw_phas();
+            }
+        });
+
+        if (typeof INITIAL_APP !== "undefined") {
+            var apps = phas.filter(function (p) {
+                return p.id === INITIAL_APP;
+            });
+            if (apps.length > 0) {
+                APP = apps[0];
+            }
+        }
     });
 },
 
@@ -39,6 +50,18 @@ init: function(params){
     $('.iframe_holder', this).html("");
     $('.iframe_holder', this).show();
     this.launch_app(app);
+},
+
+'records.obtained subscribe': function(topic) {
+    if (APP) {
+        $('.iframe_holder', this).html("");
+        $('.iframe_holder', this).show();
+         this.launch_app(APP);
+    } else {
+        if (typeof INITIAL_APP !== "undefined") {
+            alert ('App "' + INITIAL_APP + '" does not exist!');
+        }
+    }
 },
 
 launch_app: function(pha) {	
