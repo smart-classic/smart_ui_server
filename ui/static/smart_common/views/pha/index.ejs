@@ -3,6 +3,7 @@
 <ul class="manage_apps">
 	<% for (var p = 0; p < enabled_phas.length; p++) { %>
 	<% var pha = enabled_phas[p]; %>
+    <% if (HIDDEN_APPS.indexOf(pha.id) !== -1) continue;%>
 	<li>
 		<img class="app_tab_img" src="<%= pha.data.iconURL %>" />
 		<button id="remove_app_<%= pha.safeid() %>" type="button">Remove</button>
@@ -18,6 +19,7 @@
 <ul class="manage_apps">
 	<% for (var p = 0; p < disabled_phas.length; p++) { %>
 	<% var pha = disabled_phas[p]; %>
+    <% if (HIDDEN_APPS.indexOf(pha.id) !== -1) continue;%>
 	<li>
 		<img class="app_tab_img" src="<%= pha.data.iconURL %>" />
 		<button id="add_app_<%= pha.safeid() %>" type="button">Add</button>

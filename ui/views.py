@@ -332,6 +332,7 @@ def index(request, template='ui/index'):
                 'FULLNAME': fullname,
                 'SMART_API_SERVER': settings.SMART_API_SERVER_BASE,
                 'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
+                'HIDDEN_APPS': ",".join(settings.HIDDEN_APPS),
                 'SMART_PASSTHROUGH_SERVER': passthrough_server})
         except:
             pass

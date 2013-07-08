@@ -1,6 +1,8 @@
+<% if (HIDDEN_APPS.indexOf(pha.id) === -1) { %>
 <li class="app">
 	<a href="#app_req&id=<%= app.safe_id %>">
 		<img class="app_tab_img" src="<%= app.iconURL %>" />
 		<%= app.name %>
 	</a>
 </li>
+<% } %>
