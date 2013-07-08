@@ -103,7 +103,9 @@ index: function(params) {
 _add_app: function(params) {
     var pha = params.pha;
     pha.data.safe_id = pha.safeid();
-    $('#app_selector_inner').append(this.view("app_list_item", { "app": pha.data }));
+    if (HIDDEN_APPS.indexOf(pha.id) === -1) {
+        $('#app_selector_inner').append(this.view("app_list_item", { "app": pha.data }));
+    }
     
     if (!RecordController.CURRENT_RECORD) {
         $('#app_selector_inner li:last').addClass('greyed_out');
