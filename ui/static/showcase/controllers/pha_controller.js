@@ -16,11 +16,16 @@ init: function(params){
         PHA.get_all(function(phas) {
         	$.each(phas, function(i,pha) {
         		if ($.inArray(pha.id, enabled_pha_ids) == -1) {
-			    pha.enabled = false;
+                    pha.enabled = false;
         		}
         		else {
-			    pha.enabled = true;
+                    pha.enabled = true;
         		}
+                if(HIDDEN_APPS.indexOf(pha.id) !== -1){
+                    pha.hidden = true;
+                } else {
+                    pha.hidden = false;
+                }
         	});
 
 	    phas.sort(PHA.compare);

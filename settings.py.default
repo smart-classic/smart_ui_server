@@ -10,6 +10,11 @@ CONSUMER_SECRET='{{chrome_secret}}'                 # OAuth consumer secret for 
 # uncomment admin_ui in the INSTALLED_APPS list below.
 # ADMIN_USER_ID = ('admin@smartplatforms.org',)
 
+# Allows to define a list of apps that are not going to be listed in the UI
+HIDDEN_APPS = [
+   'secretapp@apps.smartplatforms.org'
+]
+
 DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'smart-ui'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'smart'             # Not used with sqlite3.

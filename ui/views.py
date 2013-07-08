@@ -305,6 +305,7 @@ def showcase_index(request):
     return utils.render_template('ui/showcase', {
         'ACCOUNT_ID': settings.PROXY_USER,
         'INITIAL_APP': initial_app,
+        'HIDDEN_APPS': ",".join(settings.HIDDEN_APPS),
         'PATIENTS': patients,
         'SMART_PASSTHROUGH_SERVER': passthrough_server})
 
