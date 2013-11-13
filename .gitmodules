@@ -7,3 +7,6 @@
 [submodule "indivo_client_py/oauth"]
 	path = indivo_client_py/oauth
 	url = https://github.com/chb/oauth_py.git
+[submodule "ui/static/funcunit"]
+	path = ui/static/funcunit
+	url = https://github.com/bitovi/funcunit.git
