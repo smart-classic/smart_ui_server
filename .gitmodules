@@ -1,6 +1,3 @@
-[submodule "ui/static/funcunit"]
-	path = ui/static/funcunit
-	url = https://github.com/jupiterjs/funcunit.git
 [submodule "ui/static/steal"]
 	path = ui/static/steal
 	url = https://github.com/jupiterjs/steal.git
