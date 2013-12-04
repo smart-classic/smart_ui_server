@@ -26,7 +26,7 @@ DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Make this unique, and don't share it with anybody. (Used by django for CSRF protection?)
-SECRET_KEY = 'REPLACEMENOW'
+SECRET_KEY = '{{django_secret_key}}'
 
 # Proxy user configuration for full screen apps, showcase, etc
 #PROXY_USER = "proxyuser@smartplatforms.org"
