@@ -23,6 +23,7 @@ import urllib
 import urllib2
 import urlparse
 import time
+import logging
 from smart_ui_server import utils
 
 from indivo_client_py.lib.client import IndivoClient
@@ -305,6 +306,7 @@ def showcase_index(request):
     return utils.render_template('ui/showcase', {
         'ACCOUNT_ID': settings.PROXY_USER,
         'INITIAL_APP': initial_app,
+        'HIDDEN_APPS': ",".join(settings.HIDDEN_APPS),
         'PATIENTS': patients,
         'SMART_PASSTHROUGH_SERVER': passthrough_server})
 
@@ -314,8 +316,6 @@ def mobile_index(request, template='ui/mobile_index'):
 
 
 def index(request, template='ui/index'):
-    print "INDEX", template
-
     if tokens_p(request):
         # get the realname here. we already have it in the js account model
         try:
@@ -331,8 +331,10 @@ def index(request, template='ui/index'):
                 'FULLNAME': fullname,
                 'SMART_API_SERVER': settings.SMART_API_SERVER_BASE,
                 'HIDE_GET_MORE_APPS': settings.HIDE_GET_MORE_APPS,
+                'HIDDEN_APPS': ",".join(settings.HIDDEN_APPS),
                 'SMART_PASSTHROUGH_SERVER': passthrough_server})
-        except:
+        except Exception, e:
+            logging.error("Failed to render index page: %s" % e)
             pass
 
     # have the user login
@@ -352,7 +354,8 @@ def store_connect_secret(request, launchdata):
          "rest_secret": e.findtext('RESTSecret'),
          "oauth_header": e.findtext('OAuthHeader')}
 
-    print request.session.session_key, c["connect_token"], c["connect_secret"]
+    logging.debug("Storing session key: %s, token: %s, secret: %s" % (
+        request.session.session_key, c["connect_token"], c["connect_secret"]))
     t = SmartConnectToken(session_key=request.session.session_key,
                           smart_connect_token=c["connect_token"],
                           smart_connect_secret=c["connect_secret"])

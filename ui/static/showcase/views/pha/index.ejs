@@ -2,6 +2,7 @@
   <% for (var p = 0; p < phas.length; p++) {
         var pha = phas[p];
         if (!pha.enabled) continue;
+        if (pha.hidden) continue;
   %>
 
 	<h3>
