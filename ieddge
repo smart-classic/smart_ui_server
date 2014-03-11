@@ -1,0 +1,5 @@
+
++  r = HttpResponse(content, mimetype=mimetype)
++  r['X-UA-Compatible'] = 'IE=edge'
++  return r
+
