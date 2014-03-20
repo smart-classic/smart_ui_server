@@ -32,15 +32,15 @@ SECRET_KEY = '{{django_secret_key}}'
 #PROXY_USER = "proxyuser@smartplatforms.org"
 #PROXY_PASSWORD = "password"
 
-#  quick and dirty private labeling
-#BRANDING = {
-#  'short_name': 'smart',
-#  'pretty_name': 'Reference EMR',
-#  'pretty_name_prepend': 'SMART',
-#  'version': 'version 0.6.1',
-#  'header_template': 'ui/header.html',
-#  'footer_template': 'ui/footer.html'
-#}
+#  quick and dirty private labeling (commend it out if not needed)
+BRANDING = {
+  'short_name': 'smart',
+  'pretty_name': '{{pretty_name_value}}',  # for example: 'Reference EMR'
+  'pretty_name_prepend': 'SMART',
+  'version': 'version 0.6.2',
+  'header_template': 'ui/header.html',
+  'footer_template': 'ui/footer.html'
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
