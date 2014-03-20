@@ -49,10 +49,6 @@
 			<div id="logo" style="text-align:center;">
 				<img alt="SMART" src="/static/smart_common/resources/images/badges/SMArt-Logo.png" />
 			</div>
-			
-			{% if branding %}
-			<img class="branding-image" src='{{ branding.logo_image_big_src }}' />
-			{% endif %}
 			<div id="front_site_name">
 				<span class="welcome_prefix">{% block welcome_prefix %}{% endblock %}</span>
 				{% block welcome %}
