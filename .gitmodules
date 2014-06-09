@@ -1,12 +1,12 @@
 [submodule "ui/static/steal"]
 	path = ui/static/steal
-	url = https://github.com/jupiterjs/steal.git
+	url = https://github.com/smart-platforms/steal-mirror.git
 [submodule "ui/static/jquery"]
 	path = ui/static/jquery
-	url = https://github.com/jupiterjs/jquerymx.git
+	url = https://github.com/smart-platforms/jquerymx.git
 [submodule "indivo_client_py/oauth"]
 	path = indivo_client_py/oauth
 	url = https://github.com/smart-platforms/oauth_py.git
 [submodule "ui/static/funcunit"]
 	path = ui/static/funcunit
-	url = https://github.com/bitovi/funcunit.git
+	url = https://github.com/smart-platforms/funcunit.git
