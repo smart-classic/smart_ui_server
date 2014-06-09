@@ -1,5 +1,5 @@
 For full installation instructions, please see the README at:
-  https://github.com/chb/smart_server/
+  https://github.com/smart-platforms/smart_server/
 
 
 To enable the Admin UI, edit `settings.py` to uncomment:
